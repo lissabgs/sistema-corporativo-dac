@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # PostgreSQL - Banco principal para a maioria dos MS
+  # ✅ SEUS SERVIÇOS ATUAIS (mantenha tudo igual)
   postgres:
     image: postgres:15
     container_name: dac-postgres
@@ -16,7 +16,6 @@ services:
     networks:
       - dac-network
 
-  # MongoDB - Especificamente para autenticação
   mongodb:
     image: mongo:7
     container_name: dac-mongodb
@@ -30,7 +29,6 @@ services:
     networks:
       - dac-network
 
-  # Redis - Para cache e sessões
   redis:
     image: redis:7-alpine
     container_name: dac-redis
@@ -39,16 +37,46 @@ services:
     networks:
       - dac-network
 
-  # RabbitMQ - Para comunicação entre microsserviços
   rabbitmq:
     image: rabbitmq:3.11-management
     container_name: dac-rabbitmq
     ports:
-      - "5672:5672"    # Porta da aplicação
-      - "15672:15672"  # Porta do painel administrativo
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: dac_user
       RABBITMQ_DEFAULT_PASS: dac123
+    networks:
+      - dac-network
+
+  # 🚀 ADICIONE O API GATEWAY AQUI
+  api-gateway:
+    build: ./api-gateway  # ⬅️ Caminho para a pasta do gateway
+    container_name: dac-api-gateway
+    ports:
+      - "8080:8080"  # ⬅️ Porta principal do sistema
+    environment:
+      - JWT_SECRET=chave_secreta_compartilhada_2025
+      - MS_AUTH_URL=http://ms-autenticacao:8081  # ⬅️ Nome do container do MS-AUTH
+    depends_on:
+      - mongodb
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      - dac-network
+
+  # 🎯 ADICIONE SEU MS-AUTENTICACAO (se ainda não tem)
+  ms-autenticacao:
+    build: ./ms-autenticacao  # ⬅️ Seu MS existente
+    container_name: dac-ms-autenticacao
+    ports:
+      - "8081:8081"
+    environment:
+      - JWT_SECRET=chave_secreta_compartilhada_2025  # ⬅️ MESMA CHAVE!
+      - SPRING_DATA_MONGODB_URI=mongodb://dac_user:dac123@mongodb:27017/dac_autenticacao?authSource=admin
+    depends_on:
+      - mongodb
     networks:
       - dac-network
 
