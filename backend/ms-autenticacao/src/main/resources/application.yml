@@ -1,0 +1,38 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: ms-autenticacao
+    description: "Sistema Corporativo DAC - Microsserviço de Autenticação"
+  
+  data:
+    mongodb:
+      uri: mongodb://dac_user:dac123@localhost:27017/dac_autenticacao?authSource=admin
+      auto-index-creation: true
+
+app:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:minha-chave-secreta-super-segura-para-sistema-corporativo-dac-2024}
+      expiration-hours: ${JWT_EXPIRATION_HOURS:8}
+    password:
+      default: ${DEFAULT_PASSWORD:123456}
+      encoder-strength: ${PASSWORD_STRENGTH:12}
+    admin:
+      default-email: ${ADMIN_EMAIL:admin@sistemacorporativo.com}
+      default-password: ${ADMIN_PASSWORD:Admin123!}
+      default-name: ${ADMIN_NAME:Administrador do Sistema}
+      default-cpf: ${ADMIN_CPF:00000000000}
+  
+  business:
+    default-level: "INICIANTE"
+    default-xp: 0
+    company-domain: "${COMPANY_DOMAIN:sistemacorporativo.com}"
+
+logging:
+  level:
+    com.dac.auth: DEBUG
+    org.springframework.security: DEBUG

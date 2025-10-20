@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Banco principal para a maioria dos MS
+  postgres:
+    image: postgres:15
+    container_name: dac-postgres
+    environment:
+      POSTGRES_DB: dac_corporativo
+      POSTGRES_USER: dac_user
+      POSTGRES_PASSWORD: dac123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dac-network
+
+  # MongoDB - Especificamente para autenticação
+  mongodb:
+    image: mongo:7
+    container_name: dac-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dac_user
+      MONGO_INITDB_ROOT_PASSWORD: dac123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - dac-network
+
+  # Redis - Para cache e sessões
+  redis:
+    image: redis:7-alpine
+    container_name: dac-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dac-network
+
+  # RabbitMQ - Para comunicação entre microsserviços
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: dac-rabbitmq
+    ports:
+      - "5672:5672"    # Porta da aplicação
+      - "15672:15672"  # Porta do painel administrativo
+    environment:
+      RABBITMQ_DEFAULT_USER: dac_user
+      RABBITMQ_DEFAULT_PASS: dac123
+    networks:
+      - dac-network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  dac-network:
+    driver: bridge
