@@ -1,0 +1,23 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <h2 class="login-title">LOGIN</h2>
+
+    <form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuário</mat-label>
+        <input matInput formControlName="usuario" placeholder="Digite seu usuário" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Senha</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" placeholder="Digite sua senha" required>
+        <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
+        </button>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="login-button" type="submit">
+        Entrar
+      </button>
+    </form>
+  </mat-card>
+</div>
