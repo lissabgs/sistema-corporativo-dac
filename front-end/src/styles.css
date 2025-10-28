@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@include mat.all-component-themes(mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$blue-palette,
+    secondary: mat.$deep-purple-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto, sans-serif',
+  )
+)));

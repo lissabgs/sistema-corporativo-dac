@@ -1,0 +1,241 @@
+:host {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #3f51b5 !important;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 0 16px;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ---------- PAGE STRUCTURE ---------- */
+.page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.header-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 8px;
+}
+
+.courses-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bottom-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 8px;
+}
+
+.card {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- KPI CARDS ---------- */
+.kpi .kpi-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.kpi .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 8px 0;
+}
+
+.kpi .kpi-foot {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+mat-progress-bar {
+  border-radius: 4px;
+  height: 6px;
+}
+
+/* ---------- BADGES ---------- */
+.badge-row {
+  margin-top: 10px;
+}
+
+mat-chip {
+  border-radius: 16px !important;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+mat-chip.selected-chip {
+  background-color: #3f51b5 !important;
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* ---------- LISTAS ---------- */
+.row-end {
+  margin-left: auto;
+  min-width: 160px;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-end .pct {
+  font-size: 12px;
+  text-align: right;
+  color: #374151;
+}
+
+/* ---------- RANKING ---------- */
+.rank-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #111827;
+  font-size: 13px;
+}
+
+/* ---------- XP CHIP ---------- */
+.xp {
+  margin-left: auto;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* ---------- BUTTONS ---------- */
+button[mat-stroked-button],
+button[mat-raised-button] {
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+button[mat-stroked-button]:hover,
+button[mat-raised-button]:hover {
+  opacity: 0.9;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* ---------- TITLES ---------- */
+mat-card-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+mat-icon {
+  vertical-align: middle;
+  font-size: 20px;
+}
+
+/* ---------- RESPONSIVIDADE ---------- */
+@media (max-width: 1024px) {
+  .header-grid,
+  .courses-grid,
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 16px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .kpi .kpi-value {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .page {
+    padding: 12px;
+  }
+
+  .kpi .kpi-value {
+    font-size: 22px;
+  }
+
+  .rank-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  mat-icon {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  font-size: 22px !important;
+  height: 22px !important;
+  width: 22px !important;
+  overflow: visible;
+}
+
+}
