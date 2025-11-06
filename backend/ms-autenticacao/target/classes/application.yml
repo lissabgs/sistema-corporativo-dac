@@ -6,4 +6,9 @@ spring:
     name: ms-autenticacao
   data:
     mongodb:
-      uri: mongodb://mongo:27017/ms-autenticacao
+      # Formato: mongodb://USUARIO:SENHA@NOME_DO_SERVICO:PORTA/NOME_DO_BANCO
+      uri: mongodb://dac:dac@mongo:27017/db_autenticacao
+
+jwt:
+  secret: "c2VuaGFTZWNyZXRhRG8tUHJvamV0by1EQUMtMjAyNQ=="
+  expiration: 28800000

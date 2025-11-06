@@ -1,4 +1,27 @@
-// ... (imports) ...
+package com.dac.usuarios.controller;
+
+// DTOs
+import com.dac.usuarios.dto.FuncionarioAutocadastroDTO;
+import com.dac.usuarios.dto.UsuarioCadastroDTO;
+import com.dac.usuarios.dto.UsuarioResponseDTO;
+import com.dac.usuarios.dto.UsuarioUpdateDTO;
+
+// Exception
+import com.dac.usuarios.exception.ResourceNotFoundException;
+
+// Service
+import com.dac.usuarios.service.FuncionarioService;
+
+// Validation
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -8,10 +31,13 @@ public class FuncionarioController {
     @Autowired
     private FuncionarioService usuarioService;
 
+    /**
+     * R01: Endpoint público para autocadastro de FUNCIONARIOS.
+     */
     @PostMapping("/autocadastro")
     public ResponseEntity<?> autocadastro(@Valid @RequestBody FuncionarioAutocadastroDTO dto) {
         try {
-            // Modificado para receber o Map
+            // Atualizado para receber o Map com a senha
             Map<String, Object> response = usuarioService.autocadastro(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
@@ -20,10 +46,16 @@ public class FuncionarioController {
         }
     }
 
+    // --- Endpoints Administrativos (R18) ---
+    // (No futuro, serão protegidos pelo API Gateway com perfil ADMIN)
+
+    /**
+     * R18: Criar (ADMINISTRADOR ou INSTRUTOR)
+     */
     @PostMapping
     public ResponseEntity<?> cadastrarFuncionario(@Valid @RequestBody UsuarioCadastroDTO cadastroDTO) {
         try {
-            // Modificado para receber o Map
+            // Atualizado para receber o Map com a senha
             Map<String, Object> response = usuarioService.cadastrarFuncionario(cadastroDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
@@ -32,24 +64,32 @@ public class FuncionarioController {
         }
     }
 
-    // ... (O resto dos métodos: GET, PUT, DELETE NÃO mudam) ...
+    /**
+     * R18: Listar
+     */
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> listarFuncionarios() {
         List<UsuarioResponseDTO> funcionarios = usuarioService.listarFuncionarios();
         return ResponseEntity.ok(funcionarios);
     }
 
+    /**
+     * R18: Buscar por ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarFuncionario(@PathVariable Long id) {
         try {
             UsuarioResponseDTO funcionario = usuarioService.buscarFuncionarioPorId(id);
             return ResponseEntity.ok(funcionario);
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) { // Captura a exceção específica
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("erro", e.getMessage()));
         }
     }
 
+    /**
+     * R18: Atualizar
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarFuncionario(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO updateDTO) {
         try {
@@ -64,6 +104,9 @@ public class FuncionarioController {
         }
     }
 
+    /**
+     * R18: Inativar (Delete Lógico)
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> inativarFuncionario(@PathVariable Long id) {
         try {

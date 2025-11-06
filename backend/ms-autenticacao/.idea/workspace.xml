@@ -5,26 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc2242ed-dd2f-40d1-bb16-f49142e1b4d4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/AuthRegistroDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/LoginRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/LoginResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/model/AuthUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/repository/AuthUserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/JwtTokenProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/dto/AuthRegistroDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/UsuariosApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/UsuariosApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
