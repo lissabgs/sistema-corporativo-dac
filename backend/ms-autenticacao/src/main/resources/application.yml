@@ -1,9 +1,17 @@
 server:
-  port: 8081
+  port: 8081 # Porta interna que o ms-usuarios vai chamar
 
 spring:
   application:
     name: ms-autenticacao
   data:
     mongodb:
-      uri: mongodb://mongo:27017/ms-autenticacao
+      # Conecta ao serviço 'mongodb-auth' do docker-compose.yml
+      uri: mongodb://mongodb-auth:27017
+      # Nome do banco de dados [cite: 107]
+      database: db_autenticacao
+
+# Configurações do JWT
+jwt:
+  secret: "c2VuaGFTZWNyZXRhRG8tUHJvamV0by1EQUMtMjAyNQ==" # Isto é "SenhaSecretaDo-Projeto-DAC-2025" em Base64
+  [cite_start]expiration: 28800000 # 8 horas em milissegundos [cite: 22]

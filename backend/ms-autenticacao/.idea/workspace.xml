@@ -5,34 +5,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc2242ed-dd2f-40d1-bb16-f49142e1b4d4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/controller/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/AuthRegistroDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/LoginRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/dto/LoginResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/model/AuthUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/repository/AuthUserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/JwtTokenProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/dto/AuthRegistroDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/UsuariosApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/UsuariosApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "arthurbaptista"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;arthurbaptista&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/lissabgs/sistema-corporativo-dac.git",
-    "accountId": "df08dc32-dfbd-4478-aa29-d2b64413f125"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lissabgs/sistema-corporativo-dac.git&quot;,
+    &quot;accountId&quot;: &quot;df08dc32-dfbd-4478-aa29-d2b64413f125&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 1
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="354knnqq0uwqlpo9U8Ur2VP9eQP" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -41,11 +69,14 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "arthur-novo-backend",
+    "git-widget-placeholder": "criando-login",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Arthur/Desktop/sistema-corporativo-dac/backend/ms-autenticacao",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>

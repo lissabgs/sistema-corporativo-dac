@@ -1,6 +1,7 @@
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\model\EntidadeBase.java
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\model\Funcionario.java
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\repository\FuncionarioRepository.java
+C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\dto\AuthRegistroDTO.java
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\dto\DepartamentoDTO.java
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\exception\ResourceNotFoundException.java
 C:\Users\Arthur\Desktop\sistema-corporativo-dac\backend\ms-usuarios\src\main\java\com\dac\usuarios\model\Departamento.java
