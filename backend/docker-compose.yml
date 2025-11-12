@@ -45,7 +45,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/ms-autenticacao
+      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
     depends_on:
       - mongo
 
@@ -112,7 +112,7 @@ services:
     ports:
       - "8087:8087"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/ms-notificacoes
+      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/ms-notificacoes?authSource=admin
     depends_on:
       - mongo
 

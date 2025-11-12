@@ -16,7 +16,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    // Endpoint de Login público
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
@@ -27,7 +26,6 @@ public class AuthController {
         }
     }
 
-    // Endpoint de Registro (só deve ser chamado por outros microsserviços)
     @PostMapping("/internal/register")
     public ResponseEntity<Void> registerInternal(@RequestBody AuthRegistroDTO registroRequest) {
         try {

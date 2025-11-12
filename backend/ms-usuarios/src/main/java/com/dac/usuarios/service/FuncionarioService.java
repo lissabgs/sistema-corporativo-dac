@@ -5,24 +5,27 @@ import com.dac.usuarios.model.Funcionario;
 import com.dac.usuarios.model.Perfil;
 import com.dac.usuarios.repository.DepartamentoRepository;
 import com.dac.usuarios.repository.FuncionarioRepository;
-import com.dac.usuarios.dto.FuncionarioAutocadastroDTO;
-import com.dac.usuarios.dto.UsuarioCadastroDTO;
-import com.dac.usuarios.dto.UsuarioResponseDTO;
-import com.dac.usuarios.dto.UsuarioUpdateDTO;
-import com.dac.usuarios.dto.AuthRegistroDTO; // Importar
+import com.dac.usuarios.dto.*; // Importa todos os DTOs
 import com.dac.usuarios.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate; // Importar
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random; // Importar
+import java.util.Random;
 import java.util.stream.Collectors;
+
+// Imports de Log
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class FuncionarioService {
+
+    // Adicione o Logger
+    private static final Logger logger = LoggerFactory.getLogger(FuncionarioService.class);
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
@@ -30,7 +33,6 @@ public class FuncionarioService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
-    // Injetar o RestTemplate
     @Autowired
     private RestTemplate restTemplate;
 
@@ -47,12 +49,14 @@ public class FuncionarioService {
 
     /**
      * R01: Autocadastro.
-     * Agora retorna um Map com o funcionário e a senha (para fins de teste)
      */
-    @Transactional // Importante para rollback
+    @Transactional
     public Map<String, Object> autocadastro(FuncionarioAutocadastroDTO dto) {
+        logger.info("[MS-USUARIOS] Início do autocadastro para: " + dto.getEmail());
+
         Departamento depto = departamentoRepository.findById(dto.getDepartamentoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Departamento não encontrado com ID: " + dto.getDepartamentoId()));
+        logger.info("[MS-USUARIOS] Departamento encontrado: " + depto.getNome());
 
         Funcionario func = new Funcionario();
         func.setCpf(limparCPF(dto.getCpf()));
@@ -63,9 +67,14 @@ public class FuncionarioService {
         func.setPerfil(Perfil.FUNCIONARIO);
 
         Funcionario novoFuncionario = funcionarioRepository.save(func);
+        logger.info("[MS-USUARIOS] Funcionário salvo no Postgres com ID: " + novoFuncionario.getId());
 
         // ---- INÍCIO DA COMUNICAÇÃO ----
         String senhaNumerica = gerarSenhaNumerica();
+
+        // --- PRINT IMPORTANTE ---
+        logger.info(">>> [MS-USUARIOS] Senha gerada: [" + senhaNumerica + "]");
+
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
                 senhaNumerica,
@@ -74,24 +83,26 @@ public class FuncionarioService {
         );
 
         try {
-            // Chama o ms-autenticacao usando o nome do serviço do Docker
-            // A porta 8081 é a porta interna do contêiner ms-autenticacao
+            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
             restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+            logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
         } catch (Exception e) {
-            // Se a autenticação falhar, desfaz o cadastro do usuário (rollback)
+            logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);
+            logger.error("CAUSA RAIZ: " + e.getMessage());
             throw new RuntimeException("Falha ao registrar usuário no serviço de autenticação. Rollback realizado.", e);
         }
         // ---- FIM DA COMUNICAÇÃO ----
 
-        // Retorna o funcionário e a senha para o controlador
         return Map.of("funcionario", new UsuarioResponseDTO(novoFuncionario), "senhaTemporaria", senhaNumerica);
     }
 
     /**
      * R18: Cadastro de Usuário (Admin).
      */
-    @Transactional // Importante para rollback
+    @Transactional
     public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO dto) {
+        logger.info("[MS-USUARIOS] Início do cadastro de ADMIN/INSTRUTOR para: " + dto.getEmail());
+
         if (dto.getPerfil() == Perfil.FUNCIONARIO) {
             throw new IllegalArgumentException("Use o endpoint /autocadastro para criar funcionários.");
         }
@@ -108,9 +119,14 @@ public class FuncionarioService {
         func.setPerfil(dto.getPerfil());
 
         Funcionario novoFuncionario = funcionarioRepository.save(func);
+        logger.info("[MS-USUARIOS] Usuário salvo no Postgres com ID: " + novoFuncionario.getId());
 
         // ---- INÍCIO DA COMUNICAÇÃO ----
         String senhaNumerica = gerarSenhaNumerica();
+
+        // --- PRINT IMPORTANTE ---
+        logger.info(">>> [MS-USUARIOS] Senha gerada: [" + senhaNumerica + "]");
+
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
                 senhaNumerica,
@@ -119,13 +135,16 @@ public class FuncionarioService {
         );
 
         try {
+            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
             restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+            logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
         } catch (Exception e) {
+            logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);
+            logger.error("CAUSA RAIZ: " + e.getMessage());
             throw new RuntimeException("Falha ao registrar usuário no serviço de autenticação. Rollback realizado.", e);
         }
         // ---- FIM DA COMUNICAÇÃO ----
 
-        // Retorna o funcionário e a senha
         return Map.of(
                 "funcionario", new UsuarioResponseDTO(novoFuncionario),
                 "senhaTemporaria", senhaNumerica,
@@ -133,7 +152,7 @@ public class FuncionarioService {
         );
     }
 
-    // ... (O resto dos métodos: listar, buscar, atualizar, inativar NÃO precisam de mudança) ...
+    // --- O RESTO DO CÓDIGO (NÃO PRECISA MUDAR) ---
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarFuncionarios() {

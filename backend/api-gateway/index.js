@@ -20,7 +20,7 @@ function authMiddleware(req, res, next) {
     }
 }
 
-app.use('/auth', createProxyMiddleware({ target: 'http://ms-autenticacao:8081', changeOrigin: true }));
+app.use('/api/auth', createProxyMiddleware({ target: 'http://ms-autenticacao:8081', changeOrigin: true }));
 app.use('/usuarios', createProxyMiddleware({ target: 'http://ms-usuarios:8082', changeOrigin: true, pathRewrite: {'^/usuarios' : ''}}));
 app.use('/cursos', createProxyMiddleware({ target: 'http://ms-cursos:8083', changeOrigin: true }));
 app.use('/avaliacoes', createProxyMiddleware({ target: 'http://ms-avaliacoes:8084', changeOrigin: true }));
