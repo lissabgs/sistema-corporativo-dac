@@ -1,19 +1,19 @@
-# A 'version' foi removida, pois é obsoleta e os logs avisaram
+
 services:
   postgres:
     image: postgres:15
     container_name: backend-postgres-1
-    # Variáveis de ambiente para criar o utilizador e palavra-passe 'dac'
     environment:
       POSTGRES_USER: dac
       POSTGRES_PASSWORD: dac
-      POSTGRES_DB: db_usuarios # Cria a base de dados principal para o ms-usuarios
+      # Criamos um banco genérico "dacdb" que serve de base — os MS podem criar schemas próprios
+      POSTGRES_DB: dacdb
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   mongo:
     image: mongo:7
@@ -23,18 +23,18 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: dac
       MONGO_INITDB_ROOT_PASSWORD: dac
-      MONGO_INITDB_DATABASE: db_notificacoes # Mudado para ser mais lógico
+      MONGO_INITDB_DATABASE: db_notificacoes
     volumes:
       - mongodata:/data/db
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   api-gateway:
     build: ./api-gateway
@@ -49,108 +49,125 @@ services:
       - ms-gamificacao
       - ms-notificacoes
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   ms-autenticacao:
     build: ./ms-autenticacao
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_autenticacao
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
       SPRING_DATASOURCE_USERNAME: dac
       SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MAIL_USERNAME: arthurdiasbaptista@gmail.com
       MAIL_PASSWORD: flrw elqg tobs chjt
     depends_on:
-      - postgres # Mudado de 'mongo' para 'postgres'
+      - postgres
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   ms-usuarios:
     build: ./ms-usuarios
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_usuarios
-      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
-      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
+      - ms-autenticacao
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
+  # 📚 Microsserviço de Cursos
   ms-cursos:
     build: ./ms-cursos
     ports:
       - "8083:8083"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-cursos
-      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
-      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
+  # 📝 Microsserviço de Avaliações
   ms-avaliacoes:
     build: ./ms-avaliacoes
     ports:
       - "8084:8084"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-avaliacoes
-      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
-      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
+  # 📈 Microsserviço de Progresso
   ms-progresso:
     build: ./ms-progresso
     ports:
       - "8085:8085"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-progresso
-      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
-      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
+  # 🏆 Microsserviço de Gamificação
   ms-gamificacao:
     build: ./ms-gamificacao
     ports:
       - "8086:8086"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-gamificacao
-      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
-      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
     depends_on:
       - postgres
       - redis
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
   ms-notificacoes:
     build: ./ms-notificacoes
     ports:
       - "8087:8087"
     environment:
-      # Este está correto, pois 'ms-notificacoes' usa Mongo
-      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/ms-notificacoes?authSource=admin
+      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_notificacoes?authSource=admin
     depends_on:
       - mongo
     networks:
-      - dac-network # Adiciona o serviço à rede
+      - dac-network
 
+# Volumes persistentes
 volumes:
   pgdata:
   mongodata:
 
-# Define a rede que todos os serviços vão usar
+# Rede comum entre todos os serviços
 networks:
   dac-network:
     driver: bridge
