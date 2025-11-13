@@ -1,14 +1,19 @@
-version: '3.8'
+# A 'version' foi removida, pois é obsoleta e os logs avisaram
 services:
   postgres:
     image: postgres:15
+    container_name: backend-postgres-1
+    # Variáveis de ambiente para criar o utilizador e palavra-passe 'dac'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: dac
+      POSTGRES_PASSWORD: dac
+      POSTGRES_DB: db_usuarios # Cria a base de dados principal para o ms-usuarios
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   mongo:
     image: mongo:7
@@ -18,14 +23,18 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: dac
       MONGO_INITDB_ROOT_PASSWORD: dac
-      MONGO_INITDB_DATABASE: db_autenticacao
+      MONGO_INITDB_DATABASE: db_notificacoes # Mudado para ser mais lógico
     volumes:
       - mongodata:/data/db
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   api-gateway:
     build: ./api-gateway
@@ -39,26 +48,36 @@ services:
       - ms-progresso
       - ms-gamificacao
       - ms-notificacoes
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-autenticacao:
     build: ./ms-autenticacao
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_autenticacao
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      MAIL_USERNAME: arthurdiasbaptista@gmail.com
+      MAIL_PASSWORD: flrw elqg tobs chjt
     depends_on:
-      - mongo
+      - postgres # Mudado de 'mongo' para 'postgres'
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-usuarios:
     build: ./ms-usuarios
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_usuarios
+      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
     depends_on:
       - postgres
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-cursos:
     build: ./ms-cursos
@@ -66,10 +85,12 @@ services:
       - "8083:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-cursos
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
     depends_on:
       - postgres
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-avaliacoes:
     build: ./ms-avaliacoes
@@ -77,10 +98,12 @@ services:
       - "8084:8084"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-avaliacoes
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
     depends_on:
       - postgres
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-progresso:
     build: ./ms-progresso
@@ -88,10 +111,12 @@ services:
       - "8085:8085"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-progresso
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
     depends_on:
       - postgres
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-gamificacao:
     build: ./ms-gamificacao
@@ -99,24 +124,33 @@ services:
       - "8086:8086"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ms-gamificacao
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: dac # Corrigido para 'dac'
+      SPRING_DATASOURCE_PASSWORD: dac # Corrigido para 'dac'
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
     depends_on:
       - postgres
       - redis
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
   ms-notificacoes:
     build: ./ms-notificacoes
     ports:
       - "8087:8087"
     environment:
+      # Este está correto, pois 'ms-notificacoes' usa Mongo
       SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/ms-notificacoes?authSource=admin
     depends_on:
       - mongo
+    networks:
+      - dac-network # Adiciona o serviço à rede
 
 volumes:
   pgdata:
   mongodata:
 
+# Define a rede que todos os serviços vão usar
+networks:
+  dac-network:
+    driver: bridge

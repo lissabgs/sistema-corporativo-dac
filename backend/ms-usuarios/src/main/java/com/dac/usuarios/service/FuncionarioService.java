@@ -84,7 +84,7 @@ public class FuncionarioService {
 
         try {
             logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
-            restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+            restTemplate.postForObject("http://ms-autenticacao:8081/register-internal", authDTO, Void.class);
             logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
         } catch (Exception e) {
             logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);
@@ -136,7 +136,7 @@ public class FuncionarioService {
 
         try {
             logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
-            restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+            restTemplate.postForObject("http://ms-autenticacao:8081/register-internal", authDTO, Void.class);
             logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
         } catch (Exception e) {
             logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);

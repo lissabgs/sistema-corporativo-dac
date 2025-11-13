@@ -46,8 +46,6 @@ public class FuncionarioController {
         }
     }
 
-    // --- Endpoints Administrativos (R18) ---
-    // (No futuro, serão protegidos pelo API Gateway com perfil ADMIN)
 
     /**
      * R18: Criar (ADMINISTRADOR ou INSTRUTOR)

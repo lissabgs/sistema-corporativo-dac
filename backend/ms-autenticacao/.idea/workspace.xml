@@ -5,17 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc2242ed-dd2f-40d1-bb16-f49142e1b4d4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../api-gateway/middleware/auth.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-gateway/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../api-gateway/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/controller/HealthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/model/AuthUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/model/AuthUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/repository/AuthUserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/repository/AuthUserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/dac/autenticacao/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/AutenticacaoApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/controller/HealthController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/model/AuthUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/model/AuthUser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/repository/AuthUserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/repository/AuthUserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/dac/autenticacao/service/AuthService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/ms-autenticacao-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/controller/FuncionarioController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/src/main/java/com/dac/usuarios/service/FuncionarioService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/classes/com/dac/usuarios/controller/FuncionarioController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/classes/com/dac/usuarios/controller/FuncionarioController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/classes/com/dac/usuarios/service/FuncionarioService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/classes/com/dac/usuarios/service/FuncionarioService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-usuarios/target/ms-usuarios-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,21 +71,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "criando-login",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Arthur/Desktop/sistema-corporativo-dac/backend/ms-autenticacao",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;criando-login&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Arthur/Desktop/sistema-corporativo-dac/backend/ms-autenticacao&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

@@ -1,25 +1,33 @@
 package com.dac.autenticacao.model;
 
+// Novas importações do JPA (Jakarta Persistence)
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+// Importações do MongoDB removidas
 
-@Document(collection = "usuarios") // Coleção no MongoDB
+@Entity // Anotação do JPA
+@Table(name = "usuarios") // Nome da tabela no Postgres
 @Getter
 @Setter
 public class AuthUser {
 
     @Id
-    private String id; // MongoDB usa String como ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID auto-incremental
+    private Long id; // ID agora é Long para Postgres
 
-    private Long usuarioId; // ID do funcionário no banco 'ms-usuarios'
+    @Column(name = "usuario_id", unique = true, nullable = false)
+    private Long usuarioId; // ID do funcionário no 'ms-usuarios'
 
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(name = "senha_hash", nullable = false, length = 256)
     private String senhaHash;
 
+    @Column(name = "tipo_usuario", nullable = false, length = 50)
     private String tipoUsuario; // FUNCIONARIO, INSTRUTOR, ADMINISTRADOR
 
+    @Column(nullable = false)
     private Boolean status = true;
 }
