@@ -32,5 +32,5 @@ spring:
             enable: true
 
 jwt:
-  secret: "c2VuaGFTZWNyZXRhRG8tUHJvamV0by1EQUMtMjAyNQ=="
+  secret: "bWluaGFTZW5oYVN1cGVyU2VjcmV0YURlMzJCeXRlcyEh"
   expiration: 28800000

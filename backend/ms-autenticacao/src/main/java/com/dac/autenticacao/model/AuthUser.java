@@ -1,23 +1,21 @@
 package com.dac.autenticacao.model;
 
-// Novas importações do JPA (Jakarta Persistence)
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-// Importações do MongoDB removidas
+// import lombok.Getter; // Vamos remover a dependência do Lombok
+// import lombok.Setter; // Vamos remover a dependência do Lombok
 
-@Entity // Anotação do JPA
-@Table(name = "usuarios") // Nome da tabela no Postgres
-@Getter
-@Setter
+@Entity
+@Table(name = "usuarios")
+// @Getter // Removido
+// @Setter // Removido
 public class AuthUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID auto-incremental
-    private Long id; // ID agora é Long para Postgres
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "usuario_id", unique = true, nullable = false)
-    private Long usuarioId; // ID do funcionário no 'ms-usuarios'
+    private Long usuarioId;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -26,8 +24,58 @@ public class AuthUser {
     private String senhaHash;
 
     @Column(name = "tipo_usuario", nullable = false, length = 50)
-    private String tipoUsuario; // FUNCIONARIO, INSTRUTOR, ADMINISTRADOR
+    private String tipoUsuario;
 
     @Column(nullable = false)
     private Boolean status = true;
+
+    // --- Getters e Setters Manuais ---
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 }

@@ -1,7 +1,7 @@
 package com.dac.autenticacao.service;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+// import io.jsonwebtoken.SignatureAlgorithm; // <-- REMOVIDO
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Map;
+// import java.util.Map; // (Não estava a ser usado)
 
 @Service
 public class JwtTokenProvider {
@@ -35,7 +35,7 @@ public class JwtTokenProvider {
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .signWith(getSecretKey())
                 .compact();
     }
 

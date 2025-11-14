@@ -1,10 +1,11 @@
 com\dac\autenticacao\service\JwtTokenProvider.class
 com\dac\autenticacao\controller\AuthController.class
+com\dac\autenticacao\config\AppConfig.class
+com\dac\autenticacao\dto\AuthRegistroDTO.class
 com\dac\autenticacao\service\EmailService.class
 com\dac\autenticacao\AutenticacaoApplication.class
 com\dac\autenticacao\config\SecurityConfig.class
 com\dac\autenticacao\model\AuthUser.class
-com\dac\autenticacao\dto\AuthRegistroDTO.class
 com\dac\autenticacao\dto\LoginResponseDTO.class
 com\dac\autenticacao\repository\AuthUserRepository.class
 com\dac\autenticacao\service\AuthService.class

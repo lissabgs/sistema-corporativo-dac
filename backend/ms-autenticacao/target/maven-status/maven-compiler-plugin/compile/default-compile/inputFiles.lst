@@ -4,6 +4,7 @@ C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\ma
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\dto\AuthRegistroDTO.java
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\dto\LoginRequestDTO.java
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\dto\LoginResponseDTO.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\config\AppConfig.java
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\repository\AuthUserRepository.java
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\service\AuthService.java
 C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-autenticacao\src\main\java\com\dac\autenticacao\AutenticacaoApplication.java

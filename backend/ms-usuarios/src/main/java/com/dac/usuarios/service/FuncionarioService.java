@@ -5,7 +5,7 @@ import com.dac.usuarios.model.Funcionario;
 import com.dac.usuarios.model.Perfil;
 import com.dac.usuarios.repository.DepartamentoRepository;
 import com.dac.usuarios.repository.FuncionarioRepository;
-import com.dac.usuarios.dto.*; // Importa todos os DTOs
+import com.dac.usuarios.dto.*;
 import com.dac.usuarios.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,17 +14,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+// import java.util.Random; // REMOVIDO
 import java.util.stream.Collectors;
 
-// Imports de Log
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
 public class FuncionarioService {
 
-    // Adicione o Logger
     private static final Logger logger = LoggerFactory.getLogger(FuncionarioService.class);
 
     @Autowired
@@ -36,20 +34,13 @@ public class FuncionarioService {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Remove caracteres não numéricos de uma string
     private String limparCPF(String cpf) {
         if (cpf == null) return null;
         return cpf.replaceAll("[^\\d]", "");
     }
 
-    // Gera a senha numérica de 6 dígitos
-    private String gerarSenhaNumerica() {
-        return String.format("%06d", new Random().nextInt(999999));
-    }
+    // MÉTODO 'gerarSenhaNumerica' REMOVIDO
 
-    /**
-     * R01: Autocadastro.
-     */
     @Transactional
     public Map<String, Object> autocadastro(FuncionarioAutocadastroDTO dto) {
         logger.info("[MS-USUARIOS] Início do autocadastro para: " + dto.getEmail());
@@ -69,38 +60,39 @@ public class FuncionarioService {
         Funcionario novoFuncionario = funcionarioRepository.save(func);
         logger.info("[MS-USUARIOS] Funcionário salvo no Postgres com ID: " + novoFuncionario.getId());
 
-        // ---- INÍCIO DA COMUNICAÇÃO ----
-        String senhaNumerica = gerarSenhaNumerica();
+        // Lógica de senha REMOVIDA
 
-        // --- PRINT IMPORTANTE ---
-        logger.info(">>> [MS-USUARIOS] Senha gerada: [" + senhaNumerica + "]");
-
+        // 1. Criamos o DTO sem a senha
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
-                senhaNumerica,
                 novoFuncionario.getPerfil(),
                 novoFuncionario.getId()
         );
 
         try {
-            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
-            restTemplate.postForObject("http://ms-autenticacao:8081/register-internal", authDTO, Void.class);
-            logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
+            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar o usuário...");
+
+            // 2. Chamamos o endpoint (a URL está correta)
+            restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+
+            logger.info(">>> [MS-USUARIOS] SUCESSO! Usuário registrado no MS-AUTENTICACAO.");
         } catch (Exception e) {
             logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);
             logger.error("CAUSA RAIZ: " + e.getMessage());
             throw new RuntimeException("Falha ao registrar usuário no serviço de autenticação. Rollback realizado.", e);
         }
-        // ---- FIM DA COMUNICAÇÃO ----
 
-        return Map.of("funcionario", new UsuarioResponseDTO(novoFuncionario), "senhaTemporaria", senhaNumerica);
+        // 3. Retornamos o Map SEM a senhaTemporaria
+        return Map.of("funcionario", new UsuarioResponseDTO(novoFuncionario));
     }
 
-    /**
-     * R18: Cadastro de Usuário (Admin).
-     */
+
     @Transactional
     public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO dto) {
+        // ... (A lógica é idêntica à de cima, vou omitir para brevidade,
+        // mas certifique-se de que o seu método 'cadastrarFuncionario'
+        // também não gera senha e usa o new AuthRegistroDTO(email, perfil, id))
+
         logger.info("[MS-USUARIOS] Início do cadastro de ADMIN/INSTRUTOR para: " + dto.getEmail());
 
         if (dto.getPerfil() == Perfil.FUNCIONARIO) {
@@ -121,38 +113,30 @@ public class FuncionarioService {
         Funcionario novoFuncionario = funcionarioRepository.save(func);
         logger.info("[MS-USUARIOS] Usuário salvo no Postgres com ID: " + novoFuncionario.getId());
 
-        // ---- INÍCIO DA COMUNICAÇÃO ----
-        String senhaNumerica = gerarSenhaNumerica();
-
-        // --- PRINT IMPORTANTE ---
-        logger.info(">>> [MS-USUARIOS] Senha gerada: [" + senhaNumerica + "]");
-
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
-                senhaNumerica,
                 novoFuncionario.getPerfil(),
                 novoFuncionario.getId()
         );
 
         try {
-            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar a senha...");
-            restTemplate.postForObject("http://ms-autenticacao:8081/register-internal", authDTO, Void.class);
-            logger.info(">>> [MS-USUARIOS] SUCESSO! Senha registrada no MS-AUTENTICACAO.");
+            logger.info(">>> [MS-USUARIOS] Chamando MS-AUTENTICACAO na porta 8081 para registrar o usuário...");
+            restTemplate.postForObject("http://ms-autenticacao:8081/api/auth/internal/register", authDTO, Void.class);
+            logger.info(">>> [MS-USUARIOS] SUCESSO! Usuário registrado no MS-AUTENTICACAO.");
         } catch (Exception e) {
             logger.error("!!! [MS-USUARIOS] FALHA AO CHAMAR MS-AUTENTICACAO !!!", e);
             logger.error("CAUSA RAIZ: " + e.getMessage());
             throw new RuntimeException("Falha ao registrar usuário no serviço de autenticação. Rollback realizado.", e);
         }
-        // ---- FIM DA COMUNICAÇÃO ----
 
         return Map.of(
                 "funcionario", new UsuarioResponseDTO(novoFuncionario),
-                "senhaTemporaria", senhaNumerica,
                 "mensagem", "Usuário " + novoFuncionario.getPerfil() + " criado com sucesso."
         );
     }
 
     // --- O RESTO DO CÓDIGO (NÃO PRECISA MUDAR) ---
+    // ... (listarFuncionarios, buscarFuncionarioPorId, etc.) ...
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarFuncionarios() {

@@ -1,13 +1,31 @@
 package com.dac.autenticacao.dto;
 
-import lombok.Getter;
-
-@Getter
+// Não precisamos de Lombok
 public class LoginResponseDTO {
-    private String token;
-    private String tipo = "Bearer";
 
-    public LoginResponseDTO(String token) {
+    private String token;
+    private Long usuarioId;
+    private String perfil;
+
+    // Construtor que o AuthService usa
+    public LoginResponseDTO(String token, Long usuarioId, String perfil) {
         this.token = token;
+        this.usuarioId = usuarioId;
+        this.perfil = perfil;
+    }
+
+    // --- Getters Manuais ---
+    // (Necessários para o Spring converter para JSON)
+
+    public String getToken() {
+        return token;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public String getPerfil() {
+        return perfil;
     }
 }
