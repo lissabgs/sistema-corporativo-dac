@@ -1,3 +1,4 @@
+com\dac\usuarios\dto\AuthRegistroDTO.class
 com\dac\usuarios\dto\UsuarioResponseDTO.class
 com\dac\usuarios\controller\HealthController.class
 com\dac\usuarios\service\DepartamentoService.class

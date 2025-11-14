@@ -1,23 +1,31 @@
 package com.dac.usuarios.controller;
 
+// DTOs
 import com.dac.usuarios.dto.FuncionarioAutocadastroDTO;
 import com.dac.usuarios.dto.UsuarioCadastroDTO;
 import com.dac.usuarios.dto.UsuarioResponseDTO;
 import com.dac.usuarios.dto.UsuarioUpdateDTO;
+
+// Exception
 import com.dac.usuarios.exception.ResourceNotFoundException;
-import com.dac.usuarios.model.Funcionario;
+
+// Service
 import com.dac.usuarios.service.FuncionarioService;
+
+// Validation
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/funcionarios") // Rota base para os endpoints
+@RequestMapping("/api/funcionarios")
 public class FuncionarioController {
 
     @Autowired
@@ -29,14 +37,14 @@ public class FuncionarioController {
     @PostMapping("/autocadastro")
     public ResponseEntity<?> autocadastro(@Valid @RequestBody FuncionarioAutocadastroDTO dto) {
         try {
-            Funcionario novoFuncionario = usuarioService.autocadastro(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioResponseDTO(novoFuncionario));
+            // Atualizado para receber o Map com a senha
+            Map<String, Object> response = usuarioService.autocadastro(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("erro", e.getMessage()));
         }
     }
-
 
 
     /**
@@ -45,6 +53,7 @@ public class FuncionarioController {
     @PostMapping
     public ResponseEntity<?> cadastrarFuncionario(@Valid @RequestBody UsuarioCadastroDTO cadastroDTO) {
         try {
+            // Atualizado para receber o Map com a senha
             Map<String, Object> response = usuarioService.cadastrarFuncionario(cadastroDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {

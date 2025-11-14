@@ -1,34 +1,52 @@
 const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-
+const { createProxyMiddleware, fixRequestBody } = require('http-proxy-middleware');
 const app = express();
-app.use(cors());
+const port = 8080; // Porta principal do Gateway
+
+// 1. Importe o middleware de autenticação (vamos criá-lo a seguir)
+const authMiddleware = require('./middleware/auth');
+
 app.use(express.json());
 
-// Simple auth middleware (stub) - in prod use ms-autenticacao to validate
-function authMiddleware(req, res, next) {
-    const auth = req.headers['authorization'];
-    if (!auth) return res.status(401).json({error: 'No token'});
-    const token = auth.split(' ')[1];
-    try {
-        jwt.verify(token, 'secret');
-        next();
-    } catch (e) {
-        return res.status(401).json({error: 'Invalid token'});
+// Rota pública para o front-end (ex: /login)
+app.use('/auth', createProxyMiddleware({
+    target: 'http://ms-autenticacao:8081', // Nome do serviço no docker-compose
+    changeOrigin: true,
+    pathRewrite: { '^/auth': '/' }, // Remove /auth da URL
+    onProxyReq: fixRequestBody, // Corrige o body do POST
+}));
+
+// Rota para usuários, que precisa de lógica
+app.use('/usuarios', (req, res, next) => {
+    // Rota /autocadastro é PÚBLICA, deixamos passar
+    if (req.path === '/autocadastro' && req.method === 'POST') {
+        return next(); // Pula a verificação de token
     }
-}
 
-app.use('/auth', createProxyMiddleware({ target: 'http://ms-autenticacao:8081', changeOrigin: true }));
-app.use('/usuarios', createProxyMiddleware({ target: 'http://ms-usuarios:8082', changeOrigin: true, pathRewrite: {'^/usuarios' : ''}}));
-app.use('/cursos', createProxyMiddleware({ target: 'http://ms-cursos:8083', changeOrigin: true }));
-app.use('/avaliacoes', createProxyMiddleware({ target: 'http://ms-avaliacoes:8084', changeOrigin: true }));
-app.use('/progresso', authMiddleware, createProxyMiddleware({ target: 'http://ms-progresso:8085', changeOrigin: true }));
-app.use('/gamificacao', authMiddleware, createProxyMiddleware({ target: 'http://ms-gamificacao:8086', changeOrigin: true }));
-app.use('/notificacoes', authMiddleware, createProxyMiddleware({ target: 'http://ms-notificacoes:8087', changeOrigin: true }));
+    // Todas as outras rotas de /usuarios são PROTEGIDAS
+    return authMiddleware(req, res, next);
+},
+createProxyMiddleware({
+    target: 'http://ms-usuarios:8082', // Nome do serviço no docker-compose
+    changeOrigin: true,
 
-app.get('/', (req, res) => res.json({ status: 'API Gateway', services: Object.keys(require('./package.json').dependencies) }));
+    // --- ESTA É A MUDANÇA ---
+    // Remove /usuarios da URL e substitui por /api/funcionarios
+    pathRewrite: { '^/usuarios': '/api/funcionarios' },
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log('API Gateway running on', port));
+    onProxyReq: fixRequestBody,
+}));
+
+/*
+// Exemplo de como adicionar o MS-CURSOS (100% protegido)
+app.use('/cursos', authMiddleware, createProxyMiddleware({
+    target: 'http://ms-cursos:8083',
+    changeOrigin: true,
+    pathRewrite: { '^/cursos': '/' },
+    onProxyReq: fixRequestBody,
+}));
+*/
+
+app.listen(port, () => {
+    console.log(`API Gateway rodando na porta ${port}`);
+});
