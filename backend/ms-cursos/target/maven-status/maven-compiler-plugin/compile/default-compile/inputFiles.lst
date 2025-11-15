@@ -1,2 +1,8 @@
-C:\Users\Arthur\Desktop\backend_microservices\ms-cursos\src\main\java\com\dac\cursos\controller\HealthController.java
-C:\Users\Arthur\Desktop\backend_microservices\ms-cursos\src\main\java\com\dac\cursos\CursosApplication.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\CursosApplication.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\dto\AulaDTO.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\controller\CursoController.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\service\CursoService.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\dto\CursoRequestDTO.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\repository\CursoRepository.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\model\Aula.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-cursos\src\main\java\com\dac\cursos\model\Curso.java

@@ -1,2 +1,8 @@
 com\dac\cursos\CursosApplication.class
-com\dac\cursos\controller\HealthController.class
+com\dac\cursos\model\Aula.class
+com\dac\cursos\model\Curso.class
+com\dac\cursos\service\CursoService.class
+com\dac\cursos\repository\CursoRepository.class
+com\dac\cursos\dto\AulaDTO.class
+com\dac\cursos\dto\CursoRequestDTO.class
+com\dac\cursos\controller\CursoController.class

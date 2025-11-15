@@ -1,2 +1,7 @@
-C:\Users\Arthur\Desktop\backend_microservices\ms-progresso\src\main\java\com\dac\progresso\ProgressoApplication.java
-C:\Users\Arthur\Desktop\backend_microservices\ms-progresso\src\main\java\com\dac\progresso\controller\HealthController.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\model\Progresso.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\config\RabbitMQConfig.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\ProgressoApplication.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\repository\ProgressoRepository.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\controller\ProgressoController.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\service\ProgressoService.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-progresso\src\main\java\com\dac\progresso\dto\ConcluirAulaRequestDTO.java

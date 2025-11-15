@@ -1,2 +1,5 @@
-C:\Users\Arthur\Desktop\backend_microservices\ms-gamificacao\src\main\java\com\dac\gamificacao\GamificacaoApplication.java
-C:\Users\Arthur\Desktop\backend_microservices\ms-gamificacao\src\main\java\com\dac\gamificacao\controller\HealthController.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-gamificacao\src\main\java\com\dac\gamificacao\config\RabbitMQConfig.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-gamificacao\src\main\java\com\dac\gamificacao\service\XpListenerService.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-gamificacao\src\main\java\com\dac\gamificacao\model\Pontuacao.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-gamificacao\src\main\java\com\dac\gamificacao\repository\PontuacaoRepository.java
+C:\Users\Arthur\Documents\sistema-corporativo-dac\backend\ms-gamificacao\src\main\java\com\dac\gamificacao\GamificacaoApplication.java

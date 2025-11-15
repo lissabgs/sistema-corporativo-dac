@@ -1,14 +1,18 @@
 server:
-  port: 8085
+  port: 8084
 
 spring:
   application:
     name: ms-progresso
-  datasource:
-    url: jdbc:postgresql://postgres:5432/ms-progresso
-    username: postgres
-    password: postgres
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+
+  # Configuração do MongoDB
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/db_progresso
+
+  # Configuração do RabbitMQ
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: dac
+    password: dac

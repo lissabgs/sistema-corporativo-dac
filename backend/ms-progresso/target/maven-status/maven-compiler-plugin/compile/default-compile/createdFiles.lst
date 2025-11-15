@@ -1,2 +1,7 @@
-com\dac\progresso\controller\HealthController.class
+com\dac\progresso\service\ProgressoService.class
+com\dac\progresso\model\Progresso.class
+com\dac\progresso\service\ProgressoService$XpMessageDTO.class
+com\dac\progresso\dto\ConcluirAulaRequestDTO.class
+com\dac\progresso\repository\ProgressoRepository.class
+com\dac\progresso\config\RabbitMQConfig.class
 com\dac\progresso\ProgressoApplication.class
