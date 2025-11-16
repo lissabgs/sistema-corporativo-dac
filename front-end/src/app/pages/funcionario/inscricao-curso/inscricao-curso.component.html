@@ -1,0 +1,46 @@
+<mat-card class="curso-card">
+  <h2>{{ curso.titulo }}</h2>
+
+  <p>{{ curso.descricao }}</p>
+
+  <p><strong>Duração:</strong> {{ curso.duracao }}h</p>
+  <p><strong>Instrutor:</strong> {{ curso.instrutor }}</p>
+  <p><strong>Dificuldade:</strong> {{ curso.dificuldade }}</p>
+
+  <div class="xp">
+    <mat-icon>stars</mat-icon>
+    {{ curso.xp }} XP
+  </div>
+
+  <!-- Quando NÃO atende -->
+  <div *ngIf="!atendeRequisitos" class="alerta">
+    <mat-icon>warning</mat-icon>
+    Você ainda não atende os pré-requisitos deste curso.
+  </div>
+
+  <!-- Trilha sugerida -->
+  <div *ngIf="!atendeRequisitos">
+    <h3>Trilha Sugerida:</h3>
+    <ul>
+      <li *ngFor="let item of curso.trilhaSugerida">
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Botão de inscrição -->
+  <button
+    *ngIf="atendeRequisitos && !inscrito"
+    mat-raised-button
+    color="primary"
+    (click)="inscrever()">
+
+    Inscrever-se
+  </button>
+
+  <!-- Feedback -->
+  <div *ngIf="inscrito" class="sucesso">
+    <mat-icon>check_circle</mat-icon>
+    Inscrição realizada! Curso iniciado.
+  </div>
+</mat-card>

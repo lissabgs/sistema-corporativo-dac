@@ -1,0 +1,102 @@
+/* APLICA A MESMA FONTE DO DASHBOARD */
+:host {
+  display: block;
+  font-family: "Roboto", "Segoe UI", sans-serif !important;
+  color: #1f1f1f;
+}
+
+/* CARD PRINCIPAL DOS FILTROS */
+.filtros {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+/* GRID DOS FILTROS */
+.grid-filtros {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+/* BOTÃO LIMPAR */
+button[color="warn"] {
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+/* LISTA DE CURSOS */
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+}
+
+/* CARD INDIVIDUAL DO CURSO */
+.curso-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* CABEÇALHO DO CURSO */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* ESTILO DOS TÍTULOS */
+h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* CHIPS DE CATEGORIA E DIFICULDADE */
+mat-chip {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* BLOCO DO XP */
+.xp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+
+.xp mat-icon {
+  font-size: 20px;
+}
+
+/* AVISO DE PRÉ-REQUISITO */
+.alerta {
+  color: #d32f2f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+
+/* BOTÃO DETALHES */
+button[mat-raised-button] {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+}
