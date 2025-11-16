@@ -1,0 +1,156 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="app-title">Dashboard</span>
+
+  <span class="spacer"></span>
+
+  <!-- Menu de Operações -->
+  <button mat-button [matMenuTriggerFor]="opsMenu">
+    Operações
+    <mat-icon>expand_more</mat-icon>
+  </button>
+  <mat-menu #opsMenu="matMenu">
+    <button mat-menu-item (click)="iniciarCurso()">
+      <mat-icon>play_circle</mat-icon>
+      <span>Iniciar curso</span>
+    </button>
+    <button mat-menu-item (click)="continuarCurso()">
+      <mat-icon>play_arrow</mat-icon>
+      <span>Continuar curso</span>
+    </button>
+    <button mat-menu-item (click)="verCertificados()">
+      <mat-icon>workspace_premium</mat-icon>
+      <span>Meus certificados</span>
+    </button>
+    <button mat-menu-item (click)="abrirLojaBadges()">
+      <mat-icon>emoji_events</mat-icon>
+      <span>Loja de badges</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<div class="page">
+  <!-- Header: XP, Nível, Próximo Badge -->
+  <section class="grid header-grid">
+    <mat-card class="card kpi">
+      <div class="kpi-header">
+        <mat-icon>bolt</mat-icon>
+        <span>XP Atual</span>
+      </div>
+      <div class="kpi-value">{{ xpAtual | number }}</div>
+      <mat-progress-bar mode="determinate" [value]="progressoNivel"></mat-progress-bar>
+      <div class="kpi-foot">
+        {{ xpAtual }} / {{ xpParaProximoNivel }} XP para nível {{ nivel + 1 }}
+      </div>
+    </mat-card>
+
+    <mat-card class="card kpi">
+      <div class="kpi-header">
+        <mat-icon>military_tech</mat-icon>
+        <span>Nível</span>
+      </div>
+      <div class="kpi-value">Lvl {{ nivel }}</div>
+      <div class="kpi-foot">Próximo badge: <strong>{{ proximoBadge.nome }}</strong></div>
+      <div class="badge-row">
+        <mat-chip-set>
+          <mat-chip color="primary" class="selected-chip">
+            <mat-icon>emoji_events</mat-icon>
+            {{ proximoBadge.nome }}
+          </mat-chip>
+          <mat-chip>{{ proximoBadge.requisitoXp }} XP</mat-chip>
+        </mat-chip-set>
+      </div>
+    </mat-card>
+
+    <mat-card class="card kpi">
+      <div class="kpi-header">
+        <mat-icon>percent</mat-icon>
+        <span>Progresso</span>
+      </div>
+      <div class="kpi-value">{{ progressoNivel | number : '1.0-0' }}%</div>
+      <mat-progress-bar mode="determinate" [value]="progressoNivel"></mat-progress-bar>
+      <div class="kpi-foot">Rumo ao próximo nível!</div>
+    </mat-card>
+  </section>
+
+  <!-- Cursos -->
+  <section class="grid courses-grid">
+    <mat-card class="card">
+      <mat-card-title>Cursos em andamento</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-list>
+        <mat-list-item *ngFor="let c of cursosEmAndamento">
+          <mat-icon matListItemIcon>play_circle</mat-icon>
+          <div matListItemTitle>{{ c.titulo }}</div>
+          <div matListItemLine class="muted">{{ c.categoria }}</div>
+          <div class="row-end">
+            <span class="pct">{{ c.progresso }}%</span>
+            <mat-progress-bar mode="determinate" [value]="c.progresso"></mat-progress-bar>
+          </div>
+        </mat-list-item>
+      </mat-list>
+      <button mat-stroked-button color="primary" class="w-full" (click)="continuarCurso()">Continuar</button>
+    </mat-card>
+
+    <mat-card class="card">
+      <mat-card-title>Cursos concluídos</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-list>
+        <mat-list-item *ngFor="let c of cursosConcluidos">
+          <mat-icon color="primary" matListItemIcon>check_circle</mat-icon>
+          <div matListItemTitle>{{ c.titulo }}</div>
+          <div matListItemLine class="muted">{{ c.categoria }}</div>
+          <button mat-button color="primary" (click)="baixarCertificado(c)">
+            <mat-icon>workspace_premium</mat-icon>&nbsp;Certificado
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+
+    <mat-card class="card">
+      <mat-card-title>Cursos disponíveis</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-list>
+        <mat-list-item *ngFor="let c of cursosDisponiveis">
+          <mat-icon matListItemIcon>school</mat-icon>
+          <div matListItemTitle>{{ c.titulo }}</div>
+          <div matListItemLine class="muted">{{ c.categoria }}</div>
+          <button mat-raised-button color="primary" (click)="iniciarCurso(c)">Iniciar</button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </section>
+
+  <!-- Ranking + Timeline -->
+  <section class="grid bottom-grid">
+    <mat-card class="card">
+      <mat-card-title>Ranking do Departamento</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-list>
+        <mat-list-item *ngFor="let r of ranking; let i = index">
+          <div matListItemIcon class="rank-badge">{{ i + 1 }}</div>
+          <div matListItemTitle>{{ r.nome }}</div>
+          <div matListItemLine class="muted">{{ r.cargo }}</div>
+          <div class="xp">{{ r.xp | number }} XP</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+
+    <mat-card class="card">
+      <mat-card-title>Últimas atividades</mat-card-title>
+      <mat-divider></mat-divider>
+      <mat-list>
+        <mat-list-item *ngFor="let a of atividades">
+          <mat-icon matListItemIcon>{{ a.icone }}</mat-icon>
+          <div matListItemTitle>{{ a.titulo }}</div>
+          <div matListItemLine class="muted">{{ a.data | date:'short' }}</div>
+          <div class="xp" *ngIf="a.xpDelta !== 0">
+            <mat-chip [color]="a.xpDelta >= 0 ? 'primary' : ''"
+                      [class.selected-chip]="a.xpDelta >= 0">
+              {{ a.xpDelta >= 0 ? '+' : ''}}{{ a.xpDelta }} XP
+            </mat-chip>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </section>
+</div>
