@@ -1,0 +1,6 @@
+com\dac\gamificacao\service\XpListenerService.class
+com\dac\gamificacao\repository\PontuacaoRepository.class
+com\dac\gamificacao\model\Pontuacao.class
+com\dac\gamificacao\config\RabbitMQConfig.class
+com\dac\gamificacao\GamificacaoApplication.class
+com\dac\gamificacao\service\XpListenerService$XpMessageDTO.class
