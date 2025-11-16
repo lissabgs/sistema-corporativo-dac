@@ -1,0 +1,118 @@
+################################################################################
+# SISTEMA CORPORATIVO DAC - .gitignore completo
+################################################################################
+
+##############################
+# SISTEMAS OPERACIONAIS
+##############################
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+##############################
+# AMBIENTES / VARIÁVEIS
+##############################
+.env
+.env.local
+.env.*.local
+
+##############################
+# LOGS
+##############################
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+##############################
+# JAVA / SPRING BOOT
+##############################
+# Arquivos de build
+target/
+build/
+out/
+
+# Arquivos compilados
+*.class
+
+# Empacotamentos
+*.jar
+*.war
+*.ear
+
+# Arquivos temporários
+hs_err_pid*
+replay_pid*
+
+##############################
+# NODE.JS / API-GATEWAY
+##############################
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# Build tools
+dist/
+.cache/
+
+##############################
+# IDE / EDITORES
+##############################
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VSCode
+.vscode/
+.history/
+
+##############################
+# DOCKER
+##############################
+*.pid
+docker-data/
+docker-compose.override.yml
+
+##############################
+# TESTES
+##############################
+coverage/
+*.lcov
+.karate-tmp/
+
+##############################
+# BANCO DE DADOS
+##############################
+*.db
+*.sqlite
+*.sql
+*.pgsql
+pgdata/
+mongodata/
+redisdata/
+
+##############################
+# TEMPORÁRIOS E ARQUIVOS DO SISTEMA
+##############################
+*.tmp
+*.bak
+*.swp
+*.swo
+
+##############################
+# PYTHON (caso use scripts auxiliares)
+##############################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
