@@ -8,7 +8,11 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>CPF</mat-label>
-            <input matInput formControlName="cpf" placeholder="000.000.000-00" />
+            <input matInput 
+                   formControlName="cpf" 
+                   placeholder="000.000.000-00" 
+                   maxlength="14"
+                   (input)="formatarCPF($event)" />
             <mat-error *ngIf="formCadastro.get('cpf')?.invalid && formCadastro.get('cpf')?.touched">
               CPF é obrigatório
             </mat-error>

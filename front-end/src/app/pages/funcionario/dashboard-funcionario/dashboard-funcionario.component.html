@@ -3,7 +3,6 @@
 
   <span class="spacer"></span>
 
-  <!-- Menu de Operações -->
   <button mat-button [matMenuTriggerFor]="opsMenu">
     Operações
     <mat-icon>expand_more</mat-icon>
@@ -26,10 +25,19 @@
       <span>Loja de badges</span>
     </button>
   </mat-menu>
+
+  <button mat-icon-button [matMenuTriggerFor]="userMenu" title="Opções de Usuário">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 
 <div class="page">
-  <!-- Header: XP, Nível, Próximo Badge -->
   <section class="grid header-grid">
     <mat-card class="card kpi">
       <div class="kpi-header">
@@ -72,7 +80,6 @@
     </mat-card>
   </section>
 
-  <!-- Cursos -->
   <section class="grid courses-grid">
     <mat-card class="card">
       <mat-card-title>Cursos em andamento</mat-card-title>
@@ -120,7 +127,6 @@
     </mat-card>
   </section>
 
-  <!-- Ranking + Timeline -->
   <section class="grid bottom-grid">
     <mat-card class="card">
       <mat-card-title>Ranking do Departamento</mat-card-title>
