@@ -51,7 +51,7 @@ export const routes: Routes = [
     canActivate: [roleGuard(INSTRUCTOR_OR_ADMIN_ROLES)] 
   },
   { 
-    path: 'gerenciar-cursos', 
+    path: 'gerenciar-cursosgerenciar-cursos', 
     component: GerenciarCursosComponent,
     canActivate: [roleGuard(INSTRUCTOR_OR_ADMIN_ROLES)]
   },
