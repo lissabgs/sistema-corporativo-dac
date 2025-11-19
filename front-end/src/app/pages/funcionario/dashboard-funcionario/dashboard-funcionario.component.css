@@ -1,107 +1,13 @@
 :host {
   display: block;
   font-family: 'Roboto', sans-serif;
-  background-color: #f9fafb;
-  color: #1f2937;
-  min-height: 100vh;
 }
 
-/* ---------- NOVO: CONTAINER PRINCIPAL (Sidebar + Conteúdo) ---------- */
-.main-container {
-  display: flex;
-  min-height: 100vh;
+.dashboard-content {
+  padding: 24px; /* Espaçamento interno */
 }
 
-/* ---------- NOVO: SIDEBAR (MENU LATERAL) ---------- */
-.sidebar {
-  width: 250px;
-  min-width: 250px;
-  padding: 0; /* Removido padding interno do card */
-  border-radius: 0; 
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column; /* Organiza itens em coluna */
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
-  color: #3f51b5;
-}
-
-.app-title {
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.menu-icon {
-  margin-right: 8px;
-  font-size: 20px;
-  cursor: pointer;
-  display: none; /* Esconder por padrão no desktop */
-}
-
-.user-profile {
-  text-align: center;
-  padding: 16px;
-  margin-bottom: 20px;
-}
-
-.profile-icon {
-  font-size: 64px !important;
-  width: 64px !important;
-  height: 64px !important;
-  color: #3f51b5;
-}
-
-.nav-list {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1; /* Permite que ocupe o espaço restante */
-  padding: 8px 0;
-}
-
-.nav-list a {
-  padding: 12px 20px !important; /* Ajuste para o padding mat-list-item */
-  color: #1f2937;
-  text-decoration: none;
-  font-weight: 500;
-  border-left: 4px solid transparent;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.nav-list a:hover {
-  background-color: #f0f2f5;
-}
-
-.nav-list a.active-link {
-  background-color: #e8eaf6; 
-  border-left: 4px solid #3f51b5;
-  color: #3f51b5;
-  font-weight: 600;
-}
-
-.logout-link {
-  margin-top: auto; /* Empurra para o final */
-  color: #d32f2f !important;
-  border-left: 4px solid transparent !important;
-}
-.logout-link:hover {
-    background-color: #fce4e4;
-}
-
-/* ---------- CONTEÚDO PRINCIPAL ---------- */
-.content-area {
-  flex-grow: 1;
-  padding: 24px;
-}
-
+/* Grid Layouts */
 .grid {
   display: grid;
   gap: 20px;
@@ -125,16 +31,10 @@
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   background-color: #fff;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* ---------- KPI CARDS (ajustado conforme o print) ---------- */
+/* KPI Styles */
 .kpi .kpi-header {
   display: flex;
   align-items: center;
@@ -161,63 +61,11 @@ mat-progress-bar {
   height: 6px;
 }
 
-/* ... (Resto dos estilos de lista, rank, xp, etc. mantidos e ajustados) ... */
-
-/* ---------- RESPONSIVIDADE (Menu Lateral em Mobile) ---------- */
+/* Responsividade */
 @media (max-width: 1024px) {
-  .main-container {
-    flex-direction: column; /* Stacka sidebar e conteúdo */
-  }
-
-  .sidebar {
-    width: 100%;
-    min-width: unset;
-    height: auto;
-    position: static;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .header {
-    justify-content: flex-start;
-  }
-  .menu-icon {
-    display: inline-flex;
-  }
-
-  .user-profile {
-    display: none; /* Opcional: esconde o perfil em telas pequenas */
-  }
-  
-  .nav-list {
-    flex-direction: row; 
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 0 10px;
-  }
-  
-  .nav-list a {
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 10px !important;
-  }
-
-  .nav-list a.active-link {
-    border-left: none;
-    border-bottom: 3px solid #3f51b5;
-    background-color: transparent;
-  }
-
-  .logout-link {
-    display: none; /* Movido para o menu no mobile (seria uma barra de navegação responsiva) */
-  }
-
   .header-grid,
   .courses-grid,
   .bottom-grid {
     grid-template-columns: 1fr;
-  }
-
-  .content-area {
-    padding: 16px;
   }
 }

@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  width: 260px; /* Largura fixa da sidebar */
+  font-family: 'Roboto', sans-serif;
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between; /* Empurra o bottom-section para baixo */
+}
+
+/* --- Topo --- */
+.app-header {
+  padding: 24px 20px 10px 20px;
+}
+
+.app-header h2 {
+  color: #3f51b5; /* Azul do Material */
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+/* --- Perfil (Quadrado visual) --- */
+.profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #bdbdbd; /* Cinza para o fundo do avatar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar-circle mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #fff;
+}
+
+.role-badge {
+  background-color: #e8eaf6; /* Azul bem claro */
+  color: #3f51b5;
+  padding: 4px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Menu --- */
+.nav-menu a {
+  color: #424242;
+}
+
+.nav-menu .active-link {
+  color: #3f51b5;
+  background-color: #f5f5f5;
+  border-right: 3px solid #3f51b5;
+}
+
+.menu-divider {
+  margin: 10px 0;
+}
+
+/* --- Botão Sair --- */
+.bottom-section {
+  padding-bottom: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.logout-item {
+  color: #616161;
+}
+
+.logout-item:hover {
+  background-color: #ffebee; /* Vermelho claro ao passar o mouse */
+  color: #d32f2f;
+}

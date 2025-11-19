@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterModule } from '@angular/router'; // 1. Importe RouterModule
+import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 
@@ -22,7 +22,7 @@ import { AuthService } from '../../services/auth.service';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    RouterModule // 2. Adicione RouterModule aqui
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -52,7 +52,15 @@ export class LoginComponent {
     this.authService.login(this.formLogin.value).subscribe({
       next: (response) => {
         console.log('Login bem-sucedido', response);
-        this.router.navigate(['/dashboard-funcionario']);
+        
+        // --- LÓGICA DE REDIRECIONAMENTO BASEADA NO PERFIL ---
+        const perfil = response.perfil;
+
+        if (perfil === 'INSTRUTOR' || perfil === 'ADMINISTRADOR') {
+          this.router.navigate(['/dashboard-instrutor']);
+        } else {
+          this.router.navigate(['/dashboard-funcionario']);
+        }
       },
       error: (err) => {
         console.error('Erro no login', err);

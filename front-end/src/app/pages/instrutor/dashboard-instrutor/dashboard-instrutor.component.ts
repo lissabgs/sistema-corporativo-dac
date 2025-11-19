@@ -1,85 +1,95 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
+// Removemos MatToolbarModule e MatMenuModule daqui, se ainda estivessem
+// MatToolbarModule, MatMenuModule, // <- Remova estas linhas se existirem
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard-instrutor',
   standalone: true,
   imports: [
     CommonModule,
-    MatToolbarModule,
+    MatCardModule,
     MatIconModule,
-    MatButtonModule,
-    MatMenuModule
+    MatButtonModule
   ],
-  // Usando template e styles inline para simplificar este componente
   template: `
-    <mat-toolbar color="primary" class="toolbar">
-      <span class="app-title">Dashboard Instrutor</span>
-      <span class="spacer"></span>
-
-      <button mat-button [matMenuTriggerFor]="opsMenu">
-        Operações
-        <mat-icon>expand_more</mat-icon>
-      </button>
-      <mat-menu #opsMenu="matMenu">
-        <button mat-menu-item (click)="gerenciarCursos()">
-          <mat-icon>school</mat-icon>
-          <span>Gerenciar Cursos</span>
-        </button>
-      </mat-menu>
-
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" title="Opções de Usuário">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
-    </mat-toolbar>
-
-    <div class="page" style="padding: 24px; min-height: calc(100vh - 64px); background-color: white;">
+    <div class="page-container">
       <h1>Bem-vindo, Instrutor!</h1>
+      
+      <p class="subtitle">Painel de gestão acadêmica</p>
+
+      <div class="actions-grid">
+        <mat-card class="action-card" (click)="gerenciarCursos()">
+          <mat-icon color="primary">school</mat-icon>
+          <h3>Gerenciar Cursos</h3>
+          <p>Crie, edite e organize os cursos da plataforma.</p>
+        </mat-card>
+
+        <mat-card class="action-card">
+          <mat-icon color="accent">analytics</mat-icon>
+          <h3>Relatórios</h3>
+          <p>Visualize o desempenho dos alunos.</p>
+        </mat-card>
+      </div>
     </div>
   `,
   styles: [
     `
-      .toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background-color: #5c6bc0 !important;
-        color: #fff;
+      .page-container {
+        padding: 24px;
       }
-      .app-title {
+      
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+        color: #1f2937;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        margin-bottom: 32px;
+      }
+
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 24px;
+      }
+
+      .action-card {
+        padding: 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+
+      .action-card mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+      }
+
+      .action-card h3 {
+        margin: 0 0 8px 0;
         font-weight: 600;
-        font-size: 1.3rem;
-      }
-      .spacer {
-        flex: 1;
       }
     `
   ]
 })
 export class DashboardInstrutorComponent {
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
+  constructor(private router: Router) {}
 
   gerenciarCursos() {
     this.router.navigate(['/gerenciar-cursos']);
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

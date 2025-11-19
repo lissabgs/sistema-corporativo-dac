@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,26 +17,33 @@ import { Router } from '@angular/router';
   templateUrl: './acesso-negado.component.html',
   styleUrls: ['./acesso-negado.component.css']
 })
-export class AcessoNegadoComponent {
-  constructor(private router: Router) {}
+export class AcessoNegadoComponent implements OnInit {
+  usuarioPerfil: string = 'Desconhecido';
 
-  /**
-   * Redireciona para o dashboard apropriado com base no perfil do usuário logado.
-   */
-  voltarDashboard() {
-    const perfil = localStorage.getItem('usuarioPerfil');
-    
-    if (perfil === 'FUNCIONARIO') {
-      this.router.navigate(['/dashboard-funcionario']);
-    } else if (perfil === 'INSTRUTOR') {
-      this.router.navigate(['/dashboard-instrutor']);
-    } else {
-      this.router.navigate(['/login']);
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  ngOnInit() {
+    // Só acessa o localStorage se estiver no navegador
+    if (isPlatformBrowser(this.platformId)) {
+      this.usuarioPerfil = localStorage.getItem('usuarioPerfil') || 'Desconhecido';
     }
   }
 
-  // Permite acesso ao localStorage no template
-  get localStorage() {
-    return localStorage;
+  voltarDashboard() {
+    // Verifica plataforma também aqui para segurança, embora o click seja sempre no browser
+    if (isPlatformBrowser(this.platformId)) {
+      const perfil = localStorage.getItem('usuarioPerfil');
+      
+      if (perfil === 'FUNCIONARIO') {
+        this.router.navigate(['/dashboard-funcionario']);
+      } else if (perfil === 'INSTRUTOR' || perfil === 'ADMINISTRADOR') {
+        this.router.navigate(['/dashboard-instrutor']);
+      } else {
+        this.router.navigate(['/login']);
+      }
+    }
   }
 }
