@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
-// Interface para a resposta do login, baseada no seu LoginResponseDTO
 export interface LoginResponse {
   token: string;
   usuarioId: number;
@@ -14,7 +13,6 @@ export interface LoginResponse {
 })
 export class AuthService {
 
-  // A URL aponta para o API Gateway (porta 8080), que redireciona para o serviço
   private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(private http: HttpClient) { }
@@ -29,15 +27,11 @@ export class AuthService {
     );
   }
 
-  /**
-   * (Opcional) Método para fazer logout
-   */
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('usuarioId');
     localStorage.removeItem('usuarioPerfil');
   }
-
 
   isLoggedIn(): boolean {
     return !!localStorage.getItem('authToken');

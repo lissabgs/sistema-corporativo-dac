@@ -1,0 +1,48 @@
+/* Basic styling for the Course Management Page */
+.page-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.manager-card {
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+mat-list-item {
+  height: auto !important; /* Permite que o item se ajuste ao conteúdo */
+  padding: 10px 0;
+  align-items: center;
+}
+
+.muted-info {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+mat-list-item button {
+  margin-left: 8px;
+}
+
+/* Garante espaçamento entre as colunas */
+mat-list-item .mat-list-item-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}

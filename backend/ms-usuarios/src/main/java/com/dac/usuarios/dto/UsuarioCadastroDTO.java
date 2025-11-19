@@ -29,4 +29,6 @@ public class UsuarioCadastroDTO {
 
     @NotNull(message = "Perfil é obrigatório (ADMINISTRADOR ou INSTRUTOR)")
     private Perfil perfil;
+
+    private String senha;
 }

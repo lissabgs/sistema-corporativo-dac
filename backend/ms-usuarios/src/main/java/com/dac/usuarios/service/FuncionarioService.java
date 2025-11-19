@@ -62,11 +62,12 @@ public class FuncionarioService {
 
         // Lógica de senha REMOVIDA
 
-        // 1. Criamos o DTO sem a senha
+        // 1. Criamos o DTO para o MS-Autenticacao. Senha é NULL, pois será gerada lá.
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
                 novoFuncionario.getPerfil(),
-                novoFuncionario.getId()
+                novoFuncionario.getId(),
+                null // <--- CORREÇÃO: Passamos NULL como 4º argumento (senha)
         );
 
         try {
@@ -89,9 +90,6 @@ public class FuncionarioService {
 
     @Transactional
     public Map<String, Object> cadastrarFuncionario(UsuarioCadastroDTO dto) {
-        // ... (A lógica é idêntica à de cima, vou omitir para brevidade,
-        // mas certifique-se de que o seu método 'cadastrarFuncionario'
-        // também não gera senha e usa o new AuthRegistroDTO(email, perfil, id))
 
         logger.info("[MS-USUARIOS] Início do cadastro de ADMIN/INSTRUTOR para: " + dto.getEmail());
 
@@ -116,7 +114,8 @@ public class FuncionarioService {
         AuthRegistroDTO authDTO = new AuthRegistroDTO(
                 novoFuncionario.getEmail(),
                 novoFuncionario.getPerfil(),
-                novoFuncionario.getId()
+                novoFuncionario.getId(),
+                dto.getSenha() // Este é o DTO que recebe "1234" do DataInitializer
         );
 
         try {
@@ -136,8 +135,6 @@ public class FuncionarioService {
     }
 
     // --- O RESTO DO CÓDIGO (NÃO PRECISA MUDAR) ---
-    // ... (listarFuncionarios, buscarFuncionarioPorId, etc.) ...
-
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarFuncionarios() {
         return funcionarioRepository.findAll()

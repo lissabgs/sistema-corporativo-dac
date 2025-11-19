@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-// Imports de Log (NOVOS)
+// Imports de Log
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,24 +55,29 @@ public class AuthService implements UserDetailsService {
     }
 
     /**
-     * Gera a senha aqui, salva, e envia por e-mail.
+     * Usa a senha fornecida (Admin/Instrutor) ou gera uma aleatória (Autocadastro).
      */
     public void registerInternal(AuthRegistroDTO dto) {
         if (authUserRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado.");
         }
 
-        // 1. Gera a senha aleatória
-        String senha = gerarSenhaAleatoriaNumerica(6);
+        String senha;
 
-        // 2. *** A LINHA QUE VOCÊ PEDIU ***
-        // Isto vai aparecer no log do 'docker compose'
-        logger.info(">>> [MS-AUTENTICACAO] Senha temporária gerada para " + dto.getEmail() + ": [" + senha + "]");
+        // NOVO: Verifica se a senha foi fornecida no DTO (Admin/Instrutor)
+        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
+            senha = dto.getSenha(); // Usa a senha padrão "1234"
+            logger.info(">>> [MS-AUTENTICACAO] Usando senha fornecida para " + dto.getEmail() + ": [" + senha + "]");
+        } else {
+            // Autocadastro de Funcionário (mantém a lógica de senha aleatória)
+            senha = gerarSenhaAleatoriaNumerica(6);
+            logger.info(">>> [MS-AUTENTICACAO] Senha temporária gerada (autocadastro) para " + dto.getEmail() + ": [" + senha + "]");
+        }
 
         AuthUser newUser = new AuthUser();
         newUser.setEmail(dto.getEmail());
 
-        // 3. Codifica a senha GERADA
+        // 3. Codifica a senha
         newUser.setSenhaHash(passwordEncoder.encode(senha));
 
         newUser.setUsuarioId(dto.getUsuarioId());

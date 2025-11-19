@@ -9,9 +9,18 @@ public class AuthRegistroDTO {
     private String email;
     private String perfil; // Mudamos de 'Object' ou 'Perfil' para 'String'
     private Long usuarioId;
+    private String senha; // ADICIONADO CAMPO SENHA
 
     // Construtor vazio para o Jackson (Framework)
     public AuthRegistroDTO() {}
+
+    // Construtor para inicialização (opcional)
+    public AuthRegistroDTO(String email, String perfil, Long usuarioId, String senha) {
+        this.email = email;
+        this.perfil = perfil;
+        this.usuarioId = usuarioId;
+        this.senha = senha;
+    }
 
     // Getters e Setters manuais
 
@@ -37,5 +46,15 @@ public class AuthRegistroDTO {
 
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    // NOVO GETTER (Para corrigir o erro de compilação)
+    public String getSenha() {
+        return senha;
+    }
+
+    // NOVO SETTER
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }
