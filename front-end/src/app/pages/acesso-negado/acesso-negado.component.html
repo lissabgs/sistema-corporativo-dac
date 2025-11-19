@@ -1,0 +1,12 @@
+<div class="acesso-negado-container">
+  <mat-card class="acesso-negado-card">
+    <mat-icon color="warn">block</mat-icon>
+    <h2>Acesso Negado</h2>
+    <p>Você não tem permissão para visualizar esta página.</p>
+    <p>Seu perfil (<strong>{{ localStorage.getItem('usuarioPerfil') }}</strong>) não está autorizado a acessar esta rota.</p>
+    <button mat-raised-button color="primary" (click)="voltarDashboard()">
+      <mat-icon>home</mat-icon>
+      Voltar ao Dashboard
+    </button>
+  </mat-card>
+</div>

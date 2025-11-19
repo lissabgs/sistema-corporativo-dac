@@ -111,4 +111,8 @@ export class DashboardFuncionarioComponent {
     this.authService.logout(); // Limpa o token do localStorage
     this.router.navigate(['/login']); // Redireciona para a página de login
   }
+
+  verCatalogo() {
+    this.router.navigate(['/catalogo-cursos']);
+  }
 }
