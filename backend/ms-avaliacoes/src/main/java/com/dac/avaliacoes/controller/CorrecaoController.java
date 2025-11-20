@@ -17,7 +17,7 @@ public class CorrecaoController {
     private CorrecaoService correcaoService;
 
     // ========== CORRIGIR QUESTÃO ==========
-    // ✅ APENAS INSTRUTOR + ADMIN
+    // APENAS INSTRUTOR + ADMIN
     @PostMapping
     @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
     public ResponseEntity<CorrecaoDTO> corrigirQuestao(
@@ -30,7 +30,7 @@ public class CorrecaoController {
     }
 
     // ========== VER MINHAS CORREÇÕES ==========
-    // ✅ APENAS INSTRUTOR + ADMIN
+    // APENAS INSTRUTOR + ADMIN
     @GetMapping("/minhas-correcoes")
     @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
     public ResponseEntity<List<CorrecaoDTO>> minhasCorrecoes(
