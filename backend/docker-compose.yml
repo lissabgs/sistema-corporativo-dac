@@ -104,10 +104,13 @@ services:
     ports:
       - "8083:8083"
     environment:
-      # Aponta para o MongoDB
-      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_cursos?authSource=admin
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
-      - mongo # MUDADO
+      - postgres
     networks:
       - dac-network
 
