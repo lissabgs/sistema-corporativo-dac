@@ -1,8 +1,10 @@
 .container-cadastro {
   padding: 24px;
   max-width: 960px;
-  margin: 0 auto;
-  padding-bottom: 80px; /* Espaço para a barra fixa */
+  margin: 0 auto; 
+  /* CORREÇÃO 1: Margem esquerda para não ficar atrás da sidebar (que tem 220px) */
+  /* Usamos 'auto' nas laterais para centralizar, mas precisamos garantir espaço se a tela for pequena */
+  padding-bottom: 80px;
 }
 
 .header-actions {
@@ -39,79 +41,6 @@ h2 {
 .p-4 { padding: 1rem; }
 
 /* Aulas */
-.aulas-list {
-  background-color: #fafafa;
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.aula-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-left: 4px solid #3f51b5;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-}
-
-.grid-aula {
-  display: grid;
-  grid-template-columns: 2fr 1fr auto;
-  gap: 10px;
-  align-items: start;
-}
-
-.col-main, .col-side {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.check-area {
-  display: flex;
-  align-items: center;
-  height: 40px;
-}
-
-/* Ajuste visual dos inputs dentro das aulas */
-.dense .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-.add-aula-btn {
-  text-align: center;
-  margin-top: 5px;
-}
-
-.empty-state {
-  text-align: center;
-  color: #777;
-  padding: 30px;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-.actions-bar {
-  position: fixed;
-  bottom: 0;
-  left: 220px; /* Largura da sidebar */
-  right: 0;
-  background: #fff;
-  padding: 15px;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-  text-align: right;
-  z-index: 100;
-}
-
-.btn-save {
-  padding: 0 30px;
-  height: 45px;
-  font-size: 16px;
-}
-
-
 .table-responsive {
   margin-top: 10px;
   overflow-x: auto;
@@ -145,36 +74,21 @@ h2 {
   border-bottom: none;
 }
 
-.lessons-table tr:hover {
-  background-color: #fafafa;
-}
-
-/* Inputs dentro da tabela para parecerem "planilha" */
 .table-input {
   width: 100%;
   padding: 6px 8px;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   outline: none;
-  transition: border-color 0.2s;
-  font-size: 13px;
 }
 
-.table-input:focus {
-  border-color: #3f51b5; /* Cor Primary */
-  background-color: #fff;
-}
-
-/* Centralização */
-.text-center {
-  text-align: center;
-}
+.text-center { text-align: center; }
 
 .add-aula-row {
   padding: 10px;
-  border-top: 1px solid #e0e0e0;
   text-align: center;
   background-color: #f9fafb;
+  border-top: 1px solid #e0e0e0;
 }
 
 .empty-table-msg {
@@ -182,4 +96,33 @@ h2 {
   text-align: center;
   color: #999;
   font-style: italic;
+}
+
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 30px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* BARRA FLUTUANTE */
+.actions-bar {
+  position: fixed;
+  bottom: 0;
+  /* CORREÇÃO: Ajuste para começar DEPOIS da sidebar */
+  left: 220px; 
+  right: 0;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  text-align: right;
+  z-index: 100;
+}
+
+.btn-save {
+  padding: 0 30px;
+  height: 45px;
+  font-size: 16px;
 }

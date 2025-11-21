@@ -29,18 +29,26 @@
 
       <div class="grid-3">
         <mat-form-field appearance="outline">
-          <mat-label>Categoria ID</mat-label>
-          <input matInput formControlName="categoriaId">
+          <mat-label>Departamento</mat-label>
+          <mat-select formControlName="categoriaId">
+            <mat-option *ngFor="let dept of departamentos" [value]="dept.id">
+              {{ dept.nome }}
+            </mat-option>
+          </mat-select>
+          <mat-error>Obrigatório</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Duração (ex: 20h)</mat-label>
-          <input matInput formControlName="duracaoEstimada">
+          <mat-label>Duração (horas)</mat-label>
+          <input matInput type="number" min="1" formControlName="duracaoEstimada">
+          <span matSuffix style="margin-right: 10px;">h</span>
+          <mat-error>Apenas números</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>XP Total (Curso)</mat-label>
-          <input matInput type="number" formControlName="xpOferecido">
+          <input matInput type="number" min="0" formControlName="xpOferecido">
+          <mat-error>Não pode ser negativo</mat-error>
         </mat-form-field>
       </div>
 
@@ -57,11 +65,9 @@
         <mat-form-field appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
-            <mat-option value="RASCUNHO">Rascunho</mat-option>
-            <mat-option value="ATIVO">Ativo</mat-option>
-            <mat-option value="INATIVO">Inativo</mat-option>
-            <mat-option value="PAUSADO">Pausado</mat-option>
-            <mat-option value="ARQUIVADO">Arquivado</mat-option>
+            <mat-option *ngFor="let st of opcoesStatusDisponiveis" [value]="st">
+              {{ st }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -81,7 +87,7 @@
             
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <strong>Módulo {{ i + 1 }}</strong>: {{ modulo.get('titulo')?.value || 'Novo' }}
+                <strong>Módulo {{ i + 1 }}</strong>: {{ modulo.get('titulo')?.value }}
               </mat-panel-title>
               <mat-panel-description class="justify-end">
                 <mat-icon color="warn" (click)="removerModulo(i); $event.stopPropagation()">delete</mat-icon>
@@ -102,7 +108,6 @@
             <mat-divider></mat-divider>
 
             <div class="table-responsive" formArrayName="aulas">
-              
               <table class="lessons-table" *ngIf="aulas(i).controls.length > 0">
                 <thead>
                   <tr>
@@ -116,29 +121,21 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let aula of aulas(i).controls; let j = index" [formGroupName]="j">
-                    
-                    <td class="text-center">
-                      {{ j + 1 }}
-                    </td>
-
+                    <td class="text-center">{{ j + 1 }}</td>
                     <td>
                       <input type="text" class="table-input" formControlName="titulo" placeholder="Título">
                     </td>
-
                     <td>
                       <input type="text" class="table-input" formControlName="urlConteudo" placeholder="https://...">
                     </td>
-
                     <td>
                       <input type="number" class="table-input" formControlName="xpModulo" min="0">
                     </td>
-
                     <td class="text-center">
                       <mat-checkbox formControlName="obrigatorio"></mat-checkbox>
                     </td>
-
                     <td class="text-center">
-                      <button type="button" mat-icon-button color="warn" (click)="removerAula(i, j)" title="Remover Aula">
+                      <button type="button" mat-icon-button color="warn" (click)="removerAula(i, j)">
                         <mat-icon>delete</mat-icon>
                       </button>
                     </td>
@@ -146,24 +143,14 @@
                 </tbody>
               </table>
 
-              <div *ngIf="aulas(i).controls.length === 0" class="empty-table-msg">
-                Nenhuma aula adicionada neste módulo.
-              </div>
-
               <div class="add-aula-row">
                 <button type="button" mat-button color="primary" (click)="adicionarAula(i)">
                   <mat-icon>add</mat-icon> Adicionar Aula
                 </button>
               </div>
-
             </div>
-
           </mat-expansion-panel>
         </mat-accordion>
-      </div>
-
-      <div *ngIf="modulos.controls.length === 0" class="empty-state">
-        <p>Nenhum módulo cadastrado. Adicione o primeiro módulo para inserir aulas.</p>
       </div>
     </div>
 
@@ -173,6 +160,5 @@
         {{ isEditMode ? 'Salvar Alterações' : 'Criar Curso' }}
       </button>
     </div>
-
   </form>
 </div>

@@ -11,7 +11,11 @@
 
     <mat-divider></mat-divider>
 
-    <mat-list>
+    <div *ngIf="loading" style="padding: 20px; text-align: center; color: gray;">
+      Carregando cursos...
+    </div>
+
+    <mat-list *ngIf="!loading">
       <mat-list-item *ngFor="let curso of cursos">
         <mat-icon matListItemIcon color="primary">menu_book</mat-icon>
         
@@ -20,23 +24,26 @@
         <div matListItemLine class="muted-info">
           Código: {{ curso.codigo }} | 
           Status: 
-          <span [style.color]="curso.ativo ? 'green' : 'red'">
-            {{ curso.ativo ? 'ATIVO' : 'INATIVO' }}
+          <span [style.color]="curso.status === 'ATIVO' ? 'green' : 'red'" style="font-weight: bold;">
+            {{ curso.status }}
           </span>
+           | Duração: {{ curso.duracaoEstimada }}
         </div>
 
-        <button mat-icon-button (click)="editarCurso(curso.id)" title="Editar">
-          <mat-icon>edit</mat-icon>
-        </button>
-        
-        <button mat-icon-button color="warn" (click)="excluirCurso(curso.id)" title="Excluir">
-          <mat-icon>delete</mat-icon>
-        </button>
+        <div class="actions" style="margin-left: auto; display: flex; gap: 8px;">
+          <button mat-icon-button (click)="editarCurso(curso.id!)" title="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          
+          <button mat-icon-button color="warn" (click)="excluirCurso(curso.id!)" title="Excluir">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </mat-list-item>
       
-      <mat-list-item *ngIf="cursos.length === 0">
-        <div matListItemTitle>Nenhum curso cadastrado.</div>
-      </mat-list-item>
+      <div *ngIf="cursos.length === 0" style="padding: 20px; text-align: center;">
+        <p>Nenhum curso cadastrado. Clique em "Cadastrar Novo Curso" para começar.</p>
+      </div>
 
     </mat-list>
 
