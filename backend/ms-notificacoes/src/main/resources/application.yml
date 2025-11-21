@@ -4,6 +4,30 @@ server:
 spring:
   application:
     name: ms-notificacoes
+
+  # Configuração do MongoDB (Banco de Dados)
   data:
     mongodb:
-      uri: mongodb://mongo:27017/ms-notificacoes
+      # Conecta no container 'mongo' definido no docker-compose
+      uri: mongodb://dac:dac@mongo:27017/db_notificacoes?authSource=admin
+
+  # Configuração do RabbitMQ (Mensageria)
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: dac
+    password: dac
+
+  # Configuração de E-mail (Exemplo com Gmail)
+  # DICA: Para funcionar com Gmail, gere uma "Senha de App" na sua conta Google.
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: SEU_EMAIL_AQUI@gmail.com   # Volte para o placeholder
+    password: SUA_SENHA_DE_APP_AQUI      # Volte para o placeholder
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

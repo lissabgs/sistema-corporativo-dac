@@ -54,6 +54,21 @@ app.use('/api/departamentos', (req, res, next) => {
 }, createProxyMiddleware({
     target: MS_USUARIOS,
     changeOrigin: true,
+    // Remove /usuarios da URL e substitui por /api/funcionarios
+    pathRewrite: { '^/usuarios': '/api/funcionarios' },
+    onProxyReq: fixRequestBody,
+}));
+
+// Rota para o MS-NOTIFICACOES (Sininho) - PROTEGIDA
+app.use('/notificacoes', (req, res, next) => {
+    return authMiddleware(req, res, next); // <--- REMOVA O // DESSA LINHA
+    // next();                             // <--- APAGUE ESSA LINHA
+
+}, createProxyMiddleware({
+    target: 'http://ms-notificacoes:8087', // Porta definida no docker-compose
+    changeOrigin: true,
+    // Remove o prefixo /notificacoes e substitui por /api/notificacoes
+    pathRewrite: { '^/notificacoes': '/api/notificacoes' },
     onProxyReq: fixRequestBody,
 }));
 
@@ -79,9 +94,6 @@ app.use('/api/cursos', authMiddleware, createProxyMiddleware({
 app.use('/api/avaliacoes', authMiddleware, createProxyMiddleware({ target: MS_AVALIACOES, changeOrigin: true, onProxyReq: fixRequestBody }));
 */
 
-// ===================================================================
-// INICIALIZAÇÃO
-// ===================================================================
 app.listen(port, () => {
     console.log(`API Gateway rodando na porta ${port}`);
 });
