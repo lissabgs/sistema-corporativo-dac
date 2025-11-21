@@ -3,21 +3,40 @@
     <h2 class="login-title">LOGIN</h2>
 
     <form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
+      
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Usuário</mat-label>
-        <input matInput formControlName="usuario" placeholder="Digite seu usuário" required>
+        <mat-label>E-mail</mat-label>
+        <input matInput formControlName="email" placeholder="seu.email@empresa.com" required>
+        <mat-error *ngIf="formLogin.get('email')?.hasError('required')">
+          E-mail é obrigatório.
+        </mat-error>
+        <mat-error *ngIf="formLogin.get('email')?.hasError('email')">
+          Formato de e-mail inválido.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Senha</mat-label>
         <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" placeholder="Digite sua senha" required>
         <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
+           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
+        <mat-error *ngIf="formLogin.get('senha')?.hasError('required')">
+          Senha é obrigatória.
+        </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" class="login-button" type="submit">
+      <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="formLogin.invalid">
         Entrar
       </button>
     </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-family: 'Roboto', sans-serif;">
+      Não tem uma conta? 
+      <a routerLink="/autocadastro" style="color: #3f51b5; text-decoration: none; font-weight: 500;">
+        Criar conta
+      </a>
+    </div>
+
   </mat-card>
 </div>

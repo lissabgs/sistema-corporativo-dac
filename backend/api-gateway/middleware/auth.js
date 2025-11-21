@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-// 1. Pegue o SEGREDO EXATO do seu ms-autenticacao
-const JWT_SECRET = "c2VuaGFTZWNyZXRhRG8tUHJvamV0by1EQUMtMjAyNQ==";
+// --- CORREÇÃO AQUI ---
+// 1. Usamos a MESMA chave que está no application.yml do ms-autenticacao
+// 2. Usamos Buffer.from(..., 'base64') para decodificar, igual o Java faz
+const JWT_SECRET_STRING = "bWluaGFTZW5oYVN1cGVyU2VjcmV0YURlMzJCeXRlcyEh";
+const JWT_SECRET = Buffer.from(JWT_SECRET_STRING, 'base64');
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -10,7 +13,6 @@ module.exports = (req, res, next) => {
         return res.status(401).send({ error: 'Nenhum token foi fornecido' });
     }
 
-    // Token: "Bearer <token>"
     const parts = authHeader.split(' ');
     if (parts.length !== 2) {
         return res.status(401).send({ error: 'Token com formato inválido' });
@@ -22,16 +24,15 @@ module.exports = (req, res, next) => {
         return res.status(401).send({ error: 'Token mal formatado' });
     }
 
-    // 2. Verifique o token
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) {
+            console.error("Erro na verificação do token:", err.message); // Log para ajudar no debug
             return res.status(401).send({ error: 'Token inválido ou expirado' });
         }
 
-        // 3. Anexe os dados do usuário na requisição
-        req.userEmail = decoded.sub; // 'sub' (subject) é o email
-        req.userRole = decoded.role; // 'role' é o tipoUsuario
+        req.userEmail = decoded.sub;
+        req.userRole = decoded.role;
 
-        return next(); // Deixa a requisição continuar
+        return next();
     });
 };

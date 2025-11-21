@@ -9,6 +9,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { Router } from '@angular/router'; // Importado
+import { AuthService } from '../../../services/auth.service'; // Importado
 
 type Curso = {
   id: number;
@@ -88,6 +90,12 @@ export class DashboardFuncionarioComponent {
     { titulo: 'Tentativa de quiz', data: new Date(Date.now() - 1000 * 60 * 60 * 30), icone: 'quiz', xpDelta: 0 }
   ];
 
+  // Injeções
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
+    
   // Ações do menu
   iniciarCurso(c?: Curso) { console.log('Iniciar curso', c ?? '(selecionar)'); }
   continuarCurso() { console.log('Continuar curso em andamento'); }
@@ -96,5 +104,15 @@ export class DashboardFuncionarioComponent {
 
   baixarCertificado(curso: Curso) {
     console.log('Baixar certificado de', curso.titulo);
+  }
+
+  // --- NOVO MÉTODO DE LOGOUT ---
+  logout() {
+    this.authService.logout(); // Limpa o token do localStorage
+    this.router.navigate(['/login']); // Redireciona para a página de login
+  }
+
+  verCatalogo() {
+    this.router.navigate(['/catalogo-cursos']);
   }
 }

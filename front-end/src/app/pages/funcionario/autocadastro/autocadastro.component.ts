@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DepartamentoService } from '../../../services/departamento.service';
+import { HttpClient } from '@angular/common/http'; // 1. Importar HttpClient
 
 @Component({
   selector: 'app-autocadastro',
@@ -32,11 +33,15 @@ export class AutocadastroComponent implements OnInit {
   dominioEmpresa = 'empresa.com.br';
   emailInvalido = false;
 
+  // URL do Gateway
+  private apiUrl = 'http://localhost:8080/api/funcionarios/autocadastro';
+
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
-    private departamentoService: DepartamentoService
+    private departamentoService: DepartamentoService,
+    private http: HttpClient // 2. Injetar HttpClient
   ) {
     this.formCadastro = this.fb.group({
       cpf: ['', Validators.required],
@@ -44,10 +49,7 @@ export class AutocadastroComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       departamento_id: ['', Validators.required],
       cargo: ['', Validators.required],
-      xp: [0],
-      nivel: ['Iniciante'],
-      status: ['ATIVO'],
-      senha: ['']
+      // Removi campos que não são inputs do usuário (xp, nivel, senha, status)
     });
   }
 
@@ -55,9 +57,7 @@ export class AutocadastroComponent implements OnInit {
     this.carregarDepartamentos();
   }
 
- //puxar os departamentos do backend
-  
-  /*carregarDepartamentos() {
+  carregarDepartamentos() {
     this.departamentoService.listarDepartamentos().subscribe({
       next: (dados) => {
         this.departamentos = dados;
@@ -65,40 +65,73 @@ export class AutocadastroComponent implements OnInit {
       error: () => {
         this.snackBar.open('Erro ao carregar departamentos.', 'Fechar', {
           duration: 3000
+          // panelClass: ['snackbar-error'] // opcional se tiver CSS
         });
       }
     });
   }
-  */
 
-  // enquanto o backend não está pronto
-  carregarDepartamentos() {
-    this.departamentos = [
-      { id: 1, nome: 'Financeiro' },
-      { id: 2, nome: 'Recursos Humanos' },
-      { id: 3, nome: 'Tecnologia da Informação' },
-      { id: 4, nome: 'Comercial' }
-    ];
+  // 3. Lógica de Formatação do CPF (Mascara)
+  formatarCPF(event: any) {
+    let valor = event.target.value;
+
+    // Remove tudo que não é dígito (bloqueia letras)
+    valor = valor.replace(/\D/g, '');
+
+    // Limita a 11 dígitos
+    if (valor.length > 11) {
+      valor = valor.substring(0, 11);
+    }
+
+    // Aplica a máscara 000.000.000-00
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+    // Atualiza o valor no formulário
+    this.formCadastro.get('cpf')?.setValue(valor, { emitEvent: false });
   }
 
   onSubmit() {
     if (this.formCadastro.valid) {
-      console.log('Dados do formulário:', this.formCadastro.value);
+      const rawValues = this.formCadastro.value;
 
-      this.snackBar.open('Cadastro realizado com sucesso!', 'Fechar', {
-        duration: 3000,
-        panelClass: ['snackbar-success']
+      // 4. Montar o Payload CORRETO para o Java
+      const payload = {
+        cpf: rawValues.cpf, // Envia formatado (o Java limpa) ou limpe aqui se preferir
+        nome: rawValues.nome,
+        email: rawValues.email,
+        cargo: rawValues.cargo,
+        departamentoId: rawValues.departamento_id, // Renomeando _id -> Id
+        perfil: 'FUNCIONARIO' // Adicionando perfil fixo
+        // Senha foi removida
+      };
+
+      console.log('Enviando JSON:', payload);
+
+      // 5. Enviar requisição POST
+      this.http.post(this.apiUrl, payload).subscribe({
+        next: (res) => {
+          console.log('Sucesso:', res);
+          this.snackBar.open('Cadastro realizado! Verifique seu e-mail (logs) para a senha.', 'Fechar', {
+            duration: 5000,
+            panelClass: ['snackbar-success']
+          });
+          // Redireciona após 2s
+          setTimeout(() => this.voltarLogin(), 2000);
+        },
+        error: (err) => {
+          console.error('Erro ao cadastrar:', err);
+          this.snackBar.open('Erro ao realizar cadastro. Tente novamente.', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
       });
 
-      this.formCadastro.reset({
-        xp: 0,
-        nivel: 'Iniciante',
-        status: 'ATIVO'
-      });
     } else {
       this.snackBar.open('Preencha todos os campos obrigatórios.', 'Fechar', {
-        duration: 3000,
-        panelClass: ['snackbar-error']
+        duration: 3000
       });
     }
   }

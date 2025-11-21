@@ -1,0 +1,44 @@
+<div class="page-container">
+  <mat-card class="manager-card">
+    <div class="card-header">
+      <h2>Gerenciar Cursos</h2>
+
+      <button mat-raised-button color="primary" (click)="cadastrarNovoCurso()">
+        <mat-icon>add</mat-icon>
+        Cadastrar Novo Curso
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-list>
+      <mat-list-item *ngFor="let curso of cursos">
+        <mat-icon matListItemIcon color="primary">menu_book</mat-icon>
+        
+        <div matListItemTitle>{{ curso.titulo }}</div>
+        
+        <div matListItemLine class="muted-info">
+          Código: {{ curso.codigo }} | 
+          Status: 
+          <span [style.color]="curso.ativo ? 'green' : 'red'">
+            {{ curso.ativo ? 'ATIVO' : 'INATIVO' }}
+          </span>
+        </div>
+
+        <button mat-icon-button (click)="editarCurso(curso.id)" title="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        
+        <button mat-icon-button color="warn" (click)="excluirCurso(curso.id)" title="Excluir">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+      
+      <mat-list-item *ngIf="cursos.length === 0">
+        <div matListItemTitle>Nenhum curso cadastrado.</div>
+      </mat-list-item>
+
+    </mat-list>
+
+  </mat-card>
+</div>

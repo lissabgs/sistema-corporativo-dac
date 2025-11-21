@@ -1,1 +1,11 @@
-<router-outlet></router-outlet>
+<div class="app-layout">
+  
+  <!-- Sidebar Global (só aparece se showSidebar for true) -->
+  <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
+
+  <!-- Área de Conteúdo (onde as páginas carregam) -->
+  <div class="main-content" [class.full-width]="!showSidebar">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

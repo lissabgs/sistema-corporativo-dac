@@ -1,0 +1,31 @@
+.app-layout {
+  display: flex;
+  width: 100vw;       /* Largura total da viewport */
+  height: 100vh;      /* Altura total da viewport */
+  overflow: hidden;   /* Garante que nada vaze do container principal */
+  background-color: #f5f5f5;
+}
+
+/* Container da Sidebar */
+.app-sidebar {
+  width: 260px;       /* Largura fixa */
+  flex-shrink: 0;     /* Impede que ela encolha se o conteúdo for largo */
+  height: 100%;       /* Ocupa toda a altura */
+  z-index: 10;        /* Garante que fique acima se houver sobreposição */
+}
+
+/* Conteúdo Principal (Direita) */
+.main-content {
+  flex-grow: 1;       /* Ocupa o espaço restante */
+  height: 100%;       /* Altura total */
+  overflow-y: auto;   /* HABILITA O SCROLL APENAS AQUI */
+  overflow-x: hidden; /* Evita scroll lateral indesejado */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajuste para quando não houver sidebar (ex: Login) */
+.main-content.full-width {
+  width: 100%;
+}
