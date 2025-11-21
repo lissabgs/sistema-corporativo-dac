@@ -1,14 +1,43 @@
 server:
   port: 8084
+  servlet:
+    context-path: /
 
 spring:
   application:
     name: ms-avaliacoes
+
   datasource:
-    url: jdbc:postgresql://postgres:5432/ms-avaliacoes
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://postgres:5432/dacdb
+    username: dac
+    password: dac
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+          fetch_size: 50
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: dac
+    password: dac
+    virtual-host: /
+
+logging:
+  level:
+    root: INFO
+    com.dac.avaliacoes: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
