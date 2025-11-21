@@ -51,12 +51,11 @@ export class LoginComponent {
 
     this.authService.login(this.formLogin.value).subscribe({
       next: (response) => {
-        console.log('Login bem-sucedido', response);
         
-        // --- LÓGICA DE REDIRECIONAMENTO BASEADA NO PERFIL ---
         const perfil = response.perfil;
-
-        if (perfil === 'INSTRUTOR' || perfil === 'ADMINISTRADOR') {
+        if (perfil === 'ADMINISTRADOR') {
+          this.router.navigate(['/dashboard-admin']);
+        } else if (perfil === 'INSTRUTOR') {
           this.router.navigate(['/dashboard-instrutor']);
         } else {
           this.router.navigate(['/dashboard-funcionario']);

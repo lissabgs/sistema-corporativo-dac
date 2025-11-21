@@ -8,11 +8,13 @@ import { DashboardInstrutorComponent } from './pages/instrutor/dashboard-instrut
 import { GerenciarCursosComponent } from './pages/instrutor/gerenciar-cursos/gerenciar-cursos.component';
 import { CadastrarCursoComponent } from './pages/instrutor/cadastrar-curso/cadastrar-curso.component';
 import { AcessoNegadoComponent } from './pages/acesso-negado/acesso-negado.component';
+import { DashboardAdminComponent } from './pages/admin/dashboard-admin/dashboard-admin.component';
 import { roleGuard } from './guards/auth.guard';
 
-// --- Definição dos Grupos de Permissão ---
 const APENAS_FUNCIONARIO = ['FUNCIONARIO'];
-const APENAS_INSTRUTOR_ADMIN = ['INSTRUTOR', 'ADMINISTRADOR'];
+const APENAS_INSTRUTOR = ['INSTRUTOR']; 
+const APENAS_ADMIN = ['ADMINISTRADOR']; 
+const GESTORES = ['INSTRUTOR', 'ADMINISTRADOR'];
 
 export const routes: Routes = [
   // Rotas Públicas
@@ -42,16 +44,21 @@ export const routes: Routes = [
   { 
     path: 'dashboard-instrutor', 
     component: DashboardInstrutorComponent,
-    canActivate: [roleGuard(APENAS_INSTRUTOR_ADMIN)] 
+    canActivate: [roleGuard(APENAS_INSTRUTOR)] 
   },
   { 
     path: 'gerenciar-cursos', 
     component: GerenciarCursosComponent,
-    canActivate: [roleGuard(APENAS_INSTRUTOR_ADMIN)]
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
   { 
     path: 'cadastrar-curso', 
     component: CadastrarCursoComponent,
-    canActivate: [roleGuard(APENAS_INSTRUTOR_ADMIN)]
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
+  {
+    path: 'dashboard-admin',
+    component: DashboardAdminComponent,
+    canActivate: [roleGuard(APENAS_ADMIN)]
   },
 ];

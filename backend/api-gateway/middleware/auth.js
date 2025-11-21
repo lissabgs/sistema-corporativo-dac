@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 // 1. Pegue o SEGREDO EXATO do seu ms-autenticacao
 const JWT_SECRET = "c2VuaGFTZWNyZXRhRG8tUHJvamV0by1EQUMtMjAyNQ==";
+const JWT_SECRET = Buffer.from(JWT_SECRET_STRING, 'base64');
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
