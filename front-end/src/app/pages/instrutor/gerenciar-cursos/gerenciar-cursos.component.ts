@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';  //  <<=== AQUI
 
 // Importe o Service e o Modelo
 import { CursoService } from '../../../services/curso.service';
@@ -22,7 +23,8 @@ import { Curso } from '../../../models/curso.model';
     MatIconModule,
     MatListModule,
     MatDividerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './gerenciar-cursos.component.html',
   styleUrls: ['./gerenciar-cursos.component.css']

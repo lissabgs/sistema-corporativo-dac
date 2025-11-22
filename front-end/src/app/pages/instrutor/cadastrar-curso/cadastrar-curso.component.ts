@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -15,10 +14,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 
-// Serviços e Models
 import { CursoService } from '../../../services/curso.service';
 import { DepartamentoService } from '../../../services/departamento.service';
 import { Curso } from '../../../models/curso.model';
+import { DepartamentoService } from '../../../services/departamento.service';
 
 @Component({
   selector: 'app-cadastrar-curso',
@@ -44,57 +43,79 @@ export class CadastrarCursoComponent implements OnInit {
   cursoForm: FormGroup;
   isEditMode = false;
   cursoId: number | null = null;
-  
-  // Lista de departamentos (para o select)
   departamentos: any[] = [];
-
-  // Status possíveis
-  todosStatus = ['RASCUNHO', 'ATIVO', 'INATIVO', 'PAUSADO', 'ARQUIVADO'];
 
   constructor(
     private fb: FormBuilder,
     private cursoService: CursoService,
     private departamentoService: DepartamentoService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
-    // CORREÇÃO: Recupera o ID do usuário logado (Instrutor) do localStorage
-    const usuarioId = Number(localStorage.getItem('usuarioId'));
-
     this.cursoForm = this.fb.group({
-      codigo: ['', Validators.required],
+      // Validação: Padrão 3 letras, hífen, números (ex: DEV-001)
+      codigo: ['', [Validators.required, Validators.pattern(/^[A-Z]{3}-[0-9]+$/)]],
       titulo: ['', Validators.required],
       descricao: [''],
-      categoriaId: ['', Validators.required],
-      // Usa o ID recuperado. Se não houver (erro de login), fica null e o Validator barra.
-      instrutorId: [usuarioId || null, Validators.required], 
-      duracaoEstimada: ['', [Validators.required, Validators.min(1)]],
+      categoriaId: ['', Validators.required], // Usaremos para o departamento
+      instrutorId: [null, Validators.required], // Começa nulo, preenche no ngOnInit
+      duracaoEstimada: ['', Validators.required],
       xpOferecido: [0, [Validators.required, Validators.min(0)]],
       nivelDificuldade: ['Iniciante', Validators.required],
       status: ['RASCUNHO', Validators.required],
       preRequisitos: [[]],
-      modulos: this.fb.array([]) 
+      modulos: this.fb.array([])
     });
   }
 
   ngOnInit(): void {
-    // 1. Carregar Departamentos
     this.carregarDepartamentos();
 
-    // 2. Verificar Edição
+    // 1. Recupera o ID do usuário logado (Instrutor)
+    const usuarioId = localStorage.getItem('usuarioId');
+    if (usuarioId) {
+      this.cursoForm.patchValue({ instrutorId: +usuarioId });
+    } else {
+      this.snackBar.open('Erro de sessão. Faça login novamente.', 'Fechar');
+      // this.router.navigate(['/login']); // Opcional: Redirecionar se não tiver ID
+    }
+
+    // 2. Verifica se é edição
     const state = history.state;
     if (state && state.cursoId) {
-      this.cursoId = state.cursoId;
       this.isEditMode = true;
-      // Se fosse edição real, aqui carregaríamos os dados do curso do backend
-      // this.carregarCurso(this.cursoId);
+      this.cursoId = state.cursoId;
+      this.carregarCurso(this.cursoId!);
     }
   }
 
   carregarDepartamentos() {
-    this.departamentoService.listarDepartamentos().subscribe({
-      next: (data) => this.departamentos = data,
-      error: () => this.snackBar.open('Erro ao carregar departamentos', 'Fechar')
+    this.departamentoService.listarDepartamentos().subscribe(d => this.departamentos = d);
+  }
+
+  carregarCurso(id: number) {
+    this.cursoService.obterPorId(id).subscribe({
+      next: (curso) => {
+        // Preenche o formulário básico
+        this.cursoForm.patchValue(curso);
+
+        // Ajusta a formatação da duração se necessário (remove 'h' se vier do back)
+        if (curso.duracaoEstimada && typeof curso.duracaoEstimada === 'string') {
+            const duracao = curso.duracaoEstimada.replace('h', '');
+            this.cursoForm.patchValue({ duracaoEstimada: duracao });
+        }
+
+        // Limpa e recria os módulos (FormArray)
+        this.modulos.clear();
+        if (curso.modulos) {
+          curso.modulos.forEach(mod => {
+            const modGroup = this.criarModuloGroup(mod);
+            this.modulos.push(modGroup);
+          });
+        }
+      },
+      error: () => this.snackBar.open('Erro ao carregar curso.', 'Fechar')
     });
   }
 
@@ -117,58 +138,130 @@ export class CadastrarCursoComponent implements OnInit {
         return ['PAUSADO', 'ARQUIVADO'];
       default:
         return ['RASCUNHO'];
+  // --- Lógica de Formatação do Código ---
+  formatarCodigo(event: any) {
+    const input = event.target as HTMLInputElement;
+    // Remove tudo que não é letra ou número e deixa maiúsculo
+    let valor = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // Pega os primeiros 3 caracteres (devem ser letras)
+    let letras = valor.substring(0, 3).replace(/[^A-Z]/g, '');
+
+    // Pega o restante (devem ser números)
+    let numeros = valor.substring(3).replace(/[^0-9]/g, '');
+
+    // Monta a máscara: XXX-XXXX...
+    let final = letras;
+    if (letras.length === 3) {
+      if (numeros.length > 0) {
+        final += '-' + numeros;
+      }
+    }
+
+    // Atualiza o valor no input e no formControl
+    input.value = final;
+    this.cursoForm.get('codigo')?.setValue(final, { emitEvent: false });
+  }
+
+  // --- Lógica de UX do campo XP e Numéricos ---
+
+  // Bloqueia caracteres não numéricos (e, E, +, -)
+  bloquearCaracteresNaoNumericos(event: KeyboardEvent) {
+    const teclasProibidas = ['e', 'E', '+', '-'];
+    if (teclasProibidas.includes(event.key)) {
+      event.preventDefault();
     }
   }
 
-  // --- GETTERS ---
+  limparSeZero(campo: string) {
+    const valor = this.cursoForm.get(campo)?.value;
+    if (valor === 0) {
+      this.cursoForm.get(campo)?.setValue(null);
+    }
+  }
+
+  restaurarSeVazio(campo: string) {
+    const valor = this.cursoForm.get(campo)?.value;
+    if (valor === null || valor === '') {
+      this.cursoForm.get(campo)?.setValue(0);
+    }
+  }
+
+  // --- Helpers de Formulário ---
   get modulos(): FormArray {
     return this.cursoForm.get('modulos') as FormArray;
   }
 
-  aulas(moduloIndex: number): FormArray {
-    return this.modulos.at(moduloIndex).get('aulas') as FormArray;
+  aulas(index: number): FormArray {
+    return this.modulos.at(index).get('aulas') as FormArray;
   }
 
-  // --- MÉTODOS DE FORMULÁRIO (Adicionar/Remover) ---
-  adicionarModulo() {
-    const moduloGroup = this.fb.group({
-      titulo: ['Novo Módulo', Validators.required],
-      ordem: [this.modulos.length + 1, Validators.required],
-      aulas: this.fb.array([]) 
+  criarModuloGroup(dados?: any): FormGroup {
+    const grupo = this.fb.group({
+      titulo: [dados?.titulo || 'Novo Módulo', Validators.required],
+      ordem: [dados?.ordem || this.modulos.length + 1, Validators.required],
+      aulas: this.fb.array([])
     });
-    this.modulos.push(moduloGroup);
+
+    if (dados?.aulas) {
+      const aulasArray = grupo.get('aulas') as FormArray;
+      dados.aulas.forEach((aula: any) => {
+        aulasArray.push(this.fb.group({
+          titulo: [aula.titulo, Validators.required],
+          urlConteudo: [aula.urlConteudo, Validators.required],
+          ordem: [aula.ordem],
+          obrigatorio: [aula.obrigatorio],
+          xpModulo: [aula.xpModulo]
+        }));
+      });
+    }
+    return grupo;
+  }
+
+  adicionarModulo() {
+    this.modulos.push(this.criarModuloGroup());
   }
 
   removerModulo(index: number) {
     this.modulos.removeAt(index);
   }
 
-  adicionarAula(moduloIndex: number) {
-    const aulasArray = this.aulas(moduloIndex);
-    const aulaGroup = this.fb.group({
+  adicionarAula(modIndex: number) {
+    const aulas = this.aulas(modIndex);
+    aulas.push(this.fb.group({
       titulo: ['', Validators.required],
       urlConteudo: ['', Validators.required],
-      xpModulo: [10, [Validators.required, Validators.min(0)]], 
-      obrigatorio: [true]
-    });
-    aulasArray.push(aulaGroup);
+      ordem: [aulas.length + 1],
+      obrigatorio: [true],
+      xpModulo: [10, Validators.min(0)]
+    }));
   }
 
-  removerAula(moduloIndex: number, aulaIndex: number) {
-    this.aulas(moduloIndex).removeAt(aulaIndex);
+  removerAula(modIndex: number, aulaIndex: number) {
+    this.aulas(modIndex).removeAt(aulaIndex);
   }
 
   onSubmit() {
     if (this.cursoForm.invalid) {
       this.cursoForm.markAllAsTouched();
-      this.snackBar.open('Verifique os campos inválidos', 'Fechar', { duration: 3000 });
+
+      // Log para debug
+      console.log('Formulário inválido:', this.cursoForm.errors);
+      Object.keys(this.cursoForm.controls).forEach(key => {
+        const controlErrors = this.cursoForm.get(key)?.errors;
+        if (controlErrors) {
+          console.log('Erro no campo ' + key + ':', controlErrors);
+        }
+      });
+
+      this.snackBar.open('Verifique os campos obrigatórios (ex: Código XXX-123)', 'Fechar', { duration: 3000 });
       return;
     }
 
     const formValue = this.cursoForm.value;
     const cursoData = {
       ...formValue,
-      duracaoEstimada: formValue.duracaoEstimada.toString() + 'h' 
+      duracaoEstimada: formValue.duracaoEstimada.toString() + 'h'
     };
 
     if (this.isEditMode && this.cursoId) {
@@ -177,7 +270,10 @@ export class CadastrarCursoComponent implements OnInit {
           this.snackBar.open('Curso atualizado!', 'OK', { duration: 3000 });
           this.router.navigate(['/gerenciar-cursos']);
         },
-        error: () => this.snackBar.open('Erro ao atualizar.', 'Fechar')
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Erro ao atualizar curso.', 'Fechar');
+        }
       });
     } else {
       this.cursoService.criar(cursoData).subscribe({
@@ -185,7 +281,10 @@ export class CadastrarCursoComponent implements OnInit {
           this.snackBar.open('Curso criado!', 'OK', { duration: 3000 });
           this.router.navigate(['/gerenciar-cursos']);
         },
-        error: () => this.snackBar.open('Erro ao criar.', 'Fechar')
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Erro ao criar curso.', 'Fechar');
+        }
       });
     }
   }

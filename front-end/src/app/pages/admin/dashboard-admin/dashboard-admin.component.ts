@@ -50,7 +50,6 @@ export class DashboardAdminComponent {
   constructor(private router: Router) {}
 
   navegar(rota: string) {
-    // this.router.navigate([rota]); // Descomente quando as rotas existirem
-    console.log('Navegando para: ' + rota);
+    this.router.navigate([rota]);
   }
 }
