@@ -41,4 +41,17 @@ public class CursoController {
         List<Curso> cursos = cursoService.listarPorInstrutor(instrutorId);
         return ResponseEntity.ok(cursos);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Curso> buscarPorId(@PathVariable Long id) {
+        Curso curso = cursoService.buscarPorId(id);
+        return ResponseEntity.ok(curso);
+    }
+
+    // NOVO: DELETE Lógico (Muda status para INATIVO)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarCurso(@PathVariable Long id) {
+        cursoService.inativarCurso(id);
+        return ResponseEntity.noContent().build();
+    }
 }

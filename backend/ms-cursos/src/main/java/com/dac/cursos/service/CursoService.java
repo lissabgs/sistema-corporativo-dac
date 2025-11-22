@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class CursoService {
@@ -23,7 +24,6 @@ public class CursoService {
     @Transactional
     public Curso createCurso(CursoRequestDTO dto) {
         Curso curso = new Curso();
-        // ID é gerado automaticamente pelo Postgres
 
         preencherDadosCurso(curso, dto);
 
@@ -38,6 +38,20 @@ public class CursoService {
         preencherDadosCurso(curso, dto);
 
         return cursoRepository.save(curso);
+    }
+
+    public Curso buscarPorId(Long id) {
+        return cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado com ID: " + id));
+    }
+
+    @Transactional
+    public void inativarCurso(Long id) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado com ID: " + id));
+
+        curso.setStatus(StatusCurso.INATIVO);
+        cursoRepository.save(curso);
     }
 
     @Transactional
