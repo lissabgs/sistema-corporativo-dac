@@ -1,55 +1,51 @@
 package com.dac.cursos.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "cursos") // Define o nome da coleção no MongoDB
+@Entity
+@Table(name = "cursos")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Curso {
 
     @Id
-    private String id; // ID automático do MongoDB
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    // Seus campos
+    @Column(unique = true, nullable = false)
     private String codigo;
+
     private String titulo;
+
+    @Column(length = 1000)
     private String descricao;
-    private String categoriaId; // Como o R04 sugere, categoria é separado
-    private Long instrutorId; // ID do Instrutor (vindo do ms-usuarios)
-    private String duracaoEstimada; // Ex: "8h" (como no PDF)
+
+    private String categoriaId;
+    private Long instrutorId;
+    private String duracaoEstimada;
     private int xpOferecido;
-    private String nivelDificuldade; // Ex: "Iniciante", "Avançado"
-    private boolean ativo;
-    private List<String> preRequisitos; // Lista de 'codigos' de outros cursos
+    private String nivelDificuldade;
 
-    // A lista de Aulas (sub-documentos)
-    private List<Aula> aulas;
+    @Enumerated(EnumType.STRING)
+    private StatusCurso status;
 
-    // Getters e Setters (vou omitir por brevidade, mas você deve adicioná-los
-    // ou usar @Getter e @Setter do Lombok)
+    // Lista simples de strings para pré-requisitos
+    @ElementCollection
+    @CollectionTable(name = "curso_pre_requisitos", joinColumns = @JoinColumn(name = "curso_id"))
+    @Column(name = "pre_requisito_codigo")
+    private List<String> preRequisitos = new ArrayList<>();
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
-    public String getCategoriaId() { return categoriaId; }
-    public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
-    public Long getInstrutorId() { return instrutorId; }
-    public void setInstrutorId(Long instrutorId) { this.instrutorId = instrutorId; }
-    public String getDuracaoEstimada() { return duracaoEstimada; }
-    public void setDuracaoEstimada(String duracaoEstimada) { this.duracaoEstimada = duracaoEstimada; }
-    public int getXpOferecido() { return xpOferecido; }
-    public void setXpOferecido(int xpOferecido) { this.xpOferecido = xpOferecido; }
-    public String getNivelDificuldade() { return nivelDificuldade; }
-    public void setNivelDificuldade(String nivelDificuldade) { this.nivelDificuldade = nivelDificuldade; }
-    public boolean isAtivo() { return ativo; }
-    public void setAtivo(boolean ativo) { this.ativo = ativo; }
-    public List<String> getPreRequisitos() { return preRequisitos; }
-    public void setPreRequisitos(List<String> preRequisitos) { this.preRequisitos = preRequisitos; }
-    public List<Aula> getAulas() { return aulas; }
-    public void setAulas(List<Aula> aulas) { this.aulas = aulas; }
+    // Relacionamento OneToMany com Módulos
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "curso_id") // Cria coluna FK na tabela 'modulos'
+    private List<Modulo> modulos = new ArrayList<>();
 }

@@ -1,0 +1,128 @@
+.container-cadastro {
+  padding: 24px;
+  max-width: 960px;
+  margin: 0 auto; 
+  /* CORREÇÃO 1: Margem esquerda para não ficar atrás da sidebar (que tem 220px) */
+  /* Usamos 'auto' nas laterais para centralizar, mas precisamos garantir espaço se a tela for pequena */
+  padding-bottom: 80px;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mb-4 { margin-bottom: 1rem; }
+.mt-2 { margin-top: 0.5rem; }
+.p-4 { padding: 1rem; }
+
+/* Aulas */
+.table-responsive {
+  margin-top: 10px;
+  overflow-x: auto;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.lessons-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.lessons-table th {
+  background-color: #f5f5f5;
+  color: #616161;
+  font-weight: 500;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.lessons-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.lessons-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  outline: none;
+}
+
+.text-center { text-align: center; }
+
+.add-aula-row {
+  padding: 10px;
+  text-align: center;
+  background-color: #f9fafb;
+  border-top: 1px solid #e0e0e0;
+}
+
+.empty-table-msg {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 30px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* BARRA FLUTUANTE */
+.actions-bar {
+  position: fixed;
+  bottom: 0;
+  /* CORREÇÃO: Ajuste para começar DEPOIS da sidebar */
+  left: 220px; 
+  right: 0;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  text-align: right;
+  z-index: 100;
+}
+
+.btn-save {
+  padding: 0 30px;
+  height: 45px;
+  font-size: 16px;
+}

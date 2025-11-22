@@ -11,32 +11,57 @@
 
     <mat-divider></mat-divider>
 
-    <mat-list>
+    <div *ngIf="loading" style="padding: 40px; text-align: center; color: gray;">
+      <mat-spinner diameter="40" style="margin: 0 auto 10px auto;"></mat-spinner>
+      Carregando cursos...
+    </div>
+
+    <mat-list *ngIf="!loading">
+      
       <mat-list-item *ngFor="let curso of cursos">
+        <!-- Ícone à esquerda -->
         <mat-icon matListItemIcon color="primary">menu_book</mat-icon>
         
-        <div matListItemTitle>{{ curso.titulo }}</div>
-        
-        <div matListItemLine class="muted-info">
-          Código: {{ curso.codigo }} | 
-          Status: 
-          <span [style.color]="curso.ativo ? 'green' : 'red'">
-            {{ curso.ativo ? 'ATIVO' : 'INATIVO' }}
-          </span>
-        </div>
+        <!-- Container Flex Principal -->
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          
+          <!-- Lado Esquerdo: Textos -->
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 500; font-size: 16px; color: #333;">
+              {{ curso.titulo }}
+            </span>
+            
+            <span class="muted-info">
+              Código: {{ curso.codigo }} | 
+              Status: 
+              <span [style.color]="curso.status === 'ATIVO' ? 'green' : (curso.status === 'RASCUNHO' ? 'orange' : 'red')" 
+                    style="font-weight: 600;">
+                {{ curso.status }}
+              </span>
+               | Duração: {{ curso.duracaoEstimada }}
+            </span>
+          </div>
 
-        <button mat-icon-button (click)="editarCurso(curso.id)" title="Editar">
-          <mat-icon>edit</mat-icon>
-        </button>
-        
-        <button mat-icon-button color="warn" (click)="excluirCurso(curso.id)" title="Excluir">
-          <mat-icon>delete</mat-icon>
-        </button>
+          <!-- Lado Direito: Botões -->
+          <div class="actions" style="display: flex; gap: 8px;">
+            <button mat-icon-button (click)="editarCurso(curso.id!)" title="Editar">
+              <mat-icon style="color: #757575;">edit</mat-icon>
+            </button>
+            
+            <button mat-icon-button (click)="excluirCurso(curso.id!)" title="Excluir">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+
+        </div>
       </mat-list-item>
       
-      <mat-list-item *ngIf="cursos.length === 0">
-        <div matListItemTitle>Nenhum curso cadastrado.</div>
-      </mat-list-item>
+      <!-- Mensagem de lista vazia -->
+      <div *ngIf="cursos.length === 0" style="padding: 40px; text-align: center; color: #888;">
+        <mat-icon style="font-size: 48px; height: 48px; width: 48px; margin-bottom: 10px; color: #ddd;">library_books</mat-icon>
+        <p>Nenhum curso encontrado.</p>
+        <button mat-button color="primary" (click)="cadastrarNovoCurso()">Criar o primeiro curso</button>
+      </div>
 
     </mat-list>
 
