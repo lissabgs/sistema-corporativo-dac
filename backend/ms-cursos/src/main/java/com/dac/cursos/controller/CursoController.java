@@ -35,6 +35,12 @@ public class CursoController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<List<Curso>> listarTodos() {
+        List<Curso> cursos = cursoService.listarTodos();
+        return ResponseEntity.ok(cursos);
+    }
+
     // LISTAR POR INSTRUTOR
     @GetMapping("/instrutor/{instrutorId}")
     public ResponseEntity<List<Curso>> listarPorInstrutor(@PathVariable Long instrutorId) {

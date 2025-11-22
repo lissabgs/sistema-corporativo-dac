@@ -11,6 +11,10 @@ import { AcessoNegadoComponent } from './pages/acesso-negado/acesso-negado.compo
 import { DashboardAdminComponent } from './pages/admin/dashboard-admin/dashboard-admin.component';
 import { roleGuard } from './guards/auth.guard';
 
+// --- NOVOS IMPORTS (Ajustados para seus arquivos sem .component) ---
+import { GerenciarDepartamentosComponent } from './pages/admin/gerenciar-departamentos/gerenciar-departamentos';
+import { GerenciarUsuariosComponent } from './pages/admin/gerenciar-usuarios/gerenciar-usuarios';
+
 const APENAS_FUNCIONARIO = ['FUNCIONARIO'];
 const APENAS_INSTRUTOR = ['INSTRUTOR']; 
 const APENAS_ADMIN = ['ADMINISTRADOR']; 
@@ -56,9 +60,22 @@ export const routes: Routes = [
     component: CadastrarCursoComponent,
     canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
+  
+  // --- ROTAS DE ADMINISTRADOR ---
   {
     path: 'dashboard-admin',
     component: DashboardAdminComponent,
     canActivate: [roleGuard(APENAS_ADMIN)]
   },
+  // Novas rotas adicionadas aqui:
+  { 
+    path: 'gerenciar-departamentos', 
+    component: GerenciarDepartamentosComponent, 
+    canActivate: [roleGuard(APENAS_ADMIN)] 
+  },
+  { 
+    path: 'gerenciar-usuarios', 
+    component: GerenciarUsuariosComponent, 
+    canActivate: [roleGuard(APENAS_ADMIN)] 
+  }
 ];

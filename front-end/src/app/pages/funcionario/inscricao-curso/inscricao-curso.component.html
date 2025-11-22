@@ -1,46 +1,87 @@
-<mat-card class="curso-card">
-  <h2>{{ curso.titulo }}</h2>
-
-  <p>{{ curso.descricao }}</p>
-
-  <p><strong>Duração:</strong> {{ curso.duracao }}h</p>
-  <p><strong>Instrutor:</strong> {{ curso.instrutor }}</p>
-  <p><strong>Dificuldade:</strong> {{ curso.dificuldade }}</p>
-
-  <div class="xp">
-    <mat-icon>stars</mat-icon>
-    {{ curso.xp }} XP
-  </div>
-
-  <!-- Quando NÃO atende -->
-  <div *ngIf="!atendeRequisitos" class="alerta">
-    <mat-icon>warning</mat-icon>
-    Você ainda não atende os pré-requisitos deste curso.
-  </div>
-
-  <!-- Trilha sugerida -->
-  <div *ngIf="!atendeRequisitos">
-    <h3>Trilha Sugerida:</h3>
-    <ul>
-      <li *ngFor="let item of curso.trilhaSugerida">
-        {{ item }}
-      </li>
-    </ul>
-  </div>
-
-  <!-- Botão de inscrição -->
-  <button
-    *ngIf="atendeRequisitos && !inscrito"
-    mat-raised-button
-    color="primary"
-    (click)="inscrever()">
-
-    Inscrever-se
+<div class="inscricao-container">
+  <button mat-button (click)="voltar()" class="btn-voltar">
+    <mat-icon>arrow_back</mat-icon> Voltar ao Catálogo
   </button>
 
-  <!-- Feedback -->
-  <div *ngIf="inscrito" class="sucesso">
-    <mat-icon>check_circle</mat-icon>
-    Inscrição realizada! Curso iniciado.
-  </div>
-</mat-card>
+  <mat-card class="detalhe-card">
+    <!-- Cabeçalho -->
+    <div class="card-header">
+      <div class="header-content">
+        <mat-chip-set>
+          <mat-chip color="accent" selected>{{ curso.categoria || 'Geral' }}</mat-chip>
+          <mat-chip>{{ curso.dificuldade }}</mat-chip>
+        </mat-chip-set>
+        <h1>{{ curso.titulo }}</h1>
+        <p class="instrutor">Instrutor: <strong>{{ curso.instrutor }}</strong></p>
+      </div>
+      <div class="xp-badge">
+        <mat-icon>bolt</mat-icon>
+        <span>{{ curso.xp }} XP</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="card-content">
+      <h3>Sobre o curso</h3>
+      <p>{{ curso.descricao }}</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <mat-icon>timer</mat-icon>
+          <span>Duração: {{ curso.duracao }}h</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>star</mat-icon>
+          <span>Avaliação: {{ curso.avaliacaoMedia || 'Nova' }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>school</mat-icon>
+          <span>Certificado Digital</span>
+        </div>
+      </div>
+
+      <!-- BLOCO: PRÉ-REQUISITOS (R05) -->
+      <div *ngIf="!atendeRequisitos" class="aviso-requisitos">
+        <div class="aviso-box">
+          <mat-icon color="warn">block</mat-icon>
+          <div>
+            <h4>Pré-requisitos não atendidos</h4>
+            <p>Para realizar este curso, você precisa completar a seguinte trilha sugerida:</p>
+          </div>
+        </div>
+
+        <mat-list>
+          <mat-list-item *ngFor="let item of trilhaSugerida">
+            <mat-icon matListItemIcon>lock</mat-icon>
+            <h4 matListItemTitle>{{ item.titulo }}</h4>
+            <p matListItemLine>{{ item.status }}</p>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <!-- MENSAGEM DE SUCESSO -->
+      <div *ngIf="inscrito" class="sucesso-box">
+        <mat-icon>check_circle</mat-icon>
+        <span>Inscrição confirmada! Redirecionando para seus cursos...</span>
+      </div>
+
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+
+    <!-- AÇÕES -->
+    <mat-card-actions align="end" class="card-actions">
+      <button mat-stroked-button (click)="voltar()" *ngIf="!inscrito">Cancelar</button>
+      
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="inscrever()" 
+        [disabled]="!atendeRequisitos || inscrito">
+        {{ inscrito ? 'Inscrito' : 'Confirmar Inscrição' }}
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

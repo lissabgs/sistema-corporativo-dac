@@ -62,6 +62,9 @@ public class CursoService {
     public List<Curso> listarPorInstrutor(Long instrutorId) {
         return cursoRepository.findByInstrutorId(instrutorId);
     }
+    public List<Curso> listarTodos() {
+        return cursoRepository.findAll();
+    }
 
     private void preencherDadosCurso(Curso curso, CursoRequestDTO dto) {
         curso.setCodigo(dto.getCodigo());

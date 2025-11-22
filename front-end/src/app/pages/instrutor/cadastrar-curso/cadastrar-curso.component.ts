@@ -17,7 +17,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 // Serviços e Models
 import { CursoService } from '../../../services/curso.service';
-import { DepartamentoService } from '../../../services/departamento.service'; // Importar
+import { DepartamentoService } from '../../../services/departamento.service';
 import { Curso } from '../../../models/curso.model';
 
 @Component({
@@ -54,19 +54,22 @@ export class CadastrarCursoComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private cursoService: CursoService,
-    private departamentoService: DepartamentoService, // Injetar
+    private departamentoService: DepartamentoService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
+    // CORREÇÃO: Recupera o ID do usuário logado (Instrutor) do localStorage
+    const usuarioId = Number(localStorage.getItem('usuarioId'));
+
     this.cursoForm = this.fb.group({
       codigo: ['', Validators.required],
       titulo: ['', Validators.required],
       descricao: [''],
-      // Agora usamos categoriaId para guardar o ID do Departamento (adaptação)
-      categoriaId: ['', Validators.required], 
-      instrutorId: [1], 
-      duracaoEstimada: ['', [Validators.required, Validators.min(1)]], // Validação numérica
-      xpOferecido: [0, [Validators.required, Validators.min(0)]], // Validação >= 0
+      categoriaId: ['', Validators.required],
+      // Usa o ID recuperado. Se não houver (erro de login), fica null e o Validator barra.
+      instrutorId: [usuarioId || null, Validators.required], 
+      duracaoEstimada: ['', [Validators.required, Validators.min(1)]],
+      xpOferecido: [0, [Validators.required, Validators.min(0)]],
       nivelDificuldade: ['Iniciante', Validators.required],
       status: ['RASCUNHO', Validators.required],
       preRequisitos: [[]],
@@ -83,8 +86,8 @@ export class CadastrarCursoComponent implements OnInit {
     if (state && state.cursoId) {
       this.cursoId = state.cursoId;
       this.isEditMode = true;
-      // Se tiver backend real, buscaria aqui: this.carregarCurso(this.cursoId);
-      // Como exemplo, apenas setamos o modo.
+      // Se fosse edição real, aqui carregaríamos os dados do curso do backend
+      // this.carregarCurso(this.cursoId);
     }
   }
 
@@ -99,28 +102,21 @@ export class CadastrarCursoComponent implements OnInit {
   get opcoesStatusDisponiveis(): string[] {
     const atual = this.cursoForm.get('status')?.value;
 
-    // Se não tiver status (novo), só pode ser Rascunho
     if (!this.isEditMode && !atual) return ['RASCUNHO'];
 
-    // Regras de transição
     switch (atual) {
       case 'RASCUNHO':
-        return ['RASCUNHO', 'ATIVO', 'ARQUIVADO']; // Rascunho -> Ativo (e pode ir pra arquivado direto se quiser)
-      
+        return ['RASCUNHO', 'ATIVO', 'ARQUIVADO'];
       case 'ATIVO':
-        return ['ATIVO', 'INATIVO']; // Ativo <-> Inativo
-      
+        return ['ATIVO', 'INATIVO'];
       case 'INATIVO':
-        return ['INATIVO', 'ATIVO']; // Inativo <-> Ativo
-
+        return ['INATIVO', 'ATIVO'];
       case 'ARQUIVADO':
-        return ['ARQUIVADO', 'PAUSADO', 'RASCUNHO']; // Arquivado -> Pausado ou voltar pra Rascunho
-
+        return ['ARQUIVADO', 'PAUSADO', 'RASCUNHO'];
       case 'PAUSADO':
-        return ['PAUSADO', 'ARQUIVADO']; // Pausado -> Arquivado
-
+        return ['PAUSADO', 'ARQUIVADO'];
       default:
-        return ['RASCUNHO']; // Fallback
+        return ['RASCUNHO'];
     }
   }
 
@@ -152,7 +148,6 @@ export class CadastrarCursoComponent implements OnInit {
     const aulaGroup = this.fb.group({
       titulo: ['', Validators.required],
       urlConteudo: ['', Validators.required],
-      // XP não pode ser negativo
       xpModulo: [10, [Validators.required, Validators.min(0)]], 
       obrigatorio: [true]
     });
@@ -170,13 +165,9 @@ export class CadastrarCursoComponent implements OnInit {
       return;
     }
 
-    // Prepara o objeto (converte duração para string se o back exigir "20h")
     const formValue = this.cursoForm.value;
     const cursoData = {
       ...formValue,
-      // Se o back espera "20h", concatenamos. Se espera numero, mandamos numero.
-      // O user pediu "apenas quantidade de horas numérico", assumindo que o back aceita string "20" ou numero 20.
-      // Vou mandar como string para manter compatibilidade com DTO
       duracaoEstimada: formValue.duracaoEstimada.toString() + 'h' 
     };
 
