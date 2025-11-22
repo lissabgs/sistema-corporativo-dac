@@ -47,4 +47,6 @@ public class Tentativa {
 
     @OneToMany(mappedBy = "tentativa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Correcao> correcoes;
+
+
 }

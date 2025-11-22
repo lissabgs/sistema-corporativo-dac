@@ -4,23 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
-import lombok.Data;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvaliacaoDTO {
-    private Long id;
+public class AvaliacaoDisponivelDTO {
+    private Long avaliacaoId;
     private String codigo;
     private String titulo;
     private String descricao;
-    private Long cursoId;
     private Integer tempoLimiteMinutos;
+    private Integer tentativasRestantes;
     private Integer tentativasPermitidas;
     private Double notaMinima;
-    private Boolean ativo;
-    private LocalDateTime dataCriacao;
+    private String cursoTitulo;
 }

@@ -19,4 +19,6 @@ public class CriarAvaliacaoRequestDTO {
     private Integer tentativasPermitidas;
     private Double notaMinima;
     private List<QuestaoDTO> questoes;
+
+
 }
