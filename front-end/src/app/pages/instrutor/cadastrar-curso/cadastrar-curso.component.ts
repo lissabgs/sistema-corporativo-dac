@@ -15,7 +15,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { CursoService } from '../../../services/curso.service';
-import { DepartamentoService } from '../../../services/departamento.service';
 import { Curso } from '../../../models/curso.model';
 import { DepartamentoService } from '../../../services/departamento.service';
 
@@ -65,7 +64,7 @@ export class CadastrarCursoComponent implements OnInit {
       nivelDificuldade: ['Iniciante', Validators.required],
       status: ['RASCUNHO', Validators.required],
       preRequisitos: [[]],
-      modulos: this.fb.array([])
+      modulos: this.fb.array([]) 
     });
   }
 
@@ -99,7 +98,7 @@ export class CadastrarCursoComponent implements OnInit {
       next: (curso) => {
         // Preenche o formulário básico
         this.cursoForm.patchValue(curso);
-
+        
         // Ajusta a formatação da duração se necessário (remove 'h' se vier do back)
         if (curso.duracaoEstimada && typeof curso.duracaoEstimada === 'string') {
             const duracao = curso.duracaoEstimada.replace('h', '');
@@ -119,34 +118,15 @@ export class CadastrarCursoComponent implements OnInit {
     });
   }
 
-  // --- LÓGICA DE STATUS (Regras do Usuário) ---
-  get opcoesStatusDisponiveis(): string[] {
-    const atual = this.cursoForm.get('status')?.value;
-
-    if (!this.isEditMode && !atual) return ['RASCUNHO'];
-
-    switch (atual) {
-      case 'RASCUNHO':
-        return ['RASCUNHO', 'ATIVO', 'ARQUIVADO'];
-      case 'ATIVO':
-        return ['ATIVO', 'INATIVO'];
-      case 'INATIVO':
-        return ['INATIVO', 'ATIVO'];
-      case 'ARQUIVADO':
-        return ['ARQUIVADO', 'PAUSADO', 'RASCUNHO'];
-      case 'PAUSADO':
-        return ['PAUSADO', 'ARQUIVADO'];
-      default:
-        return ['RASCUNHO'];
   // --- Lógica de Formatação do Código ---
   formatarCodigo(event: any) {
     const input = event.target as HTMLInputElement;
     // Remove tudo que não é letra ou número e deixa maiúsculo
     let valor = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-
+    
     // Pega os primeiros 3 caracteres (devem ser letras)
     let letras = valor.substring(0, 3).replace(/[^A-Z]/g, '');
-
+    
     // Pega o restante (devem ser números)
     let numeros = valor.substring(3).replace(/[^0-9]/g, '');
 
@@ -164,7 +144,7 @@ export class CadastrarCursoComponent implements OnInit {
   }
 
   // --- Lógica de UX do campo XP e Numéricos ---
-
+  
   // Bloqueia caracteres não numéricos (e, E, +, -)
   bloquearCaracteresNaoNumericos(event: KeyboardEvent) {
     const teclasProibidas = ['e', 'E', '+', '-'];
@@ -244,7 +224,7 @@ export class CadastrarCursoComponent implements OnInit {
   onSubmit() {
     if (this.cursoForm.invalid) {
       this.cursoForm.markAllAsTouched();
-
+      
       // Log para debug
       console.log('Formulário inválido:', this.cursoForm.errors);
       Object.keys(this.cursoForm.controls).forEach(key => {
@@ -258,10 +238,15 @@ export class CadastrarCursoComponent implements OnInit {
       return;
     }
 
-    const formValue = this.cursoForm.value;
+    // Pega valores mesmo se disabled e garante conversão de tipos
+    const formValue = this.cursoForm.getRawValue();
+    
     const cursoData = {
-      ...formValue,
-      duracaoEstimada: formValue.duracaoEstimada.toString() + 'h'
+        ...formValue,
+        // Garante que XP seja número
+        xpOferecido: Number(formValue.xpOferecido),
+        // Formata a duração para string "XXh" se necessário pelo backend, ou mantém número se ele aceitar
+        duracaoEstimada: formValue.duracaoEstimada.toString() + 'h' 
     };
 
     if (this.isEditMode && this.cursoId) {
