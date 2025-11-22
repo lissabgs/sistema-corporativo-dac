@@ -20,7 +20,8 @@ export interface Curso {
   codigo: string;
   titulo: string;
   descricao: string;
-  categoriaId: string;
+  
+  categoriaId: string; 
   instrutorId: number;
   duracaoEstimada: string;
   xpOferecido: number;
@@ -28,4 +29,9 @@ export interface Curso {
   status: StatusCurso;
   preRequisitos: string[];
   modulos: Modulo[];
+
+  categoria?: string; 
+  instrutor?: string; 
+  avaliacaoMedia?: number;
+  prerequisitosAtendidos?: boolean;
 }

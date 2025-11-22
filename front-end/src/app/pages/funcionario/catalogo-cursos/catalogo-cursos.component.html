@@ -1,94 +1,50 @@
-<div class="catalogo-container">
-  
-  <mat-card class="filtros-card">
-    <div class="filtros-header">
-      <mat-icon>filter_list</mat-icon>
-      <h2>Filtros de Busca</h2>
-    </div>
+<div class="cursos-grid">
+  <mat-card class="curso-card" *ngFor="let curso of cursosFiltrados">
     
-    <div class="filtros-grid">
-      <mat-form-field appearance="outline">
-        <mat-label>Buscar por título</mat-label>
-        <input matInput [(ngModel)]="search" (input)="filtrar()">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Categoria</mat-label>
-        <mat-select [(ngModel)]="categoria" (selectionChange)="filtrar()">
-          <mat-option value="">Todas</mat-option>
-          <mat-option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Dificuldade</mat-label>
-        <mat-select [(ngModel)]="dificuldade" (selectionChange)="filtrar()">
-          <mat-option value="">Todas</mat-option>
-          <mat-option *ngFor="let dif of dificuldades" [value]="dif">{{ dif }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Instrutor</mat-label>
-        <mat-select [(ngModel)]="instrutor" (selectionChange)="filtrar()">
-          <mat-option value="">Todos</mat-option>
-          <mat-option *ngFor="let inst of instrutores" [value]="inst">{{ inst }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="curso-header">
+      <div class="curso-title-row">
+        <h3>{{ curso.titulo }}</h3>
+        <mat-chip-set>
+          <mat-chip>{{ curso.categoriaId }}</mat-chip>
+        </mat-chip-set>
+      </div>
+      <p class="instrutor">ID Instrutor: {{ curso.instrutorId }}</p>
     </div>
 
-    <div class="filtros-actions">
-      <button mat-button color="warn" (click)="limparFiltros()">Limpar Filtros</button>
-    </div>
-  </mat-card>
-
-  <div class="cursos-grid">
-    <mat-card class="curso-card" *ngFor="let curso of cursosFiltrados">
+    <mat-card-content>
+      <p class="descricao">{{ curso.descricao }}</p>
       
-      <div class="curso-header">
-        <div class="curso-title-row">
-          <h3>{{ curso.titulo }}</h3>
-          <mat-chip-set>
-            <mat-chip>{{ curso.categoria }}</mat-chip>
-          </mat-chip-set>
-        </div>
-        <p class="instrutor">Por: {{ curso.instrutor }}</p>
+      <div class="meta-info">
+        <span><mat-icon>timer</mat-icon> {{ curso.duracaoEstimada }}</span>
+        
+        <span><mat-icon>signal_cellular_alt</mat-icon> {{ curso.nivelDificuldade }}</span>
+        
+        <span><mat-icon>star</mat-icon> {{ curso.avaliacaoMedia || '-' }}</span>
       </div>
 
-      <mat-card-content>
-        <p class="descricao">{{ curso.descricao }}</p>
-        
-        <div class="meta-info">
-          <span><mat-icon>timer</mat-icon> {{ curso.duracao }}h</span>
-          <span><mat-icon>signal_cellular_alt</mat-icon> {{ curso.dificuldade }}</span>
-          <span><mat-icon>star</mat-icon> {{ curso.avaliacaoMedia }}</span>
-        </div>
+      <div class="xp-badge">
+        <mat-icon>bolt</mat-icon>
+        <strong>{{ curso.xpOferecido }} XP</strong>
+      </div>
 
-        <div class="xp-badge">
-          <mat-icon>bolt</mat-icon>
-          <strong>{{ curso.xp }} XP</strong>
-        </div>
+      <div *ngIf="curso.prerequisitosAtendidos === false" class="aviso-requisito">
+        <mat-icon color="warn">warning</mat-icon>
+        <span>Pré-requisitos pendentes</span>
+      </div>
+    </mat-card-content>
 
-        <div *ngIf="!curso.prerequisitosAtendidos" class="aviso-requisito">
-          <mat-icon color="warn">warning</mat-icon>
-          <span>Pré-requisitos pendentes</span>
-        </div>
-      </mat-card-content>
-
-      <mat-card-actions align="end">
-        
-        <button mat-raised-button 
-          [color]="jaInscrito(curso.id) ? 'accent' : 'primary'"
-          (click)="tratarAcao(curso)">
-          
-          <mat-icon>{{ jaInscrito(curso.id) ? 'play_circle' : 'visibility' }}</mat-icon>
-          &nbsp;
-          {{ jaInscrito(curso.id) ? 'Continuar' : 'Ver Detalhes' }}
-        
-        </button>
+    <mat-card-actions style="display: flex; justify-content: flex-end;">
       
-      </mat-card-actions>
-    </mat-card>
-  </div>
+      <button mat-raised-button 
+        [color]="jaInscrito(curso.id) ? 'accent' : 'primary'"
+        (click)="tratarAcao(curso)">
+        
+        <mat-icon>{{ jaInscrito(curso.id) ? 'play_circle' : 'visibility' }}</mat-icon>
+        &nbsp;
+        {{ jaInscrito(curso.id) ? 'Continuar' : 'Ver Detalhes' }}
+      
+      </button>
+
+    </mat-card-actions>
+  </mat-card>
 </div>

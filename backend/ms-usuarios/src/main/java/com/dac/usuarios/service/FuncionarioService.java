@@ -93,10 +93,6 @@ public class FuncionarioService {
 
         logger.info("[MS-USUARIOS] Início do cadastro de ADMIN/INSTRUTOR para: " + dto.getEmail());
 
-        if (dto.getPerfil() == Perfil.FUNCIONARIO) {
-            throw new IllegalArgumentException("Use o endpoint /autocadastro para criar funcionários.");
-        }
-
         Departamento depto = departamentoRepository.findById(dto.getDepartamentoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Departamento não encontrado com ID: " + dto.getDepartamentoId()));
 

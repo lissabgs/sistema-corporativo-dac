@@ -11,12 +11,16 @@ export class CursoService {
 
   constructor(private http: HttpClient) {}
 
+  listarCursos(): Observable<Curso[]> {
+    return this.http.get<Curso[]>(this.apiUrl);
+  }
+
   listarPorInstrutor(instrutorId: number): Observable<Curso[]> {
     return this.http.get<Curso[]>(`${this.apiUrl}/instrutor/${instrutorId}`);
   }
 
   obterPorId(id: number): Observable<Curso> {
-    return this.http.get<Curso>(`${this.apiUrl}/${id}`); // Se tiver endpoint de get one
+    return this.http.get<Curso>(`${this.apiUrl}/${id}`);
   }
 
   criar(curso: Curso): Observable<Curso> {

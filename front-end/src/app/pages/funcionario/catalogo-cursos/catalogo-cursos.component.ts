@@ -86,11 +86,11 @@ export class CatalogoCursosComponent implements OnInit {
 
   carregarCursosDoCatalogo() {
     this.cursoService.listarCursos().subscribe({
-      next: (dados) => {
+      next: (dados: Curso[]) => { // <--- ADICIONADO TIPO EXPLÍCITO
         this.cursos = dados;
-        this.filtrar(); // Aplica filtros iniciais
+        this.filtrar(); 
       },
-      error: (err) => {
+      error: (err: any) => { // <--- ADICIONADO TIPO EXPLÍCITO
         this.snackBar.open('Erro ao carregar cursos.', 'Fechar');
       }
     });
