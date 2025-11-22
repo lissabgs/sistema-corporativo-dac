@@ -26,6 +26,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+
   <!-- DEPENDÊNCIAS -->
   <dependencies>
     <!-- Spring Boot Web (para REST API) -->
@@ -83,6 +84,25 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- Spring Cloud OpenFeign (para chamadas HTTP entre microsserviços) -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <version>4.0.4</version>
+    </dependency>
+
+    <!-- (para trabalhar com JSON) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Actuator (para monitoramento) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
   </dependencies>
 
