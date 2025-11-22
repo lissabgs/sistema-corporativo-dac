@@ -1,71 +1,137 @@
 :host {
   display: block;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
+/* -------------------------
+   ESPAÇAMENTO GERAL
+-------------------------- */
 .dashboard-content {
-  padding: 24px; /* Espaçamento interno */
-}
-
-/* Grid Layouts */
-.grid {
-  display: grid;
-  gap: 20px;
-}
-
-.header-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-bottom: 20px;
-}
-
-.courses-grid {
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
-.bottom-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 32px;
   margin-top: 20px;
 }
 
-.card {
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  background-color: #fff;
+/* -------------------------
+   GRIDS PRINCIPAIS
+-------------------------- */
+.grid {
+  display: grid;
+  gap: 28px;
 }
 
-/* KPI Styles */
+/* Primeira linha (KPIs) */
+.header-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  margin-bottom: 40px !important;
+}
+
+/* Linha do meio (3 cards) */
+.courses-grid {
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  margin-top: 10px;
+  margin-bottom: 40px !important;
+}
+
+/* Última linha (Ranking + Atividades) */
+.bottom-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  margin-top: 40px !important;
+}
+
+/* -------------------------
+   CARDS
+-------------------------- */
+.card {
+  padding:30px !important;       /* ANTES 22px — mais espaço interno */
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* -------------------------
+   KPI CARDS
+-------------------------- */
 .kpi .kpi-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #6b7280;
-  font-weight: 500;
+  gap: 10px;
+  color: #002F54;
+  font-weight: 600;
 }
 
 .kpi .kpi-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #111827;
-  margin: 8px 0;
+  font-size: 36px;
+  font-weight: 800;
+  color: #002F54;
+  margin: 10px 0;
 }
 
 .kpi .kpi-foot {
-  font-size: 13px;
-  color: #6b7280;
-  margin-top: 6px;
+  font-size: 14px;
+  color: #555;
 }
 
 mat-progress-bar {
-  border-radius: 4px;
   height: 6px;
+  border-radius: 4px;
 }
 
-/* Responsividade */
-@media (max-width: 1024px) {
-  .header-grid,
-  .courses-grid,
-  .bottom-grid {
-    grid-template-columns: 1fr;
-  }
+mat-progress-bar .mdc-linear-progress__bar-inner {
+  background-color: #002F54 !important;
+}
+
+/* -------------------------
+   CHIPS
+-------------------------- */
+mat-chip.mat-chip {
+  background: #002F54 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* -------------------------
+   ÍCONES
+-------------------------- */
+mat-icon {
+  color: #002F54 !important;
+}
+
+/* -------------------------
+   LIST ITEMS
+-------------------------- */
+mat-list-item {
+  padding: 70px 0;
+  margin-bottom: 0px;
+}
+
+.row-end {
+  margin-top: 10px;
+}
+
+/* -------------------------
+   BOTÕES
+-------------------------- */
+
+/* Botões primários dentro dos cards */
+.card button[color="primary"],
+.card button.mat-mdc-raised-button[color="primary"] {
+  background-color: #002F54 !important;
+  color: #fff !important;
+  border-radius: 8px;
+}
+
+/* Stroked buttons */
+.card button.mat-mdc-stroked-button[color="primary"] {
+  border-color: #002F54 !important;
+  color: #002F54 !important;
+}
+
+/* Botões dentro das listas (certificado, iniciar) — NÃO esconder */
+mat-list-item button.mat-mdc-button[color="primary"] {
+  display: inline-flex !important;
+  color: #002F54 !important;
+  background: transparent !important;
 }

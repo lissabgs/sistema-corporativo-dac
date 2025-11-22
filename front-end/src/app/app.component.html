@@ -1,9 +1,18 @@
+<!-- TOPBAR GLOBAL (sempre aparece) -->
+<div class="topbar">
+  <div class="topbar-content">
+    <span class="material-symbols-outlined topbar-icon">laptop</span>
+    <div class="topbar-text">Sistema de E-learning Corporativo</div>
+  </div>
+</div>
+
+<!-- LAYOUT PRINCIPAL -->
 <div class="app-layout">
-  
-  <!-- Sidebar Global (só aparece se showSidebar for true) -->
+
+  <!-- SIDEBAR (abre somente se showSidebar = true) -->
   <app-sidebar *ngIf="showSidebar" class="app-sidebar"></app-sidebar>
 
-  <!-- Área de Conteúdo (onde as páginas carregam) -->
+  <!-- CONTEÚDO PRINCIPAL -->
   <div class="main-content" [class.full-width]="!showSidebar">
     <router-outlet></router-outlet>
   </div>
