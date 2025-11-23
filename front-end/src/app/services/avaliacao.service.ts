@@ -30,4 +30,8 @@ export class AvaliacaoService {
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  
+  listarCursosDisponiveis(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cursos-disponiveis`);
+  }
 }

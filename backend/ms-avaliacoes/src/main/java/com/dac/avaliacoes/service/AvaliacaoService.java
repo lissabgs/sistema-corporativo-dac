@@ -24,6 +24,39 @@ public class AvaliacaoService {
     @Autowired
     private QuestaoRepository questaoRepository;
 
+    // No service, injete o CursosClient e adicione o método
+    @Autowired
+    private CursosClient cursosClient; // Certifique-se que o FeignClient está configurado
+
+    public List<Object> buscarCursosSemAvaliacao() {
+        try {
+            // 1. Busca TODOS os cursos do microsserviço de cursos
+            List<Object> todosCursos = cursosClient.listarCursos();
+
+            // 2. Busca IDs de cursos que JÁ têm avaliação
+            List<Long> idsComAvaliacao = repository.findAll().stream()
+                    .map(Avaliacao::getCursoId)
+                    .collect(Collectors.toList());
+
+            // 3. Filtra: Mantém apenas cursos cujo ID NÃO está na lista de avaliações
+            // Obs: Assumindo que o objeto do curso vem como LinkedHashMap ou DTO.
+            // Se tiver um DTO de curso compartilhado, use-o no lugar de Object.
+            return todosCursos.stream()
+                    .filter(curso -> {
+                        // Conversão segura dependendo de como o Feign retorna (JSON)
+                        // Se for um DTO Java, basta: !idsComAvaliacao.contains(curso.getId())
+                        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) curso;
+                        Integer id = (Integer) map.get("id");
+                        return !idsComAvaliacao.contains(id.longValue());
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            // Fallback: se o serviço de cursos estiver fora, retorna lista vazia ou lança erro
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
     // ========== CRIAR AVALIAÇÃO ==========
     @Transactional
     public AvaliacaoDTO criarAvaliacao(CriarAvaliacaoRequestDTO dto) {

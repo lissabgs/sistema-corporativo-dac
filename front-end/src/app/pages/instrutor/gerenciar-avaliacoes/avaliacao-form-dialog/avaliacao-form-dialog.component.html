@@ -3,19 +3,31 @@
 <mat-dialog-content class="form-content">
   <form [formGroup]="form">
     
-    <div class="grid-2">
-      <mat-form-field appearance="outline">
-        <mat-label>Código</mat-label>
-        <input matInput formControlName="codigo" placeholder="EX: PROVA-JAVA-01">
-        <mat-error *ngIf="form.get('codigo')?.hasError('required')">Obrigatório</mat-error>
-      </mat-form-field>
+    <div class="full-width-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Selecione o Curso</mat-label>
+        
+        <mat-select formControlName="cursoId" (selectionChange)="aoSelecionarCurso($event.value)">
+          
+          <mat-option *ngIf="cursosDisponiveis.length === 0" disabled>
+            Nenhum curso disponível
+          </mat-option>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Título</mat-label>
-        <input matInput formControlName="titulo">
-        <mat-error *ngIf="form.get('titulo')?.hasError('required')">Obrigatório</mat-error>
+          <mat-option *ngFor="let curso of cursosDisponiveis" [value]="curso.id">
+            {{ curso.id }} - {{ curso.codigo }} - {{ curso.titulo }}
+          </mat-option>
+          
+        </mat-select>
+        
+        <mat-error *ngIf="form.get('cursoId')?.hasError('required')">Obrigatório</mat-error>
       </mat-form-field>
     </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título da Avaliação</mat-label>
+      <input matInput formControlName="titulo">
+      <mat-error *ngIf="form.get('titulo')?.hasError('required')">Obrigatório</mat-error>
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Descrição</mat-label>
@@ -23,12 +35,6 @@
     </mat-form-field>
 
     <div class="grid-3">
-      <mat-form-field appearance="outline">
-        <mat-label>ID do Curso</mat-label>
-        <input matInput type="number" formControlName="cursoId">
-        <mat-error *ngIf="form.get('cursoId')?.hasError('required')">Obrigatório</mat-error>
-      </mat-form-field>
-
       <mat-form-field appearance="outline">
         <mat-label>Tempo Limite (min)</mat-label>
         <input matInput type="number" formControlName="tempoLimiteMinutos">
@@ -38,13 +44,13 @@
         <mat-label>Tentativas</mat-label>
         <input matInput type="number" formControlName="tentativasPermitidas">
       </mat-form-field>
-    </div>
 
-    <mat-form-field appearance="outline" class="half-width">
-      <mat-label>Nota Mínima (%)</mat-label>
-      <input matInput type="number" formControlName="notaMinima">
-      <span matSuffix>%</span>
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nota Mínima (%)</mat-label>
+        <input matInput type="number" formControlName="notaMinima">
+        <span matSuffix>%</span>
+      </mat-form-field>
+    </div>
 
     <mat-divider class="my-3"></mat-divider>
 
