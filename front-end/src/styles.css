@@ -1,3 +1,15 @@
+/* ============================
+   VARIÁVEIS GLOBAIS DO LAYOUT
+   ============================ */
+:root {
+  --topbar-height: 80px;
+  --sidebar-width: 250px;
+}
+
+/* ============================
+   ANGULAR MATERIAL THEME
+   (seu código original preservado)
+   ============================ */
 @use '@angular/material' as mat;
 
 @include mat.all-component-themes(mat.define-theme((
@@ -11,11 +23,15 @@
   )
 )));
 
-
-
+/* ============================
+   GLOBAL RESET
+   ============================ */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; 
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
 }
