@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { AvaliacaoService } from '../../../services/avaliacao.service';
 import { Avaliacao } from '../../../models/avaliacao.model';
 import { AvaliacaoFormDialogComponent } from './avaliacao-form-dialog/avaliacao-form-dialog.component';
@@ -46,11 +47,37 @@ export class GerenciarAvaliacoesComponent implements OnInit {
     });
   }
 
-  abrirDialog(avaliacao?: Avaliacao) {
+  abrirDialog(avaliacaoResumida?: Avaliacao) {
+    
+    if (avaliacaoResumida && avaliacaoResumida.id) {
+      this.avaliacaoService.buscarPorId(avaliacaoResumida.id).subscribe({
+        next: (avaliacaoCompleta) => {
+          this.abrirModal(avaliacaoCompleta);
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Erro ao carregar detalhes da avaliação.', 'Fechar');
+        }
+      });
+    } else {
+      this.abrirModal(undefined);
+    }
+  }
+
+  // Método auxiliar para abrir o modal
+  private abrirModal(dados?: Avaliacao) {
     const dialogRef = this.dialog.open(AvaliacaoFormDialogComponent, {
-      width: '1000px', // Aumentei para 1000px para caber tudo confortavelmente
-      maxWidth: '95vw', // Garante que não ultrapasse a tela em celulares
-      data: { avaliacao: avaliacao }
+      width: '1000px',
+      maxWidth: '95vw',
+      disableClose: true, // Evita fechar clicando fora
+      data: { avaliacao: dados }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.carregarAvaliacoes();
+        this.snackBar.open('Avaliação salva com sucesso!', 'OK', { duration: 3000 });
+      }
     });
   }
 

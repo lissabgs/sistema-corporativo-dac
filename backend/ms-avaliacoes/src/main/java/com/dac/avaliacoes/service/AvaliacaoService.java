@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ArrayList; // <--- Não esqueça deste import
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class AvaliacaoService {
     private QuestaoRepository questaoRepository;
 
     @Autowired
-    private TentativaRepository tentativaRepository; // <--- Injeção Nova
+    private TentativaRepository tentativaRepository;
 
     @Autowired
     private CursosClient cursosClient;
@@ -48,8 +49,39 @@ public class AvaliacaoService {
         avaliacao.setNotaMinima(dto.getNotaMinima());
         avaliacao.setAtivo(true);
 
+        // --- CORREÇÃO: Processar e Salvar as Questões ---
+        if (dto.getQuestoes() != null && !dto.getQuestoes().isEmpty()) {
+            List<Questao> questoesEntidade = dto.getQuestoes().stream().map(qDto -> {
+                Questao q = new Questao();
+                q.setEnunciado(qDto.getEnunciado());
+                q.setPeso(qDto.getPeso());
+
+                // Converte String para Enum (OBJETIVA / DISCURSIVA)
+                try {
+                    q.setTipoQuestao(TipoQuestao.valueOf(qDto.getTipoQuestao()));
+                } catch (Exception e) {
+                    // Fallback seguro ou log de erro
+                    q.setTipoQuestao(TipoQuestao.OBJETIVA);
+                }
+
+                q.setOpcoesResposta(qDto.getOpcoesResposta()); // O JSON das alternativas
+                q.setRespostaCorreta(qDto.getRespostaCorreta());
+                q.setOrdem(qDto.getOrdem());
+
+                // VINCULA A QUESTÃO À AVALIAÇÃO (Importante para o OneToMany funcionar)
+                q.setAvaliacao(avaliacao);
+
+                return q;
+            }).collect(Collectors.toList());
+
+            avaliacao.setQuestoes(questoesEntidade);
+        } else {
+            avaliacao.setQuestoes(new ArrayList<>());
+        }
+
+        // O CascadeType.ALL na entidade Avaliacao vai salvar as questões automaticamente
         Avaliacao avaliacaoSalva = avaliacaoRepository.save(avaliacao);
-        logger.info(">>> [MS-AVALIACOES] Avaliação criada com ID: " + avaliacaoSalva.getId());
+        logger.info(">>> [MS-AVALIACOES] Avaliação criada com ID: " + avaliacaoSalva.getId() + " e " + avaliacaoSalva.getQuestoes().size() + " questões.");
 
         return converterParaDTO(avaliacaoSalva);
     }
@@ -61,7 +93,6 @@ public class AvaliacaoService {
                 .stream()
                 .map(av -> {
                     AvaliacaoDTO dto = converterParaDTO(av);
-                    // Verifica se existe alguma tentativa para esta avaliação
                     boolean temTentativas = tentativaRepository.existsByAvaliacaoId(av.getId());
                     dto.setTemTentativas(temTentativas);
                     return dto;
@@ -73,7 +104,6 @@ public class AvaliacaoService {
     public List<Object> buscarCursosSemAvaliacao() {
         try {
             List<Object> todosCursos = cursosClient.listarCursos();
-
             List<Long> idsComAvaliacao = avaliacaoRepository.findAll().stream()
                     .map(Avaliacao::getCursoId)
                     .collect(Collectors.toList());
@@ -105,16 +135,13 @@ public class AvaliacaoService {
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com ID: " + id));
 
         AvaliacaoDTO dto = converterParaDTO(avaliacao);
-        // Também preenche no detalhe se tem tentativas
         dto.setTemTentativas(tentativaRepository.existsByAvaliacaoId(id));
-
         return dto;
     }
 
     // ========== ATUALIZAR ==========
     @Transactional
     public AvaliacaoDTO atualizarAvaliacao(Long id, CriarAvaliacaoRequestDTO dto) {
-        // Validação de Segurança: Se já tem tentativas, não pode editar
         if (tentativaRepository.existsByAvaliacaoId(id)) {
             throw new RuntimeException("Não é possível editar esta avaliação pois já existem alunos que a realizaram.");
         }
@@ -128,30 +155,46 @@ public class AvaliacaoService {
         avaliacao.setTentativasPermitidas(dto.getTentativasPermitidas());
         avaliacao.setNotaMinima(dto.getNotaMinima());
 
-        // Se quiser permitir atualizar questões, a lógica seria aqui,
-        // mas com a trava acima, garantimos a integridade.
+        // Para atualizar questões, o ideal seria limpar a lista atual e adicionar as novas
+        // se o seu front envia a lista completa na edição.
+        if (dto.getQuestoes() != null) {
+            avaliacao.getQuestoes().clear();
+
+            List<Questao> novasQuestoes = dto.getQuestoes().stream().map(qDto -> {
+                Questao q = new Questao();
+                q.setEnunciado(qDto.getEnunciado());
+                q.setPeso(qDto.getPeso());
+                try { q.setTipoQuestao(TipoQuestao.valueOf(qDto.getTipoQuestao())); }
+                catch (Exception e) { q.setTipoQuestao(TipoQuestao.OBJETIVA); }
+                q.setOpcoesResposta(qDto.getOpcoesResposta());
+                q.setRespostaCorreta(qDto.getRespostaCorreta());
+                q.setOrdem(qDto.getOrdem());
+                q.setAvaliacao(avaliacao);
+                return q;
+            }).collect(Collectors.toList());
+
+            avaliacao.getQuestoes().addAll(novasQuestoes);
+        }
 
         Avaliacao avaliacaoAtualizada = avaliacaoRepository.save(avaliacao);
         return converterParaDTO(avaliacaoAtualizada);
     }
 
-    // ========== DELETAR (Soft Delete) ==========
+    // ========== DELETAR ==========
     @Transactional
     public void deletarAvaliacao(Long id) {
-        // Validação de Segurança: Se já tem tentativas, não pode excluir
         if (tentativaRepository.existsByAvaliacaoId(id)) {
             throw new RuntimeException("Não é possível excluir esta avaliação pois já existem alunos que a realizaram.");
         }
-
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com ID: " + id));
 
+        // Soft Delete
         avaliacao.setAtivo(false);
         avaliacaoRepository.save(avaliacao);
-        logger.info(">>> [MS-AVALIACOES] Avaliação " + id + " deletada");
     }
 
-    // ========== CONVERTER PARA DTO ==========
+    // ========== CONVERTER PARA DTO (ATUALIZADO) ==========
     private AvaliacaoDTO converterParaDTO(Avaliacao avaliacao) {
         AvaliacaoDTO dto = new AvaliacaoDTO();
         dto.setId(avaliacao.getId());
@@ -164,6 +207,25 @@ public class AvaliacaoService {
         dto.setNotaMinima(avaliacao.getNotaMinima());
         dto.setAtivo(avaliacao.getAtivo());
         dto.setDataCriacao(avaliacao.getDataCriacao());
+
+        // CORREÇÃO: Mapear as questões para enviar ao Frontend
+        if (avaliacao.getQuestoes() != null) {
+            List<QuestaoDTO> questoesDTO = avaliacao.getQuestoes().stream().map(q -> {
+                QuestaoDTO qDto = new QuestaoDTO();
+                qDto.setId(q.getId());
+                qDto.setEnunciado(q.getEnunciado());
+                qDto.setPeso(q.getPeso());
+                // Converte Enum para String
+                qDto.setTipoQuestao(q.getTipoQuestao() != null ? q.getTipoQuestao().name() : "OBJETIVA");
+                qDto.setOpcoesResposta(q.getOpcoesResposta());
+                qDto.setRespostaCorreta(q.getRespostaCorreta());
+                qDto.setOrdem(q.getOrdem());
+                return qDto;
+            }).collect(Collectors.toList());
+
+            dto.setQuestoes(questoesDTO);
+        }
+
         return dto;
     }
 }

@@ -1,50 +1,58 @@
-<div class="cursos-grid">
-  <mat-card class="curso-card" *ngFor="let curso of cursosFiltrados">
+<div class="page-background">
+  <div class="container-catalogo">
     
-    <div class="curso-header">
-      <div class="curso-title-row">
-        <h3>{{ curso.titulo }}</h3>
-        <mat-chip-set>
-          <mat-chip>{{ curso.categoriaId }}</mat-chip>
-        </mat-chip-set>
-      </div>
-      <p class="instrutor">ID Instrutor: {{ curso.instrutorId }}</p>
+    <div class="header-page">
+      <h1>Catálogo de Cursos</h1>
+      <p>Explore os cursos disponíveis para o seu departamento ({{ usuario?.departamentoNome }}) e nível ({{ usuario?.nivel }}).</p>
     </div>
 
-    <mat-card-content>
-      <p class="descricao">{{ curso.descricao }}</p>
+    <div *ngIf="loading" class="loading-box">
+      <p>Carregando cursos...</p>
+    </div>
+
+    <div class="curso-grid" *ngIf="!loading">
       
-      <div class="meta-info">
-        <span><mat-icon>timer</mat-icon> {{ curso.duracaoEstimada }}</span>
+      <mat-card *ngFor="let curso of cursosDisponiveis" class="curso-card">
+        <mat-card-header>
+          <div mat-card-avatar class="course-avatar">
+            <mat-icon>school</mat-icon>
+          </div>
+          <mat-card-title>{{ curso.titulo }}</mat-card-title>
+          <mat-card-subtitle>{{ curso.codigo }}</mat-card-subtitle>
+        </mat-card-header>
         
-        <span><mat-icon>signal_cellular_alt</mat-icon> {{ curso.nivelDificuldade }}</span>
+        <mat-card-content>
+          <p class="desc-text">{{ curso.descricao }}</p>
+          
+          <div class="chips-row">
+            <mat-chip [color]="getCorNivel(curso.nivelDificuldade)" selected>
+              {{ curso.nivelDificuldade }}
+            </mat-chip>
+            <mat-chip class="xp-chip">
+              <mat-icon matChipAvatar>star</mat-icon>
+              {{ curso.xpOferecido }} XP
+            </mat-chip>
+            <mat-chip class="time-chip">
+              <mat-icon matChipAvatar>schedule</mat-icon>
+              {{ curso.duracaoEstimada }}
+            </mat-chip>
+          </div>
+        </mat-card-content>
         
-        <span><mat-icon>star</mat-icon> {{ curso.avaliacaoMedia || '-' }}</span>
-      </div>
+        <mat-card-actions align="end">
+          <button mat-raised-button color="primary" (click)="inscrever(curso)">
+            <mat-icon>login</mat-icon> Inscrever-se
+          </button>
+        </mat-card-actions>
+      </mat-card>
 
-      <div class="xp-badge">
-        <mat-icon>bolt</mat-icon>
-        <strong>{{ curso.xpOferecido }} XP</strong>
-      </div>
+    </div>
 
-      <div *ngIf="curso.prerequisitosAtendidos === false" class="aviso-requisito">
-        <mat-icon color="warn">warning</mat-icon>
-        <span>Pré-requisitos pendentes</span>
-      </div>
-    </mat-card-content>
+    <div *ngIf="!loading && cursosDisponiveis.length === 0" class="empty-state">
+      <mat-icon>sentiment_dissatisfied</mat-icon>
+      <h3>Nenhum curso disponível no momento.</h3>
+      <p>Você já completou tudo ou não há cursos ativos para o seu perfil.</p>
+    </div>
 
-    <mat-card-actions style="display: flex; justify-content: flex-end;">
-      
-      <button mat-raised-button 
-        [color]="jaInscrito(curso.id) ? 'accent' : 'primary'"
-        (click)="tratarAcao(curso)">
-        
-        <mat-icon>{{ jaInscrito(curso.id) ? 'play_circle' : 'visibility' }}</mat-icon>
-        &nbsp;
-        {{ jaInscrito(curso.id) ? 'Continuar' : 'Ver Detalhes' }}
-      
-      </button>
-
-    </mat-card-actions>
-  </mat-card>
+  </div>
 </div>
