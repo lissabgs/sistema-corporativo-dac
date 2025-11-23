@@ -17,7 +17,7 @@ public class DashboardInstrutorDTO {
     private List<TentativaPendenteDTO> tentativasPendentes;
 
     // Estatísticas por Avaliação
-    private List<RelatorioGeralDTO.EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao;
+    private List<EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao;
 
     // Construtor vazio
     public DashboardInstrutorDTO() {}
@@ -27,7 +27,7 @@ public class DashboardInstrutorDTO {
                                  Long tentativasPendentesCorrecao, Double mediaNotasGeral,
                                  List<AvaliacaoResumoDTO> avaliacoesRecentes,
                                  List<TentativaPendenteDTO> tentativasPendentes,
-                                 List<RelatorioGeralDTO.EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao) {
+                                 List<EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao) {
         this.totalAvaliacoesCriadas = totalAvaliacoesCriadas;
         this.totalTentativasRealizadas = totalTentativasRealizadas;
         this.tentativasPendentesCorrecao = tentativasPendentesCorrecao;
@@ -39,23 +39,37 @@ public class DashboardInstrutorDTO {
 
     // Getters e Setters
     public Long getTotalAvaliacoesCriadas() { return totalAvaliacoesCriadas; }
-    public void setTotalAvaliacoesCriadas(Long totalAvaliacoesCriadas) { this.totalAvaliacoesCriadas = totalAvaliacoesCriadas; }
+    public void setTotalAvaliacoesCriadas(Long totalAvaliacoesCriadas) {
+        this.totalAvaliacoesCriadas = totalAvaliacoesCriadas;
+    }
 
     public Long getTotalTentativasRealizadas() { return totalTentativasRealizadas; }
-    public void setTotalTentativasRealizadas(Long totalTentativasRealizadas) { this.totalTentativasRealizadas = totalTentativasRealizadas; }
+    public void setTotalTentativasRealizadas(Long totalTentativasRealizadas) {
+        this.totalTentativasRealizadas = totalTentativasRealizadas;
+    }
 
     public Long getTentativasPendentesCorrecao() { return tentativasPendentesCorrecao; }
-    public void setTentativasPendentesCorrecao(Long tentativasPendentesCorrecao) { this.tentativasPendentesCorrecao = tentativasPendentesCorrecao; }
+    public void setTentativasPendentesCorrecao(Long tentativasPendentesCorrecao) {
+        this.tentativasPendentesCorrecao = tentativasPendentesCorrecao;
+    }
 
     public Double getMediaNotasGeral() { return mediaNotasGeral; }
-    public void setMediaNotasGeral(Double mediaNotasGeral) { this.mediaNotasGeral = mediaNotasGeral; }
+    public void setMediaNotasGeral(Double mediaNotasGeral) {
+        this.mediaNotasGeral = mediaNotasGeral;
+    }
 
     public List<AvaliacaoResumoDTO> getAvaliacoesRecentes() { return avaliacoesRecentes; }
-    public void setAvaliacoesRecentes(List<AvaliacaoResumoDTO> avaliacoesRecentes) { this.avaliacoesRecentes = avaliacoesRecentes; }
+    public void setAvaliacoesRecentes(List<AvaliacaoResumoDTO> avaliacoesRecentes) {
+        this.avaliacoesRecentes = avaliacoesRecentes;
+    }
 
     public List<TentativaPendenteDTO> getTentativasPendentes() { return tentativasPendentes; }
-    public void setTentativasPendentes(List<TentativaPendenteDTO> tentativasPendentes) { this.tentativasPendentes = tentativasPendentes; }
+    public void setTentativasPendentes(List<TentativaPendenteDTO> tentativasPendentes) {
+        this.tentativasPendentes = tentativasPendentes;
+    }
 
-    public List<RelatorioGeralDTO.EstatisticaAvaliacaoDTO> getEstatisticasPorAvaliacao() { return estatisticasPorAvaliacao; }
-    public void setEstatisticasPorAvaliacao(List<RelatorioGeralDTO.EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao) { this.estatisticasPorAvaliacao = estatisticasPorAvaliacao; }
+    public List<EstatisticaAvaliacaoDTO> getEstatisticasPorAvaliacao() { return estatisticasPorAvaliacao; }
+    public void setEstatisticasPorAvaliacao(List<EstatisticaAvaliacaoDTO> estatisticasPorAvaliacao) {
+        this.estatisticasPorAvaliacao = estatisticasPorAvaliacao;
+    }
 }

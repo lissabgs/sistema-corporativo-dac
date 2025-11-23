@@ -102,16 +102,15 @@ public class DashboardInstrutorService {
                 .average()
                 .orElse(0.0);
 
-        AvaliacaoResumoDTO dto = new AvaliacaoResumoDTO();
-        dto.setId(avaliacao.getId());
-        dto.setCodigo(avaliacao.getCodigo());
-        dto.setTitulo(avaliacao.getTitulo());
-        dto.setCursoId(avaliacao.getCursoId());
-        dto.setTotalTentativas(totalTentativas);
-        dto.setMediaNotas(mediaNotas);
-        dto.setDataCriacao(avaliacao.getDataCriacao());
-
-        return dto;
+        return new AvaliacaoResumoDTO(
+                avaliacao.getId(),
+                avaliacao.getCodigo(),
+                avaliacao.getTitulo(),
+                avaliacao.getCursoId(),
+                totalTentativas,
+                mediaNotas,
+                avaliacao.getDataCriacao()
+        );
     }
 
     private TentativaPendenteDTO converterParaTentativaPendente(Tentativa tentativa) {
@@ -124,15 +123,14 @@ public class DashboardInstrutorService {
             logger.warn("Não foi possível buscar dados do funcionário ID: " + tentativa.getFuncionarioId());
         }
 
-        TentativaPendenteDTO dto = new TentativaPendenteDTO();
-        dto.setTentativaId(tentativa.getId());
-        dto.setFuncionarioId(tentativa.getFuncionarioId());
-        dto.setFuncionarioNome(funcionarioNome);
-        dto.setAvaliacaoTitulo(tentativa.getAvaliacao().getTitulo());
-        dto.setDataFim(tentativa.getDataFim());
-        dto.setNotaObtida(tentativa.getNotaObtida());
-
-        return dto;
+        return new TentativaPendenteDTO(
+                tentativa.getId(),
+                tentativa.getFuncionarioId(),
+                funcionarioNome,
+                tentativa.getAvaliacao().getTitulo(),
+                tentativa.getDataFim(),
+                tentativa.getNotaObtida()
+        );
     }
 
     private EstatisticaAvaliacaoDTO calcularEstatisticasAvaliacao(Avaliacao avaliacao) {
@@ -161,17 +159,16 @@ public class DashboardInstrutorService {
 
         Double taxaAprovacao = totalTentativas > 0 ? (aprovadas * 100.0) / totalTentativas : 0.0;
 
-        // Usando o construtor completo para evitar erros
         return new EstatisticaAvaliacaoDTO(
-                avaliacao.getId(),           // avaliacaoId
-                avaliacao.getTitulo(),       // avaliacaoTitulo
-                totalTentativas,             // totalTentativas
-                aprovadas,                   // tentativasAprovadas
-                reprovadas,                  // tentativasReprovadas
-                mediaNotas,                  // mediaNotas
-                notaMin,                     // notaMinima
-                notaMax,                     // notaMaxima
-                taxaAprovacao                // taxaAprovacao
+                avaliacao.getId(),
+                avaliacao.getTitulo(),
+                totalTentativas,
+                aprovadas,
+                reprovadas,
+                mediaNotas,
+                notaMin,
+                notaMax,
+                taxaAprovacao
         );
     }
 }
