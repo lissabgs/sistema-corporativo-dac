@@ -3,41 +3,35 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* -------------------------
-   ESPAÇAMENTO GERAL
--------------------------- */
+/* Remove o espaço gigante acima dos cards */
 .dashboard-content {
-  padding: 32px;
-  margin-top: 20px;
+  padding: 0 32px 32px 32px; 
 }
 
 /* -------------------------
-   GRIDS PRINCIPAIS
+   GRIDS
 -------------------------- */
 .grid {
   display: grid;
   gap: 28px;
 }
 
-/* Primeira linha (KPIs) */
 .header-grid {
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  gap: 40px !important;
   margin-bottom: 40px !important;
 }
 
-/* Linha do meio (3 cards) */
 .courses-grid {
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  gap: 40px !important;
   margin-top: 10px;
   margin-bottom: 40px !important;
 }
 
-/* Última linha (Ranking + Atividades) */
 .bottom-grid {
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px !important;          /* MAIS ESPAÇO ENTRE OS CARDS */
+  gap: 40px !important;
   margin-top: 40px !important;
 }
 
@@ -45,14 +39,14 @@
    CARDS
 -------------------------- */
 .card {
-  padding:30px !important;       /* ANTES 22px — mais espaço interno */
+  padding: 30px !important;
   border-radius: 14px;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
 /* -------------------------
-   KPI CARDS
+   KPI
 -------------------------- */
 .kpi .kpi-header {
   display: flex;
@@ -83,39 +77,20 @@ mat-progress-bar .mdc-linear-progress__bar-inner {
   background-color: #002F54 !important;
 }
 
-/* -------------------------
-   CHIPS
--------------------------- */
 mat-chip.mat-chip {
   background: #002F54 !important;
   color: #fff !important;
   font-weight: 600;
 }
 
-/* -------------------------
-   ÍCONES
--------------------------- */
 mat-icon {
   color: #002F54 !important;
 }
 
-/* -------------------------
-   LIST ITEMS
--------------------------- */
 mat-list-item {
   padding: 70px 0;
-  margin-bottom: 0px;
 }
 
-.row-end {
-  margin-top: 10px;
-}
-
-/* -------------------------
-   BOTÕES
--------------------------- */
-
-/* Botões primários dentro dos cards */
 .card button[color="primary"],
 .card button.mat-mdc-raised-button[color="primary"] {
   background-color: #002F54 !important;
@@ -123,15 +98,7 @@ mat-list-item {
   border-radius: 8px;
 }
 
-/* Stroked buttons */
 .card button.mat-mdc-stroked-button[color="primary"] {
   border-color: #002F54 !important;
   color: #002F54 !important;
-}
-
-/* Botões dentro das listas (certificado, iniciar) — NÃO esconder */
-mat-list-item button.mat-mdc-button[color="primary"] {
-  display: inline-flex !important;
-  color: #002F54 !important;
-  background: transparent !important;
 }
