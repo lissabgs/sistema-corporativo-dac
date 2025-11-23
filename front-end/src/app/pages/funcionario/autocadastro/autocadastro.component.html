@@ -1,5 +1,7 @@
-<div class="wallpaper">
-  <div class="autocadastro-container">
+<div class="autocadastro-wallpaper">
+
+  <div class="autocadastro-wrapper">
+
     <mat-card class="autocadastro-card">
       <h2 class="autocadastro-title">Autocadastro de Colaborador</h2>
 
@@ -9,57 +11,52 @@
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>CPF</mat-label>
             <input matInput 
-                   formControlName="cpf" 
-                   placeholder="000.000.000-00" 
+                   formControlName="cpf"
+                   placeholder="000.000.000-00"
                    maxlength="14"
-                   (input)="formatarCPF($event)" />
-            <mat-error *ngIf="formCadastro.get('cpf')?.invalid && formCadastro.get('cpf')?.touched">
-              CPF é obrigatório
-            </mat-error>
+                   (input)="formatarCPF($event)">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome completo</mat-label>
-            <input matInput formControlName="nome" />
-            <mat-error *ngIf="formCadastro.get('nome')?.invalid && formCadastro.get('nome')?.touched">
-              Nome é obrigatório
-            </mat-error>
+            <input matInput formControlName="nome">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>E-mail corporativo</mat-label>
-            <input matInput formControlName="email" placeholder="exemplo@empresa.com.br" />
-            <mat-error *ngIf="emailInvalido">
-                Domínio do e-mail deve ser {{ '@' + dominioEmpresa }}
-            </mat-error>
+            <input matInput formControlName="email" placeholder="exemplo@empresa.com.br">
           </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="full-width">
             <mat-label>Departamento</mat-label>
             <mat-select formControlName="departamento_id">
               <mat-option *ngFor="let dept of departamentos" [value]="dept.id">
                 {{ dept.nome }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="formCadastro.get('departamento_id')?.invalid && formCadastro.get('departamento_id')?.touched">
-              Departamento é obrigatório
-            </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Cargo</mat-label>
-            <input matInput formControlName="cargo" />
-            <mat-error *ngIf="formCadastro.get('cargo')?.invalid && formCadastro.get('cargo')?.touched">
-              Cargo é obrigatório
-            </mat-error>
+            <input matInput formControlName="cargo">
           </mat-form-field>
+
         </div>
 
         <div class="btns">
-          <button mat-raised-button color="primary" type="submit">Cadastrar</button>
-          <button mat-stroked-button color="primary" type="button" (click)="voltarLogin()">Voltar</button>
+         <button mat-raised-button class="btn-cadastro cadastrar-button" type="submit">
+          Cadastrar
+        </button>
+
+        <button mat-stroked-button class="btn-voltar" type="button" (click)="voltarLogin()">
+            Voltar
+        </button>
+
         </div>
+
       </form>
     </mat-card>
+
   </div>
+
 </div>
