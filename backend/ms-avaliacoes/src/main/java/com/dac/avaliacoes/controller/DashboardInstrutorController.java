@@ -1,4 +1,3 @@
-
 package com.dac.avaliacoes.controller;
 
 import com.dac.avaliacoes.dto.DashboardInstrutorDTO;
@@ -18,13 +17,25 @@ public class DashboardInstrutorController {
     /**
      * R14: Dashboard do Instrutor
      * GET /api/dashboard/instrutor?instrutorId=1
+     *
+     * Retorna estatísticas consolidadas do instrutor:
+     * - Total de avaliações criadas
+     * - Total de tentativas realizadas
+     * - Tentativas pendentes de correção
+     * - Média geral de notas
+     * - Avaliações recentes
+     * - Lista de tentativas pendentes
+     * - Estatísticas por avaliação
+     *
+     * Acesso: INSTRUTOR e ADMINISTRADOR
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
     public ResponseEntity<DashboardInstrutorDTO> getDashboard(
             @RequestParam(required = false) Long instrutorId) {
 
-        // Se instrutorId não for fornecido, usar o ID do token (futura implementação)
+        // Se instrutorId não for fornecido, usar o ID padrão
+        // Futuramente, pode extrair do token JWT
         if (instrutorId == null) {
             instrutorId = 1L; // Valor padrão para teste
         }

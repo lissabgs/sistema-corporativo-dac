@@ -1,17 +1,9 @@
 package com.dac.avaliacoes.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "respostas")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Resposta {
 
     @Id
@@ -26,11 +18,33 @@ public class Resposta {
     @JoinColumn(name = "questao_id", nullable = false)
     private Questao questao;
 
-    @Column(columnDefinition = "TEXT")     // ← Resposta (texto, letra, etc)
+    @Column(columnDefinition = "TEXT")
     private String respostaFuncionario;
 
     @Column(nullable = false)
-    private Double pontuacao = 0.0;        // ← Pontos ganhos (calculado automaticamente para objetivas)
+    private Double pontuacao = 0.0;
 
-    private Boolean estaCorreta;           // ← True/False/Null (para dissertativa)
+    private Boolean estaCorreta;
+
+    // Construtor vazio
+    public Resposta() {}
+
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Tentativa getTentativa() { return tentativa; }
+    public void setTentativa(Tentativa tentativa) { this.tentativa = tentativa; }
+
+    public Questao getQuestao() { return questao; }
+    public void setQuestao(Questao questao) { this.questao = questao; }
+
+    public String getRespostaFuncionario() { return respostaFuncionario; }
+    public void setRespostaFuncionario(String respostaFuncionario) { this.respostaFuncionario = respostaFuncionario; }
+
+    public Double getPontuacao() { return pontuacao; }
+    public void setPontuacao(Double pontuacao) { this.pontuacao = pontuacao; }
+
+    public Boolean getEstaCorreta() { return estaCorreta; }
+    public void setEstaCorreta(Boolean estaCorreta) { this.estaCorreta = estaCorreta; }
 }

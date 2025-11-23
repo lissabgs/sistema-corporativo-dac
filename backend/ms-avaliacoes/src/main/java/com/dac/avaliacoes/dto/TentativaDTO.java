@@ -1,15 +1,7 @@
 package com.dac.avaliacoes.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class TentativaDTO {
     private Long id;
     private Long funcionarioId;
@@ -19,4 +11,45 @@ public class TentativaDTO {
     private Double notaObtida;
     private String status;
     private Integer numeroTentativa;
+
+    // Construtor vazio
+    public TentativaDTO() {}
+
+    // Construtor completo
+    public TentativaDTO(Long id, Long funcionarioId, Long avaliacaoId, LocalDateTime dataInicio,
+                        LocalDateTime dataFim, Double notaObtida, String status, Integer numeroTentativa) {
+        this.id = id;
+        this.funcionarioId = funcionarioId;
+        this.avaliacaoId = avaliacaoId;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
+        this.notaObtida = notaObtida;
+        this.status = status;
+        this.numeroTentativa = numeroTentativa;
+    }
+
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getFuncionarioId() { return funcionarioId; }
+    public void setFuncionarioId(Long funcionarioId) { this.funcionarioId = funcionarioId; }
+
+    public Long getAvaliacaoId() { return avaliacaoId; }
+    public void setAvaliacaoId(Long avaliacaoId) { this.avaliacaoId = avaliacaoId; }
+
+    public LocalDateTime getDataInicio() { return dataInicio; }
+    public void setDataInicio(LocalDateTime dataInicio) { this.dataInicio = dataInicio; }
+
+    public LocalDateTime getDataFim() { return dataFim; }
+    public void setDataFim(LocalDateTime dataFim) { this.dataFim = dataFim; }
+
+    public Double getNotaObtida() { return notaObtida; }
+    public void setNotaObtida(Double notaObtida) { this.notaObtida = notaObtida; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Integer getNumeroTentativa() { return numeroTentativa; }
+    public void setNumeroTentativa(Integer numeroTentativa) { this.numeroTentativa = numeroTentativa; }
 }

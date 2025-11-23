@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,9 +42,7 @@ public class DashboardInstrutorService {
 
         DashboardInstrutorDTO dashboard = new DashboardInstrutorDTO();
 
-        // 1. Total de Avaliações Criadas (assumindo que cursoId está relacionado ao instrutor)
-        // NOTA: Aqui você precisa de uma lógica para filtrar por instrutor
-        // Por enquanto, vamos pegar todas as avaliações
+        // 1. Total de Avaliações Criadas
         Long totalAvaliacoes = avaliacaoRepository.count();
         dashboard.setTotalAvaliacoesCriadas(totalAvaliacoes);
 

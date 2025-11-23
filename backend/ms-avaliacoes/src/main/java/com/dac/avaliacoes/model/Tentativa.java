@@ -1,19 +1,11 @@
 package com.dac.avaliacoes.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "tentativas")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Tentativa {
 
     @Id
@@ -21,7 +13,7 @@ public class Tentativa {
     private Long id;
 
     @Column(nullable = false)
-    private Long funcionarioId;            // ← FK soft (referencia ms-usuarios)
+    private Long funcionarioId;
 
     @ManyToOne
     @JoinColumn(name = "avaliacao_id", nullable = false)
@@ -40,7 +32,7 @@ public class Tentativa {
     private StatusTentativa status = StatusTentativa.EM_PROGRESSO;
 
     @Column(nullable = false)
-    private Integer numeroTentativa;       // ← 1ª tentativa, 2ª tentativa, etc
+    private Integer numeroTentativa;
 
     @OneToMany(mappedBy = "tentativa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resposta> respostas;
@@ -48,5 +40,37 @@ public class Tentativa {
     @OneToMany(mappedBy = "tentativa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Correcao> correcoes;
 
+    // Construtor vazio
+    public Tentativa() {}
 
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getFuncionarioId() { return funcionarioId; }
+    public void setFuncionarioId(Long funcionarioId) { this.funcionarioId = funcionarioId; }
+
+    public Avaliacao getAvaliacao() { return avaliacao; }
+    public void setAvaliacao(Avaliacao avaliacao) { this.avaliacao = avaliacao; }
+
+    public LocalDateTime getDataInicio() { return dataInicio; }
+    public void setDataInicio(LocalDateTime dataInicio) { this.dataInicio = dataInicio; }
+
+    public LocalDateTime getDataFim() { return dataFim; }
+    public void setDataFim(LocalDateTime dataFim) { this.dataFim = dataFim; }
+
+    public Double getNotaObtida() { return notaObtida; }
+    public void setNotaObtida(Double notaObtida) { this.notaObtida = notaObtida; }
+
+    public StatusTentativa getStatus() { return status; }
+    public void setStatus(StatusTentativa status) { this.status = status; }
+
+    public Integer getNumeroTentativa() { return numeroTentativa; }
+    public void setNumeroTentativa(Integer numeroTentativa) { this.numeroTentativa = numeroTentativa; }
+
+    public List<Resposta> getRespostas() { return respostas; }
+    public void setRespostas(List<Resposta> respostas) { this.respostas = respostas; }
+
+    public List<Correcao> getCorrecoes() { return correcoes; }
+    public void setCorrecoes(List<Correcao> correcoes) { this.correcoes = correcoes; }
 }
