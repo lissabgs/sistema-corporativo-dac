@@ -1,0 +1,64 @@
+/* Container Principal */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+/* Cabeçalho */
+.form-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #0d47a1; /* Azul Escuro */
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.form-header p {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Corpo */
+.custom-content {
+  padding: 24px !important;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+/* Títulos */
+.section-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  border-left: 4px solid #0d47a1;
+  padding-left: 10px;
+  text-transform: uppercase;
+}
+
+/* Grids */
+.full-width { width: 100%; }
+.mt-2 { margin-top: 15px; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Código menor, Nome maior */
+  gap: 15px;
+}
+
+/* Rodapé */
+.dialog-actions {
+  padding: 15px 24px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

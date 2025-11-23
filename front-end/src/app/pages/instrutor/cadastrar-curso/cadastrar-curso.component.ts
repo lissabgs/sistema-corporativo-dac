@@ -180,6 +180,8 @@ export class CadastrarCursoComponent implements OnInit {
     const grupo = this.fb.group({
       titulo: [dados?.titulo || 'Novo Módulo', Validators.required],
       ordem: [dados?.ordem || this.modulos.length + 1, Validators.required],
+      // NOVO: Controle no Módulo (Padrão TRUE/Obrigatório)
+      obrigatorio: [dados?.obrigatorio !== false], 
       aulas: this.fb.array([])
     });
 
@@ -212,8 +214,6 @@ export class CadastrarCursoComponent implements OnInit {
       titulo: ['', Validators.required],
       urlConteudo: ['', Validators.required],
       ordem: [aulas.length + 1],
-      obrigatorio: [true]
-      // REMOVIDO: xpModulo: [10, Validators.min(0)]
     }));
   }
 

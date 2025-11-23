@@ -1,1 +1,77 @@
-<p>usuario-form-dialog works!</p>
+<div class="dialog-container">
+
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Editar Usuário' : 'Novo Usuário' }}</h2>
+    <p>Preencha os dados pessoais e de acesso do funcionário.</p>
+  </div>
+
+  <mat-dialog-content class="custom-content">
+    <form [formGroup]="form">
+      
+      <div class="section-title">Dados Pessoais</div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nome Completo</mat-label>
+        <input matInput formControlName="nome" placeholder="Ex: João Silva">
+        <mat-error *ngIf="form.get('nome')?.hasError('required')">Obrigatório</mat-error>
+      </mat-form-field>
+
+      <div class="grid-2">
+        <mat-form-field appearance="outline">
+          <mat-label>CPF</mat-label>
+          <input matInput formControlName="cpf" mask="000.000.000-00" placeholder="000.000.000-00">
+          <mat-error>Obrigatório</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Cargo</mat-label>
+          <input matInput formControlName="cargo" placeholder="Ex: Analista">
+        </mat-form-field>
+      </div>
+
+      <div class="section-title mt-3">Acesso e Permissões</div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-mail Corporativo</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="usuario@empresa.com">
+        <mat-error *ngIf="form.get('email')?.hasError('email')">E-mail inválido</mat-error>
+      </mat-form-field>
+
+      <div class="grid-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Departamento</mat-label>
+          <mat-select formControlName="departamentoId">
+            <mat-option *ngFor="let dept of departamentos" [value]="dept.id">
+              {{ dept.nome }}
+            </mat-option>
+          </mat-select>
+          <mat-error>Obrigatório</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Perfil de Acesso</mat-label>
+          <mat-select formControlName="perfil">
+            <mat-option value="FUNCIONARIO">Funcionário</mat-option>
+            <mat-option value="INSTRUTOR">Instrutor</mat-option>
+            <mat-option value="ADMINISTRADOR">Administrador</mat-option>
+          </mat-select>
+          <mat-error>Obrigatório</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="!isEditMode" class="info-box">
+        <mat-icon>info</mat-icon>
+        <span>A senha inicial será enviada para o e-mail cadastrado.</span>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+
+  <div class="dialog-actions">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+      <mat-icon>save</mat-icon> Salvar
+    </button>
+  </div>
+
+</div>

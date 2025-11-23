@@ -6,76 +6,33 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon'; // <--- Adicionado para os ícones
 import { DepartamentoService } from '../../../../services/departamento.service';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask'; // Opcional: Se usar máscara de CPF
 
 @Component({
   selector: 'app-usuario-form-dialog',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatDialogModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule
+    CommonModule, 
+    ReactiveFormsModule, 
+    MatDialogModule,
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatButtonModule, 
+    MatSelectModule,
+    MatIconModule, // <--- Importante
+    NgxMaskDirective // Se estiver usando a máscara no HTML
   ],
-  template: `
-    <h2 mat-dialog-title>{{ data ? 'Editar' : 'Novo' }} Usuário</h2>
-    <mat-dialog-content>
-      <form [formGroup]="form" style="display: flex; flex-direction: column; gap: 10px; min-width: 300px;">
-        
-        <mat-form-field appearance="outline">
-          <mat-label>Nome</mat-label>
-          <input matInput formControlName="nome">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>E-mail</mat-label>
-          <input matInput formControlName="email">
-        </mat-form-field>
-
-        <div style="display: flex; gap: 10px;">
-          <mat-form-field appearance="outline" style="flex: 1;">
-            <mat-label>CPF</mat-label>
-            <input matInput formControlName="cpf">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" style="flex: 1;">
-            <mat-label>Cargo</mat-label>
-            <input matInput formControlName="cargo">
-          </mat-form-field>
-        </div>
-
-        <div style="display: flex; gap: 10px;">
-          <mat-form-field appearance="outline" style="flex: 1;">
-            <mat-label>Departamento</mat-label>
-            <mat-select formControlName="departamentoId">
-              <mat-option *ngFor="let d of departamentos" [value]="d.id">{{ d.nome }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" style="flex: 1;">
-            <mat-label>Perfil</mat-label>
-            <mat-select formControlName="perfil">
-              <mat-option value="FUNCIONARIO">Funcionário</mat-option>
-              <mat-option value="INSTRUTOR">Instrutor</mat-option>
-              <mat-option value="ADMINISTRADOR">Administrador</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <mat-form-field appearance="outline" *ngIf="!data">
-            <mat-label>Senha Inicial</mat-label>
-            <input matInput formControlName="senha">
-        </mat-form-field>
-
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-raised-button color="primary" (click)="salvar()" [disabled]="form.invalid">Salvar</button>
-    </mat-dialog-actions>
-  `
+  providers: [provideNgxMask()],
+  // Aponta para os arquivos externos para pegar o estilo correto
+  templateUrl: './usuario-form-dialog.html',
+  styleUrls: ['./usuario-form-dialog.css']
 })
 export class UsuarioFormDialogComponent implements OnInit {
   form: FormGroup;
   departamentos: any[] = [];
+  isEditMode: boolean = false; // Variável para controlar título do HTML externo
 
   constructor(
     private fb: FormBuilder,
@@ -83,19 +40,26 @@ export class UsuarioFormDialogComponent implements OnInit {
     private departamentoService: DepartamentoService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    // Verifica se é edição baseado nos dados recebidos
+    this.isEditMode = !!data?.usuario;
+    const usuario = data?.usuario;
+
     this.form = this.fb.group({
-      nome: [data?.nome || '', Validators.required],
-      email: [data?.email || '', [Validators.required, Validators.email]],
-      cpf: [data?.cpf || '', Validators.required],
-      cargo: [data?.cargo || '', Validators.required],
-      departamentoId: [data?.departamentoId || '', Validators.required],
-      perfil: [data?.perfil || 'FUNCIONARIO', Validators.required],
-      senha: ['1234'] 
+      nome: [usuario?.nome || '', Validators.required],
+      email: [usuario?.email || '', [Validators.required, Validators.email]],
+      cpf: [usuario?.cpf || '', Validators.required],
+      cargo: [usuario?.cargo || '', Validators.required],
+      departamentoId: [usuario?.departamentoId || '', Validators.required],
+      perfil: [usuario?.perfil || 'FUNCIONARIO', Validators.required],
+      // Senha não é obrigatória na edição
+      senha: [''] 
     });
 
-    if(data) {
+    if(this.isEditMode) {
         this.form.get('cpf')?.disable();
-        this.form.removeControl('senha'); 
+        // Remove validação de senha se for edição (geralmente senha não se edita aqui)
+        this.form.get('senha')?.clearValidators();
+        this.form.get('senha')?.updateValueAndValidity();
     }
   }
 
@@ -103,8 +67,9 @@ export class UsuarioFormDialogComponent implements OnInit {
     this.departamentoService.listarDepartamentos().subscribe(res => this.departamentos = res);
   }
 
-  salvar() {
+  onSubmit() {
     if (this.form.valid) {
+      // getRawValue inclui campos desabilitados (como CPF)
       this.dialogRef.close(this.form.getRawValue());
     }
   }

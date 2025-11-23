@@ -135,7 +135,7 @@ public class CursoService {
                             finalXpPorAula // AQUI: Usamos o valor calculado, ignorando o do DTO
                     )).collect(Collectors.toList());
                 }
-                return new Modulo(modDto.getTitulo(), modDto.getOrdem(), aulas);
+                return new Modulo(modDto.getTitulo(), modDto.getOrdem(), modDto.isObrigatorio(), aulas);
             }).collect(Collectors.toList());
 
             curso.getModulos().addAll(novosModulos);
