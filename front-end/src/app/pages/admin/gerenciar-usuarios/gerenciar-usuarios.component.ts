@@ -54,19 +54,45 @@ export class GerenciarUsuariosComponent implements OnInit {
     });
   }
 
-  // --- AQUI ESTÁ A MÁGICA DO MODAL ---
   abrirDialog(usuario?: any) {
     const dialogRef = this.dialog.open(UsuarioFormDialogComponent, {
-      width: '700px',      // Largura controlada para ficar com a proporção correta
-      maxWidth: '95vw',    // Responsividade para celular
-      disableClose: true,  // Obriga clicar em cancelar/salvar
-      autoFocus: false,    // Evita focar no primeiro input automaticamente (opcional)
-      data: { usuario: usuario } // Passa os dados (se for edição) ou null (se for novo)
+      width: '600px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: { usuario: usuario } // Passa o usuário se for edição
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.carregarUsuarios(); // Recarrega a lista se salvou
+    dialogRef.afterClosed().subscribe(dadosFormulario => {
+      // Se o usuário clicou em Salvar, 'dadosFormulario' terá o objeto JSON preenchido
+      if (dadosFormulario) {
+        
+        if (usuario) {
+          // === MODO EDIÇÃO (PUT) ===
+          // Precisamos do ID do usuário original e os dados novos do formulário
+          this.funcionarioService.atualizar(usuario.id, dadosFormulario).subscribe({
+            next: () => {
+              this.snackBar.open('Usuário atualizado com sucesso!', 'OK', { duration: 3000 });
+              this.carregarUsuarios();
+            },
+            error: (err) => {
+              console.error(err);
+              this.snackBar.open('Erro ao atualizar usuário.', 'Fechar');
+            }
+          });
+
+        } else {
+          // === MODO CRIAÇÃO (POST) ===
+          this.funcionarioService.criar(dadosFormulario).subscribe({
+            next: () => {
+              this.snackBar.open('Usuário criado com sucesso!', 'OK', { duration: 3000 });
+              this.carregarUsuarios();
+            },
+            error: (err) => {
+              console.error(err);
+              this.snackBar.open('Erro ao criar usuário.', 'Fechar');
+            }
+          });
+        }
       }
     });
   }
