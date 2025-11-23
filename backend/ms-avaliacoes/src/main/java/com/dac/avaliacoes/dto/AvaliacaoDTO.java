@@ -1,6 +1,7 @@
 package com.dac.avaliacoes.dto;
 
 import java.time.LocalDateTime;
+import java.util.List; // <--- Importe List
 
 public class AvaliacaoDTO {
     private Long id;
@@ -13,30 +14,14 @@ public class AvaliacaoDTO {
     private Double notaMinima;
     private Boolean ativo;
     private LocalDateTime dataCriacao;
-
     private boolean temTentativas;
 
-    // Construtor vazio
+    // NOVO CAMPO: Lista de Questões
+    private List<QuestaoDTO> questoes;
+
     public AvaliacaoDTO() {}
 
-    // Construtor completo (atualizado)
-    public AvaliacaoDTO(Long id, String codigo, String titulo, String descricao, Long cursoId,
-                        Integer tempoLimiteMinutos, Integer tentativasPermitidas, Double notaMinima,
-                        Boolean ativo, LocalDateTime dataCriacao, boolean temTentativas) {
-        this.id = id;
-        this.codigo = codigo;
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.cursoId = cursoId;
-        this.tempoLimiteMinutos = tempoLimiteMinutos;
-        this.tentativasPermitidas = tentativasPermitidas;
-        this.notaMinima = notaMinima;
-        this.ativo = ativo;
-        this.dataCriacao = dataCriacao;
-        this.temTentativas = temTentativas;
-    }
-
-    // Getters e Setters
+    // Getters e Setters (incluindo o novo campo questoes)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -69,4 +54,7 @@ public class AvaliacaoDTO {
 
     public boolean isTemTentativas() { return temTentativas; }
     public void setTemTentativas(boolean temTentativas) { this.temTentativas = temTentativas; }
+
+    public List<QuestaoDTO> getQuestoes() { return questoes; }
+    public void setQuestoes(List<QuestaoDTO> questoes) { this.questoes = questoes; }
 }

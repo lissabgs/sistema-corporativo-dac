@@ -31,7 +31,7 @@
         </mat-form-field>
 
         <div class="tipo-prova-box">
-          <span class="label-tipo">Modelo de Prova:</span>
+          <span class="label-tipo">Modelo:</span>
           <mat-radio-group formControlName="tipoAvaliacao" color="primary">
             <mat-radio-button value="OBJETIVA">Objetiva</mat-radio-button>
             <mat-radio-button value="DISCURSIVA">Discursiva</mat-radio-button>
@@ -46,18 +46,27 @@
 
       <div class="grid-3">
         <mat-form-field appearance="outline">
-          <mat-label>Tempo Limite (min)</mat-label>
-          <input matInput type="number" formControlName="tempoLimiteMinutos">
+          <mat-label>Tempo (min)</mat-label>
+          <input matInput 
+                 type="number" 
+                 formControlName="tempoLimiteMinutos"
+                 (keydown)="bloquearCaracteresNaoNumericos($event)">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Tentativas</mat-label>
-          <input matInput type="number" formControlName="tentativasPermitidas">
+          <input matInput 
+                 type="number" 
+                 formControlName="tentativasPermitidas"
+                 (keydown)="bloquearCaracteresNaoNumericos($event)">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Nota Mínima (%)</mat-label>
-          <input matInput type="number" formControlName="notaMinima">
+          <input matInput 
+                 type="number" 
+                 formControlName="notaMinima"
+                 (keydown)="bloquearCaracteresNaoNumericos($event)">
           <span matSuffix>%</span>
         </mat-form-field>
       </div>
@@ -115,13 +124,13 @@
                     <mat-radio-button [value]="letra" color="primary" class="radio-correta"></mat-radio-button>
                     <span class="letra-label">{{letra}})</span>
                     <mat-form-field appearance="outline" class="full-width no-subscript dense-field">
-                      <input matInput [formControlName]="'alternativa' + letra">
+                      <input matInput [formControlName]="'alternativa' + letra" [placeholder]="'Texto da alternativa ' + letra">
                     </mat-form-field>
                   </div>
                 </mat-radio-group>
                 
                 <div class="error-msg" *ngIf="q.invalid && q.touched">
-                  Preencha as alternativas e selecione a correta.
+                  Preencha todas as alternativas e selecione a resposta correta.
                 </div>
               </div>
 

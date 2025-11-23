@@ -32,20 +32,23 @@ public class Curso {
     private String categoriaId;
     private Long instrutorId;
     private String duracaoEstimada;
+
     private int xpOferecido;
+
+    private int xpAvaliacao; // 25%
+    private int xpConclusao; // 50%
+
     private String nivelDificuldade;
 
     @Enumerated(EnumType.STRING)
     private StatusCurso status;
 
-    // Lista simples de strings para pré-requisitos
     @ElementCollection
     @CollectionTable(name = "curso_pre_requisitos", joinColumns = @JoinColumn(name = "curso_id"))
     @Column(name = "pre_requisito_codigo")
     private List<String> preRequisitos = new ArrayList<>();
 
-    // Relacionamento OneToMany com Módulos
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "curso_id") // Cria coluna FK na tabela 'modulos'
+    @JoinColumn(name = "curso_id")
     private List<Modulo> modulos = new ArrayList<>();
 }

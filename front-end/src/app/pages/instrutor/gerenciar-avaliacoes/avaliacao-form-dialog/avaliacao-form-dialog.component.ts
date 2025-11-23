@@ -13,6 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AvaliacaoService } from '../../../../services/avaliacao.service';
+import { CursoService } from '../../../../services/curso.service'; // <--- Importe o CursoService
 import { Avaliacao } from '../../../../models/avaliacao.model';
 
 @Component({
@@ -43,17 +44,16 @@ export class AvaliacaoFormDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private avaliacaoService: AvaliacaoService,
+    private cursoService: CursoService, // <--- Injete aqui
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<AvaliacaoFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { avaliacao?: Avaliacao }
   ) {
     this.form = this.fb.group({
       id: [null],
-      // O código e título serão preenchidos ao selecionar o curso
-      codigo: ['', Validators.required], 
+      codigo: ['', Validators.required],
       titulo: ['', Validators.required],
       descricao: [''],
-      // Novo campo global para definir o tipo da prova inteira
       tipoAvaliacao: ['OBJETIVA', Validators.required], 
       cursoId: [null, Validators.required],
       tempoLimiteMinutos: [60, [Validators.required, Validators.min(1)]],
@@ -64,24 +64,39 @@ export class AvaliacaoFormDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.carregarCursos();
+    // Verifica se é edição ou criação
+    if (this.data?.avaliacao) {
+      this.isEditMode = true;
+ 
+      this.form.get('cursoId')?.disable(); 
 
-    // Se o usuário trocar o tipo de prova, limpamos as questões para evitar erros
+      const cursoIdAtual = this.data.avaliacao.cursoId;
+      if (cursoIdAtual) {
+        this.cursoService.obterPorId(cursoIdAtual).subscribe({
+          next: (curso) => {
+            this.cursosDisponiveis = [curso]; 
+            this.preencherDados(this.data.avaliacao!);
+          },
+          error: () => this.snackBar.open('Erro ao carregar dados do curso.', 'Fechar')
+        });
+      }
+    } else {
+
+      this.carregarCursosDisponiveis();
+    }
+
+    // Listener para limpar questões se trocar o tipo
     this.form.get('tipoAvaliacao')?.valueChanges.subscribe(() => {
       this.questoes.clear();
     });
   }
 
-  carregarCursos() {
+  carregarCursosDisponiveis() {
     this.avaliacaoService.listarCursosDisponiveis().subscribe({
       next: (cursos) => {
         this.cursosDisponiveis = cursos;
-        if (this.data?.avaliacao) {
-          this.isEditMode = true;
-          this.preencherDados(this.data.avaliacao);
-        }
       },
-      error: () => this.snackBar.open('Erro ao carregar cursos.', 'Fechar')
+      error: () => this.snackBar.open('Erro ao carregar cursos disponíveis.', 'Fechar')
     });
   }
 
@@ -89,26 +104,22 @@ export class AvaliacaoFormDialogComponent implements OnInit {
     const curso = this.cursosDisponiveis.find(c => c.id === cursoId);
     if (curso) {
       this.form.patchValue({
-        codigo: curso.codigo, // Código do curso vira código da avaliação
+        codigo: curso.codigo,
         titulo: `Avaliação Final - ${curso.titulo}`
       });
     }
   }
 
   preencherDados(avaliacao: Avaliacao) {
-    // Preenche dados básicos
     this.form.patchValue(avaliacao);
     
-    // Detecta o tipo da primeira questão para definir o tipo da prova (se houver questões)
     if (avaliacao.questoes && avaliacao.questoes.length > 0) {
       const tipo = avaliacao.questoes[0].tipoQuestao;
       this.form.patchValue({ tipoAvaliacao: tipo });
       
-      // Recria o FormArray de questões
       avaliacao.questoes.forEach(q => {
         const group = this.criarQuestaoGroup();
         
-        // Se for objetiva, precisamos "explodir" o JSON de volta para os campos A, B, C...
         if (tipo === 'OBJETIVA' && q.opcoesResposta) {
           try {
             const opcoes = JSON.parse(q.opcoesResposta);
@@ -120,9 +131,7 @@ export class AvaliacaoFormDialogComponent implements OnInit {
               alternativaE: opcoes.E,
               respostaCorretaSelecionada: q.respostaCorreta
             });
-          } catch (e) {
-            console.error('Erro ao parsear opções', e);
-          }
+          } catch (e) { console.error('Erro parse JSON', e); }
         }
         
         group.patchValue({
@@ -147,22 +156,17 @@ export class AvaliacaoFormDialogComponent implements OnInit {
       id: [null],
       enunciado: ['', Validators.required],
       peso: [1, [Validators.required, Validators.min(0.1)]],
-      
-      // Campos visuais para as alternativas (usados apenas no front)
       alternativaA: [''],
       alternativaB: [''],
       alternativaC: [''],
       alternativaD: [''],
       alternativaE: [''],
-      respostaCorretaSelecionada: [''], // Armazena "A", "B", etc.
-      
-      // Campos ocultos que serão enviados ao backend
+      respostaCorretaSelecionada: [''],
       tipoQuestao: [tipo], 
       opcoesResposta: [''], 
       respostaCorreta: ['']
     });
 
-    // Validação condicional: Se for objetiva, obriga preencher alternativas e selecionar a correta
     if (tipo === 'OBJETIVA') {
       group.get('alternativaA')?.setValidators(Validators.required);
       group.get('alternativaB')?.setValidators(Validators.required);
@@ -180,22 +184,28 @@ export class AvaliacaoFormDialogComponent implements OnInit {
     this.questoes.removeAt(index);
   }
 
+  bloquearCaracteresNaoNumericos(event: KeyboardEvent) {
+    const teclasProibidas = ['e', 'E', '+', '-'];
+    if (teclasProibidas.includes(event.key)) {
+      event.preventDefault();
+    }
+  }
+
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    // getRawValue() é importante aqui para pegar o cursoId mesmo estando disabled
     const formValue = this.form.getRawValue();
     const tipoGlobal = formValue.tipoAvaliacao;
 
-    // PREPARAÇÃO DOS DADOS PARA O BACKEND
-    formValue.questoes = formValue.questoes.map((q: any) => {
-      
-      q.tipoQuestao = tipoGlobal; // Garante que todas seguem o tipo da prova
+    formValue.questoes = formValue.questoes.map((q: any, index: number) => {
+      q.tipoQuestao = tipoGlobal;
+      q.ordem = index + 1;
 
       if (tipoGlobal === 'OBJETIVA') {
-        // Monta o JSON das opções: {"A": "Texto...", "B": "Texto..."}
         const opcoesObj = {
           A: q.alternativaA,
           B: q.alternativaB,
@@ -204,22 +214,18 @@ export class AvaliacaoFormDialogComponent implements OnInit {
           E: q.alternativaE
         };
         q.opcoesResposta = JSON.stringify(opcoesObj);
-        q.respostaCorreta = q.respostaCorretaSelecionada; // Ex: "C"
-
+        q.respostaCorreta = q.respostaCorretaSelecionada;
       } else {
-        // Discursiva: campos de resposta ficam nulos
         q.opcoesResposta = null;
         q.respostaCorreta = null; 
       }
-
-      // Remove campos temporários do front para não enviar lixo
+      // Limpa auxiliares
       delete q.alternativaA; delete q.alternativaB; delete q.alternativaC;
       delete q.alternativaD; delete q.alternativaE; delete q.respostaCorretaSelecionada;
 
       return q;
     });
 
-    // Envio (Create ou Update)
     const request$ = this.isEditMode 
       ? this.avaliacaoService.atualizar(formValue.id, formValue)
       : this.avaliacaoService.criar(formValue);
@@ -231,7 +237,7 @@ export class AvaliacaoFormDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.snackBar.open('Erro ao salvar. Verifique os campos.', 'Fechar');
+        this.snackBar.open('Erro ao salvar.', 'Fechar');
       }
     });
   }
