@@ -52,3 +52,18 @@ td.mat-cell {
   margin-top: 20px;
   border: 1px dashed #ccc;
 }
+
+.text-center {
+  text-align: center;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px; 
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}

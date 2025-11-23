@@ -19,4 +19,5 @@ export interface Avaliacao {
   notaMinima: number;
   ativo?: boolean;
   questoes: Questao[];
+  temTentativas?: boolean;
 }

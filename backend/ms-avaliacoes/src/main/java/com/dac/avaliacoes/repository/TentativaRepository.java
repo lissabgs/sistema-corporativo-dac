@@ -14,4 +14,6 @@ public interface TentativaRepository extends JpaRepository<Tentativa, Long> {
     List<Tentativa> findByAvaliacaoId(Long avaliacaoId);
 
     List<Tentativa> findByFuncionarioId(Long funcionarioId);
+
+    boolean existsByAvaliacaoId(Long avaliacaoId);
 }

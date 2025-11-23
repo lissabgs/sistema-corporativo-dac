@@ -29,14 +29,25 @@
     </ng-container>
 
     <ng-container matColumnDef="acoes">
-      <th mat-header-cell *matHeaderCellDef> Ações </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="abrirDialog(element)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deletar(element.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
+      <th mat-header-cell *matHeaderCellDef class="text-center"> Ações </th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        
+        <div class="actions-container">
+          <button mat-icon-button color="primary" 
+                  (click)="abrirDialog(element)"
+                  [disabled]="element.temTentativas"
+                  [matTooltip]="element.temTentativas ? 'Indisponível: Alunos já iniciaram esta avaliação' : 'Editar Avaliação'">
+            <mat-icon>edit</mat-icon>
+          </button>
+  
+          <button mat-icon-button color="warn" 
+                  (click)="deletar(element.id)"
+                  [disabled]="element.temTentativas"
+                  [matTooltip]="element.temTentativas ? 'Indisponível: Alunos já iniciaram esta avaliação' : 'Excluir Avaliação'">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
       </td>
     </ng-container>
 

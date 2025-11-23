@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AvaliacaoService } from '../../../services/avaliacao.service';
 import { Avaliacao } from '../../../models/avaliacao.model';
@@ -18,7 +19,8 @@ import { AvaliacaoFormDialogComponent } from './avaliacao-form-dialog/avaliacao-
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTooltipModule
   ],
   templateUrl: './gerenciar-avaliacoes.component.html',
   styleUrls: ['./gerenciar-avaliacoes.component.css']
@@ -46,14 +48,9 @@ export class GerenciarAvaliacoesComponent implements OnInit {
 
   abrirDialog(avaliacao?: Avaliacao) {
     const dialogRef = this.dialog.open(AvaliacaoFormDialogComponent, {
-      width: '800px',
+      width: '1000px', // Aumentei para 1000px para caber tudo confortavelmente
+      maxWidth: '95vw', // Garante que não ultrapasse a tela em celulares
       data: { avaliacao: avaliacao }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.carregarAvaliacoes();
-      }
     });
   }
 

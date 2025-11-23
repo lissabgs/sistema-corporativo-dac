@@ -3,9 +3,12 @@ package com.dac.avaliacoes.service;
 import com.dac.avaliacoes.model.*;
 import com.dac.avaliacoes.repository.*;
 import com.dac.avaliacoes.dto.*;
+import com.dac.avaliacoes.client.CursosClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -24,38 +27,11 @@ public class AvaliacaoService {
     @Autowired
     private QuestaoRepository questaoRepository;
 
-    // No service, injete o CursosClient e adicione o método
     @Autowired
-    private CursosClient cursosClient; // Certifique-se que o FeignClient está configurado
+    private TentativaRepository tentativaRepository; // <--- Injeção Nova
 
-    public List<Object> buscarCursosSemAvaliacao() {
-        try {
-            // 1. Busca TODOS os cursos do microsserviço de cursos
-            List<Object> todosCursos = cursosClient.listarCursos();
-
-            // 2. Busca IDs de cursos que JÁ têm avaliação
-            List<Long> idsComAvaliacao = repository.findAll().stream()
-                    .map(Avaliacao::getCursoId)
-                    .collect(Collectors.toList());
-
-            // 3. Filtra: Mantém apenas cursos cujo ID NÃO está na lista de avaliações
-            // Obs: Assumindo que o objeto do curso vem como LinkedHashMap ou DTO.
-            // Se tiver um DTO de curso compartilhado, use-o no lugar de Object.
-            return todosCursos.stream()
-                    .filter(curso -> {
-                        // Conversão segura dependendo de como o Feign retorna (JSON)
-                        // Se for um DTO Java, basta: !idsComAvaliacao.contains(curso.getId())
-                        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) curso;
-                        Integer id = (Integer) map.get("id");
-                        return !idsComAvaliacao.contains(id.longValue());
-                    })
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            // Fallback: se o serviço de cursos estiver fora, retorna lista vazia ou lança erro
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
+    @Autowired
+    private CursosClient cursosClient;
 
     // ========== CRIAR AVALIAÇÃO ==========
     @Transactional
@@ -83,8 +59,43 @@ public class AvaliacaoService {
     public List<AvaliacaoDTO> listarTodas() {
         return avaliacaoRepository.findAll()
                 .stream()
-                .map(this::converterParaDTO)
+                .map(av -> {
+                    AvaliacaoDTO dto = converterParaDTO(av);
+                    // Verifica se existe alguma tentativa para esta avaliação
+                    boolean temTentativas = tentativaRepository.existsByAvaliacaoId(av.getId());
+                    dto.setTemTentativas(temTentativas);
+                    return dto;
+                })
                 .collect(Collectors.toList());
+    }
+
+    // ========== BUSCAR CURSOS SEM AVALIAÇÃO ==========
+    public List<Object> buscarCursosSemAvaliacao() {
+        try {
+            List<Object> todosCursos = cursosClient.listarCursos();
+
+            List<Long> idsComAvaliacao = avaliacaoRepository.findAll().stream()
+                    .map(Avaliacao::getCursoId)
+                    .collect(Collectors.toList());
+
+            return todosCursos.stream()
+                    .filter(curso -> {
+                        if (curso instanceof LinkedHashMap) {
+                            LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>) curso;
+                            Object idObj = map.get("id");
+                            if (idObj instanceof Integer) {
+                                return !idsComAvaliacao.contains(((Integer) idObj).longValue());
+                            } else if (idObj instanceof Long) {
+                                return !idsComAvaliacao.contains((Long) idObj);
+                            }
+                        }
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     // ========== BUSCAR POR ID ==========
@@ -92,12 +103,22 @@ public class AvaliacaoService {
     public AvaliacaoDTO buscarPorId(Long id) {
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com ID: " + id));
-        return converterParaDTO(avaliacao);
+
+        AvaliacaoDTO dto = converterParaDTO(avaliacao);
+        // Também preenche no detalhe se tem tentativas
+        dto.setTemTentativas(tentativaRepository.existsByAvaliacaoId(id));
+
+        return dto;
     }
 
     // ========== ATUALIZAR ==========
     @Transactional
     public AvaliacaoDTO atualizarAvaliacao(Long id, CriarAvaliacaoRequestDTO dto) {
+        // Validação de Segurança: Se já tem tentativas, não pode editar
+        if (tentativaRepository.existsByAvaliacaoId(id)) {
+            throw new RuntimeException("Não é possível editar esta avaliação pois já existem alunos que a realizaram.");
+        }
+
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com ID: " + id));
 
@@ -107,6 +128,9 @@ public class AvaliacaoService {
         avaliacao.setTentativasPermitidas(dto.getTentativasPermitidas());
         avaliacao.setNotaMinima(dto.getNotaMinima());
 
+        // Se quiser permitir atualizar questões, a lógica seria aqui,
+        // mas com a trava acima, garantimos a integridade.
+
         Avaliacao avaliacaoAtualizada = avaliacaoRepository.save(avaliacao);
         return converterParaDTO(avaliacaoAtualizada);
     }
@@ -114,6 +138,11 @@ public class AvaliacaoService {
     // ========== DELETAR (Soft Delete) ==========
     @Transactional
     public void deletarAvaliacao(Long id) {
+        // Validação de Segurança: Se já tem tentativas, não pode excluir
+        if (tentativaRepository.existsByAvaliacaoId(id)) {
+            throw new RuntimeException("Não é possível excluir esta avaliação pois já existem alunos que a realizaram.");
+        }
+
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Avaliação não encontrada com ID: " + id));
 

@@ -3,40 +3,37 @@
 <mat-dialog-content class="form-content">
   <form [formGroup]="form">
     
-    <div class="full-width-row">
+    <div class="row-section">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Selecione o Curso</mat-label>
-        
+        <mat-label>Curso</mat-label>
         <mat-select formControlName="cursoId" (selectionChange)="aoSelecionarCurso($event.value)">
-          
-          <mat-option *ngIf="cursosDisponiveis.length === 0" disabled>
-            Nenhum curso disponível
-          </mat-option>
-
+          <mat-option *ngIf="cursosDisponiveis.length === 0" disabled>Nenhum curso disponível</mat-option>
           <mat-option *ngFor="let curso of cursosDisponiveis" [value]="curso.id">
-            {{ curso.id }} - {{ curso.codigo }} - {{ curso.titulo }}
+            <span class="curso-option-text">{{ curso.id }} - {{ curso.codigo || 'S/C' }} - {{ curso.titulo }}</span>
           </mat-option>
-          
         </mat-select>
-        
-        <mat-error *ngIf="form.get('cursoId')?.hasError('required')">Obrigatório</mat-error>
+        <mat-error>Obrigatório</mat-error>
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Título da Avaliação</mat-label>
-      <input matInput formControlName="titulo">
-      <mat-error *ngIf="form.get('titulo')?.hasError('required')">Obrigatório</mat-error>
-    </mat-form-field>
+    <div class="grid-2-custom">
+      <mat-form-field appearance="outline" class="field-titulo">
+        <mat-label>Título da Avaliação</mat-label>
+        <input matInput formControlName="titulo">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Descrição</mat-label>
-      <textarea matInput formControlName="descricao" rows="2"></textarea>
-    </mat-form-field>
+      <div class="tipo-prova-box">
+        <span class="label-tipo">Tipo:</span>
+        <mat-radio-group formControlName="tipoAvaliacao" color="primary">
+          <mat-radio-button value="OBJETIVA">Objetiva</mat-radio-button>
+          <mat-radio-button value="DISCURSIVA">Discursiva</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
 
     <div class="grid-3">
       <mat-form-field appearance="outline">
-        <mat-label>Tempo Limite (min)</mat-label>
+        <mat-label>Tempo (min)</mat-label>
         <input matInput type="number" formControlName="tempoLimiteMinutos">
       </mat-form-field>
 
@@ -55,64 +52,68 @@
     <mat-divider class="my-3"></mat-divider>
 
     <div class="header-questoes">
-      <h3>Questões</h3>
-      <button mat-stroked-button color="primary" type="button" (click)="adicionarQuestao()">
-        <mat-icon>add_circle</mat-icon> Adicionar Questão
+      <h3>Questões ({{ form.get('tipoAvaliacao')?.value }})</h3>
+      
+      <button mat-raised-button color="primary" type="button" (click)="adicionarQuestao()">
+        <mat-icon>add</mat-icon> Nova Questão
       </button>
     </div>
 
     <div formArrayName="questoes">
       <mat-accordion multi>
         <mat-expansion-panel *ngFor="let q of questoes.controls; let i = index" [formGroupName]="i" [expanded]="true">
+          
           <mat-expansion-panel-header>
-            <mat-panel-title>
-              <strong>Q{{ i + 1 }}</strong>
-            </mat-panel-title>
-            <mat-panel-description class="justify-between">
-              {{ q.get('tipoQuestao')?.value }}
-              <mat-icon color="warn" (click)="removerQuestao(i); $event.stopPropagation()">delete</mat-icon>
+            <mat-panel-title><strong>Questão {{ i + 1 }}</strong></mat-panel-title>
+            <mat-panel-description class="justify-end">
+              <mat-icon color="warn" (click)="removerQuestao(i); $event.stopPropagation()" style="cursor: pointer;">delete</mat-icon>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
-          <div class="grid-2 mt-2">
-            <mat-form-field appearance="outline">
-              <mat-label>Tipo</mat-label>
-              <mat-select formControlName="tipoQuestao">
-                <mat-option value="OBJETIVA">Objetiva</mat-option>
-                <mat-option value="DISCURSIVA">Discursiva</mat-option>
-                <mat-option value="VERDADEIRO_FALSO">V ou F</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Peso da Questão</mat-label>
+          <div class="questao-row">
+            <mat-form-field appearance="outline" class="field-peso">
+              <mat-label>Peso</mat-label>
               <input matInput type="number" formControlName="peso">
             </mat-form-field>
-          </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Enunciado</mat-label>
-            <textarea matInput formControlName="enunciado"></textarea>
-          </mat-form-field>
-
-          <div *ngIf="q.get('tipoQuestao')?.value === 'OBJETIVA'">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Opções (Ex: A) Sim; B) Não)</mat-label>
-              <input matInput formControlName="opcoesResposta" placeholder="Separe as opções com ponto e vírgula">
+            <mat-form-field appearance="outline" class="field-enunciado">
+              <mat-label>Enunciado da Pergunta</mat-label>
+              <textarea matInput formControlName="enunciado" rows="2"></textarea>
+              <mat-error>Obrigatório</mat-error>
             </mat-form-field>
           </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Resposta Correta</mat-label>
-            <input matInput formControlName="respostaCorreta" placeholder="Ex: A ou Texto da resposta">
-          </mat-form-field>
+          <div *ngIf="form.get('tipoAvaliacao')?.value === 'OBJETIVA'" class="alternativas-section">
+            <p class="hint-text">Preencha as alternativas e <strong>clique na bolinha</strong> correspondente à resposta correta:</p>
+            
+            <mat-radio-group formControlName="respostaCorretaSelecionada">
+              
+              <div class="alternativa-row" *ngFor="let letra of ['A','B','C','D','E']">
+                
+                <mat-radio-button [value]="letra" color="primary" class="radio-correta" title="Marcar como correta">
+                </mat-radio-button>
+
+                <span class="letra-label">{{letra}})</span>
+
+                <mat-form-field appearance="outline" class="full-width no-subscript">
+                  <input matInput [formControlName]="'alternativa' + letra" [placeholder]="'Digite a resposta da alternativa ' + letra">
+                </mat-form-field>
+
+              </div>
+
+            </mat-radio-group>
+            
+            <div class="error-msg" *ngIf="q.invalid && q.touched">
+              <small>Preencha todas as alternativas e selecione a resposta correta.</small>
+            </div>
+          </div>
+
+          <div *ngIf="form.get('tipoAvaliacao')?.value === 'DISCURSIVA'" class="discursiva-info">
+            <mat-icon>info</mat-icon> <span>Questão dissertativa (o aluno digitará a resposta).</span>
+          </div>
 
         </mat-expansion-panel>
       </mat-accordion>
-    </div>
-
-    <div *ngIf="questoes.controls.length === 0" class="empty-questoes">
-      Nenhuma questão adicionada.
     </div>
 
   </form>
@@ -120,7 +121,7 @@
 
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+  <button mat-raised-button color="primary" (click)="onSubmit()">
     Salvar
   </button>
 </mat-dialog-actions>
