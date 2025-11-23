@@ -1,85 +1,97 @@
+<div class="app-sidebar">
 <div class="sidebar-container">
-  
-  <div class="top-section">
-    <div class="app-header">
-      <h2>Sistema DAC</h2>
-    </div>
 
+  <!-- TOPO DA SIDEBAR -->
+  <div class="top-section">
+    
+    <div class="app-header"></div>
+
+    <!-- PERFIL -->
     <div class="profile-box">
       <div class="avatar-circle">
         <mat-icon>person</mat-icon>
       </div>
-      
+
       <h3 class="profile-name">{{ userName }}</h3>
-      
       <span class="profile-cargo">{{ userCargo }}</span>
       <span class="profile-dept" *ngIf="userDept">{{ userDept }}</span>
 
       <span class="role-badge">{{ userRole }}</span>
     </div>
 
-    <mat-nav-list class="nav-menu">
-      
-      <ng-container *ngIf="userRole === 'FUNCIONARIO'">
-        <a mat-list-item routerLink="/dashboard-funcionario" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <a mat-list-item routerLink="/catalogo-cursos" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>school</mat-icon>
-          <span matListItemTitle>Catálogo</span>
-        </a>
-        <a mat-list-item routerLink="/inscricao-curso" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>fact_check</mat-icon>
-          <span matListItemTitle>Inscrições</span>
-        </a>
-        <a mat-list-item routerLink="/minhas-avaliacoes" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>quiz</mat-icon>
-          <span matListItemTitle>Minhas Avaliações</span>
-        </a>
-      </ng-container>
+    <!-- MENU WRAPPER (corrige seu problema!) -->
+    <div class="menu-wrapper">
+      <mat-nav-list class="nav-menu">
 
-      <ng-container *ngIf="userRole === 'INSTRUTOR'">
-        <a mat-list-item routerLink="/dashboard-instrutor" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <mat-divider class="menu-divider"></mat-divider>
-        <div mat-subheader>Gestão Acadêmica</div>
-        <a mat-list-item routerLink="/gerenciar-cursos" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>edit_note</mat-icon>
-          <span matListItemTitle>Gerenciar Cursos</span>
-        </a>
-        <a mat-list-item routerLink="/gerenciar-avaliacoes" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>quiz</mat-icon>
-          <span matListItemTitle>Gerenciar Avaliações</span>
-        </a>
-        <a mat-list-item routerLink="/acompanhar-turmas" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>groups</mat-icon>
-          <span matListItemTitle>Acompanhar Turmas</span>
-        </a>
-      </ng-container>
+        <!-- FUNCIONARIO -->
+        <ng-container *ngIf="userRole === 'FUNCIONARIO'">
+          <a mat-list-item routerLink="/dashboard-funcionario" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>dashboard</mat-icon>
+            <span matListItemTitle>Dashboard</span>
+          </a>
+          <a mat-list-item routerLink="/catalogo-cursos" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>school</mat-icon>
+            <span matListItemTitle>Catálogo</span>
+          </a>
+          <a mat-list-item routerLink="/inscricao-curso" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>fact_check</mat-icon>
+            <span matListItemTitle>Inscrições</span>
+          </a>
+          <a mat-list-item routerLink="/minhas-avaliacoes" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>quiz</mat-icon>
+            <span matListItemTitle>Minhas Avaliações</span>
+          </a>
+        </ng-container>
 
-      <ng-container *ngIf="userRole === 'ADMINISTRADOR'">
-        <a mat-list-item routerLink="/dashboard-admin" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <mat-divider class="menu-divider"></mat-divider>
-        <div mat-subheader>Administração</div>
-        <a mat-list-item routerLink="/gerenciar-usuarios" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>people</mat-icon>
-          <span matListItemTitle>Gerenciar Usuários</span>
-        </a>
-        <a mat-list-item routerLink="/gerenciar-departamentos" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>business</mat-icon>
-          <span matListItemTitle>Departamentos</span>
-        </a>
-      </ng-container>
+        <!-- INSTRUTOR -->
+        <ng-container *ngIf="userRole === 'INSTRUTOR'">
+          <a mat-list-item routerLink="/dashboard-instrutor" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>dashboard</mat-icon>
+            <span matListItemTitle>Dashboard</span>
+          </a>
 
-    </mat-nav-list>
+          <mat-divider class="menu-divider"></mat-divider>
+          <div mat-subheader>Gestão Acadêmica</div>
+
+          <a mat-list-item routerLink="/gerenciar-cursos" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>edit_note</mat-icon>
+            <span matListItemTitle>Gerenciar Cursos</span>
+          </a>
+          <a mat-list-item routerLink="/gerenciar-avaliacoes" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>quiz</mat-icon>
+            <span matListItemTitle>Gerenciar Avaliações</span>
+          </a>
+          <a mat-list-item routerLink="/acompanhar-turmas" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>groups</mat-icon>
+            <span matListItemTitle>Acompanhar Turmas</span>
+          </a>
+        </ng-container>
+
+        <!-- ADMIN -->
+        <ng-container *ngIf="userRole === 'ADMINISTRADOR'">
+          <a mat-list-item routerLink="/dashboard-admin" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>dashboard</mat-icon>
+            <span matListItemTitle>Dashboard</span>
+          </a>
+
+          <mat-divider class="menu-divider"></mat-divider>
+          <div mat-subheader>Administração</div>
+
+          <a mat-list-item routerLink="/gerenciar-usuarios" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>people</mat-icon>
+            <span matListItemTitle>Gerenciar Usuários</span>
+          </a>
+          <a mat-list-item routerLink="/gerenciar-departamentos" routerLinkActive="active-link">
+            <mat-icon matListItemIcon>business</mat-icon>
+            <span matListItemTitle>Departamentos</span>
+          </a>
+        </ng-container>
+
+      </mat-nav-list>
+    </div>
   </div>
 
+  <!-- 🔥 BOTÃO SAIR FIXADO NO FINAL -->
   <div class="bottom-section">
     <mat-nav-list>
       <a mat-list-item (click)="logout()" class="logout-item">
@@ -88,4 +100,5 @@
       </a>
     </mat-nav-list>
   </div>
+</div>
 </div>
