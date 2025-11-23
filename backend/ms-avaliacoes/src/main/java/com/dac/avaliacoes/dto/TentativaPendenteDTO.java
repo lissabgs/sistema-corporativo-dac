@@ -1,15 +1,7 @@
 package com.dac.avaliacoes.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class TentativaPendenteDTO {
     private Long tentativaId;
     private Long funcionarioId;
@@ -17,4 +9,37 @@ public class TentativaPendenteDTO {
     private String avaliacaoTitulo;
     private LocalDateTime dataFim;
     private Double notaObtida;
+
+    // Construtor vazio
+    public TentativaPendenteDTO() {}
+
+    // Construtor completo
+    public TentativaPendenteDTO(Long tentativaId, Long funcionarioId, String funcionarioNome,
+                                String avaliacaoTitulo, LocalDateTime dataFim, Double notaObtida) {
+        this.tentativaId = tentativaId;
+        this.funcionarioId = funcionarioId;
+        this.funcionarioNome = funcionarioNome;
+        this.avaliacaoTitulo = avaliacaoTitulo;
+        this.dataFim = dataFim;
+        this.notaObtida = notaObtida;
+    }
+
+    // Getters e Setters
+    public Long getTentativaId() { return tentativaId; }
+    public void setTentativaId(Long tentativaId) { this.tentativaId = tentativaId; }
+
+    public Long getFuncionarioId() { return funcionarioId; }
+    public void setFuncionarioId(Long funcionarioId) { this.funcionarioId = funcionarioId; }
+
+    public String getFuncionarioNome() { return funcionarioNome; }
+    public void setFuncionarioNome(String funcionarioNome) { this.funcionarioNome = funcionarioNome; }
+
+    public String getAvaliacaoTitulo() { return avaliacaoTitulo; }
+    public void setAvaliacaoTitulo(String avaliacaoTitulo) { this.avaliacaoTitulo = avaliacaoTitulo; }
+
+    public LocalDateTime getDataFim() { return dataFim; }
+    public void setDataFim(LocalDateTime dataFim) { this.dataFim = dataFim; }
+
+    public Double getNotaObtida() { return notaObtida; }
+    public void setNotaObtida(Double notaObtida) { this.notaObtida = notaObtida; }
 }
