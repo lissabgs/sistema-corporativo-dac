@@ -16,7 +16,7 @@ const MS_AUTENTICACAO = 'http://ms-autenticacao:8081';
 const MS_USUARIOS     = 'http://ms-usuarios:8082';
 const MS_CURSOS       = 'http://ms-cursos:8083';
 // const MS_AVALIACOES = 'http://ms-avaliacoes:8084';
-// const MS_PROGRESSO  = 'http://ms-progresso:8085';
+ const MS_PROGRESSO  = 'http://ms-progresso:8085';
 // const MS_GAMIFICACAO= 'http://ms-gamificacao:8086';
 // const MS_NOTIFICACOES='http://ms-notificacoes:8087';
 
@@ -93,6 +93,14 @@ app.use('/api/cursos', authMiddleware, createProxyMiddleware({
 /* // Outros serviços...
 app.use('/api/avaliacoes', authMiddleware, createProxyMiddleware({ target: MS_AVALIACOES, changeOrigin: true, onProxyReq: fixRequestBody }));
 */
+// ===================================================================
+// Rota de Progresso (Matrícula, Conclusão, etc.)
+// ===================================================================
+app.use('/api/progresso', authMiddleware, createProxyMiddleware({
+    target: MS_PROGRESSO,
+    changeOrigin: true,
+    onProxyReq: fixRequestBody,
+}));
 
 app.listen(port, () => {
     console.log(`API Gateway rodando na porta ${port}`);

@@ -1,83 +1,50 @@
-<mat-card class="filtros">
-  <h2>Catálogo de Cursos</h2>
-
-  <div class="grid-filtros">
-
-    <mat-form-field appearance="outline">
-      <mat-label>Buscar curso</mat-label>
-      <input matInput [(ngModel)]="search" (input)="filtrar()">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Categoria</mat-label>
-      <mat-select [(ngModel)]="categoria" (selectionChange)="filtrar()">
-        <mat-option value="">Todas</mat-option>
-        <mat-option *ngFor="let c of categorias" [value]="c">{{ c }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Instrutor</mat-label>
-      <mat-select [(ngModel)]="instrutor" (selectionChange)="filtrar()">
-        <mat-option value="">Todos</mat-option>
-        <mat-option *ngFor="let i of instrutores" [value]="i">{{ i }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Dificuldade</mat-label>
-      <mat-select [(ngModel)]="dificuldade" (selectionChange)="filtrar()">
-        <mat-option value="">Todas</mat-option>
-        <mat-option *ngFor="let d of dificuldades" [value]="d">{{ d }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Avaliação mínima</mat-label>
-      <input matInput type="number" [(ngModel)]="avaliacaoMin" (input)="filtrar()">
-    </mat-form-field>
-
-  </div>
-
-  <button mat-stroked-button color="warn" (click)="limparFiltros()">
-    Limpar filtros
-  </button>
-</mat-card>
-
-
-<!-- CATÁLOGO -->
-<div class="catalogo">
-
-  <mat-card *ngFor="let curso of cursosFiltrados" class="curso-card">
-
-    <div class="header">
-      <h3>{{ curso.titulo }}</h3>
-
-      <mat-chip-set>
-        <mat-chip color="primary">{{ curso.dificuldade }}</mat-chip>
-        <mat-chip>{{ curso.categoria }}</mat-chip>
-      </mat-chip-set>
+<div class="cursos-grid">
+  <mat-card class="curso-card" *ngFor="let curso of cursosFiltrados">
+    
+    <div class="curso-header">
+      <div class="curso-title-row">
+        <h3>{{ curso.titulo }}</h3>
+        <mat-chip-set>
+          <mat-chip>{{ curso.categoriaId }}</mat-chip>
+        </mat-chip-set>
+      </div>
+      <p class="instrutor">ID Instrutor: {{ curso.instrutorId }}</p>
     </div>
 
-    <p>{{ curso.descricao }}</p>
+    <mat-card-content>
+      <p class="descricao">{{ curso.descricao }}</p>
+      
+      <div class="meta-info">
+        <span><mat-icon>timer</mat-icon> {{ curso.duracaoEstimada }}</span>
+        
+        <span><mat-icon>signal_cellular_alt</mat-icon> {{ curso.nivelDificuldade }}</span>
+        
+        <span><mat-icon>star</mat-icon> {{ curso.avaliacaoMedia || '-' }}</span>
+      </div>
 
-    <p><strong>Duração:</strong> {{ curso.duracao }}h</p>
-    <p><strong>Instrutor:</strong> {{ curso.instrutor }}</p>
+      <div class="xp-badge">
+        <mat-icon>bolt</mat-icon>
+        <strong>{{ curso.xpOferecido }} XP</strong>
+      </div>
 
-    <div class="xp">
-      <mat-icon>stars</mat-icon>
-      {{ curso.xp }} XP
-    </div>
+      <div *ngIf="curso.prerequisitosAtendidos === false" class="aviso-requisito">
+        <mat-icon color="warn">warning</mat-icon>
+        <span>Pré-requisitos pendentes</span>
+      </div>
+    </mat-card-content>
 
-    <div class="alerta" *ngIf="!curso.prerequisitosAtendidos">
-      <mat-icon>warning</mat-icon>
-      Pré-requisitos não atendidos
-    </div>
+    <mat-card-actions style="display: flex; justify-content: flex-end;">
+      
+      <button mat-raised-button 
+        [color]="jaInscrito(curso.id) ? 'accent' : 'primary'"
+        (click)="tratarAcao(curso)">
+        
+        <mat-icon>{{ jaInscrito(curso.id) ? 'play_circle' : 'visibility' }}</mat-icon>
+        &nbsp;
+        {{ jaInscrito(curso.id) ? 'Continuar' : 'Ver Detalhes' }}
+      
+      </button>
 
-    <button mat-raised-button color="primary">
-      Ver detalhes
-    </button>
-
+    </mat-card-actions>
   </mat-card>
-
 </div>

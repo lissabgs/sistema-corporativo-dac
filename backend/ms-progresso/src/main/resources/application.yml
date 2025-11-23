@@ -8,7 +8,7 @@ spring:
   # Configuração do MongoDB
   data:
     mongodb:
-      uri: mongodb://mongo:27017/db_progresso
+      uri: mongodb://dac:dac@mongo:27017/db_progresso?authSource=admin
 
   # Configuração do RabbitMQ
   rabbitmq:

@@ -1,45 +1,119 @@
-:host {
-  display: block;
-  font-family: "Roboto", sans-serif;
-}
-
-.curso-card {
+.inscricao-container {
   padding: 24px;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  max-width: 700px;
-  margin: 20px auto;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-h2 {
-  font-size: 26px;
+.btn-voltar {
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.detalhe-card {
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Header */
+.card-header {
+  padding: 24px;
+  background: linear-gradient(to right, #f5f7fa, #e4e8f0);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-content h1 {
+  margin: 12px 0 8px 0;
+  font-size: 28px;
+  color: #1f2937;
+}
+
+.instrutor {
+  color: #555;
+  margin: 0;
+}
+
+.xp-badge {
+  background-color: #fff;
+  padding: 8px 16px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #f59e0b; /* Cor dourada/XP */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Content */
+.card-content {
+  padding: 24px;
+}
+
+.card-content h3 {
+  font-size: 18px;
   font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.card-content p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Avisos e Sucesso */
+.aviso-box {
+  display: flex;
+  gap: 16px;
+  background-color: #fef2f2;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
   margin-bottom: 16px;
 }
 
-.xp {
+.aviso-box h4 { margin: 0; color: #991b1b; }
+.aviso-box p { margin: 4px 0 0 0; color: #b91c1c; }
+
+.sucesso-box {
+  background-color: #ecfdf5;
+  color: #047857;
+  padding: 16px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 12px 0;
+  gap: 12px;
   font-weight: 600;
+  margin-top: 16px;
+  border: 1px solid #10b981;
 }
 
-.alerta {
-  color: #d32f2f;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 20px 0;
+/* Actions */
+.card-actions {
+  padding: 16px 24px;
+  background-color: #fafafa;
 }
 
-.sucesso {
-  color: #2e7d32;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
+button[mat-raised-button] {
+  padding: 0 32px;
+  height: 48px;
+  font-size: 16px;
 }

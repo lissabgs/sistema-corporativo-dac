@@ -1,58 +1,103 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Importar SnackBar
+
+// Importar o Serviço
+import { ProgressoService } from '../../../services/progresso.service';
 
 @Component({
   selector: 'app-inscricao-curso',
   standalone: true,
-  templateUrl: './inscricao-curso.component.html',
-  styleUrls: ['./inscricao-curso.component.css'],
   imports: [
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatChipsModule,
+    MatListModule,
+    MatDividerModule,
+    MatSnackBarModule
   ],
+  templateUrl: './inscricao-curso.component.html',
+  styleUrls: ['./inscricao-curso.component.css']
 })
 export class InscricaoCursoComponent {
 
   curso: any;
-  atendeRequisitos = true;
+  atendeRequisitos = false;
   inscrito = false;
+  loading = false; // Para desabilitar botão enquanto carrega
+  
+  trilhaSugerida = [
+    { titulo: 'Lógica de Programação', status: 'Pendente' },
+    { titulo: 'Fundamentos de Java', status: 'Pendente' }
+  ];
 
-  constructor(private route: ActivatedRoute, private router: Router) {
-    // Receber dados do curso por parametro ou mock
-    this.curso = history.state.curso || {
-      id: 1,
-      titulo: "Introdução ao Angular",
-      descricao: "Aprenda os fundamentos do Angular.",
-      duracao: 8,
-      instrutor: "Maria Oliveira",
-      dificuldade: "Iniciante",
-      xp: 120,
-      prerequisitosAtendidos: false,
-      trilhaSugerida: [
-        "Lógica de Programação",
-        "Fundamentos de JavaScript"
-      ]
-    };
-
-    this.atendeRequisitos = this.curso.prerequisitosAtendidos;
+  constructor(
+    private router: Router, 
+    private location: Location,
+    private progressoService: ProgressoService, // <--- Injetar Service
+    private snackBar: MatSnackBar
+  ) {
+    const nav = this.router.getCurrentNavigation();
+    if (nav?.extras.state && nav.extras.state['curso']) {
+      this.curso = nav.extras.state['curso'];
+    } else {
+      // Mock de fallback
+      this.curso = {
+        id: 0, 
+        titulo: "Curso Não Encontrado",
+        descricao: "Volte ao catálogo.",
+        xp: 0,
+        duracao: 0,
+        instrutor: "-",
+        dificuldade: "-",
+        prerequisitosAtendidos: false
+      };
+    }
+    // Se tiver a flag ou se não tiver requisitos, libera
+    this.atendeRequisitos = this.curso.prerequisitosAtendidos !== false;
   }
 
   inscrever() {
-    this.inscrito = true;
+    const usuarioId = localStorage.getItem('usuarioId');
 
-    const data = new Date().toISOString().split("T")[0];
+    if (!usuarioId) {
+      this.snackBar.open('Erro: Usuário não identificado.', 'Fechar');
+      return;
+    }
 
-    console.log("Status: EM_ANDAMENTO");
-    console.log("Data de início:", data);
+    this.loading = true;
 
-    setTimeout(() => {
-      this.router.navigate(['/catalogo-cursos']);
-    }, 2000);
+    // --- CHAMADA REAL AO BACKEND ---
+    this.progressoService.matricular(Number(usuarioId), this.curso.id.toString())
+      .subscribe({
+        next: (res) => {
+          console.log('Matrícula realizada:', res);
+          this.inscrito = true;
+          this.loading = false;
+          
+          // Redireciona após 1.5s
+          setTimeout(() => {
+            this.router.navigate(['/catalogo-cursos']); // Volta pro catálogo pra ver o botão mudar
+          }, 1500);
+        },
+        error: (err) => {
+          console.error('Erro ao matricular:', err);
+          this.loading = false;
+          this.snackBar.open('Erro ao realizar inscrição. Tente novamente.', 'Fechar');
+        }
+      });
+  }
+
+  voltar() {
+    this.location.back();
   }
 }

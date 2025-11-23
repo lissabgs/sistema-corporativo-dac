@@ -43,6 +43,11 @@ button[color="warn"] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
+.actions-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* CABEÇALHO DO CURSO */
 .header {
   display: flex;
