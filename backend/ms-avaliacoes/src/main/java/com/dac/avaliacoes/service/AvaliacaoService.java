@@ -194,7 +194,7 @@ public class AvaliacaoService {
         avaliacaoRepository.save(avaliacao);
     }
 
-    // ========== CONVERTER PARA DTO ==========
+    // ========== CONVERTER PARA DTO (ATUALIZADO) ==========
     private AvaliacaoDTO converterParaDTO(Avaliacao avaliacao) {
         AvaliacaoDTO dto = new AvaliacaoDTO();
         dto.setId(avaliacao.getId());
@@ -207,6 +207,25 @@ public class AvaliacaoService {
         dto.setNotaMinima(avaliacao.getNotaMinima());
         dto.setAtivo(avaliacao.getAtivo());
         dto.setDataCriacao(avaliacao.getDataCriacao());
+
+        // CORREÇÃO: Mapear as questões para enviar ao Frontend
+        if (avaliacao.getQuestoes() != null) {
+            List<QuestaoDTO> questoesDTO = avaliacao.getQuestoes().stream().map(q -> {
+                QuestaoDTO qDto = new QuestaoDTO();
+                qDto.setId(q.getId());
+                qDto.setEnunciado(q.getEnunciado());
+                qDto.setPeso(q.getPeso());
+                // Converte Enum para String
+                qDto.setTipoQuestao(q.getTipoQuestao() != null ? q.getTipoQuestao().name() : "OBJETIVA");
+                qDto.setOpcoesResposta(q.getOpcoesResposta());
+                qDto.setRespostaCorreta(q.getRespostaCorreta());
+                qDto.setOrdem(q.getOrdem());
+                return qDto;
+            }).collect(Collectors.toList());
+
+            dto.setQuestoes(questoesDTO);
+        }
+
         return dto;
     }
 }
