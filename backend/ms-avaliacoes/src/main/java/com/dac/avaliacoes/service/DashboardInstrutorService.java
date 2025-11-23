@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,9 +42,7 @@ public class DashboardInstrutorService {
 
         DashboardInstrutorDTO dashboard = new DashboardInstrutorDTO();
 
-        // 1. Total de Avaliações Criadas (assumindo que cursoId está relacionado ao instrutor)
-        // NOTA: Aqui você precisa de uma lógica para filtrar por instrutor
-        // Por enquanto, vamos pegar todas as avaliações
+        // 1. Total de Avaliações Criadas
         Long totalAvaliacoes = avaliacaoRepository.count();
         dashboard.setTotalAvaliacoesCriadas(totalAvaliacoes);
 
@@ -103,15 +102,16 @@ public class DashboardInstrutorService {
                 .average()
                 .orElse(0.0);
 
-        return new AvaliacaoResumoDTO(
-                avaliacao.getId(),
-                avaliacao.getCodigo(),
-                avaliacao.getTitulo(),
-                avaliacao.getCursoId(),
-                totalTentativas,
-                mediaNotas,
-                avaliacao.getDataCriacao()
-        );
+        AvaliacaoResumoDTO dto = new AvaliacaoResumoDTO();
+        dto.setId(avaliacao.getId());
+        dto.setCodigo(avaliacao.getCodigo());
+        dto.setTitulo(avaliacao.getTitulo());
+        dto.setCursoId(avaliacao.getCursoId());
+        dto.setTotalTentativas(totalTentativas);
+        dto.setMediaNotas(mediaNotas);
+        dto.setDataCriacao(avaliacao.getDataCriacao());
+
+        return dto;
     }
 
     private TentativaPendenteDTO converterParaTentativaPendente(Tentativa tentativa) {
@@ -124,14 +124,15 @@ public class DashboardInstrutorService {
             logger.warn("Não foi possível buscar dados do funcionário ID: " + tentativa.getFuncionarioId());
         }
 
-        return new TentativaPendenteDTO(
-                tentativa.getId(),
-                tentativa.getFuncionarioId(),
-                funcionarioNome,
-                tentativa.getAvaliacao().getTitulo(),
-                tentativa.getDataFim(),
-                tentativa.getNotaObtida()
-        );
+        TentativaPendenteDTO dto = new TentativaPendenteDTO();
+        dto.setTentativaId(tentativa.getId());
+        dto.setFuncionarioId(tentativa.getFuncionarioId());
+        dto.setFuncionarioNome(funcionarioNome);
+        dto.setAvaliacaoTitulo(tentativa.getAvaliacao().getTitulo());
+        dto.setDataFim(tentativa.getDataFim());
+        dto.setNotaObtida(tentativa.getNotaObtida());
+
+        return dto;
     }
 
     private EstatisticaAvaliacaoDTO calcularEstatisticasAvaliacao(Avaliacao avaliacao) {
@@ -160,16 +161,17 @@ public class DashboardInstrutorService {
 
         Double taxaAprovacao = totalTentativas > 0 ? (aprovadas * 100.0) / totalTentativas : 0.0;
 
+        // Usando o construtor completo para evitar erros
         return new EstatisticaAvaliacaoDTO(
-                avaliacao.getId(),
-                avaliacao.getTitulo(),
-                totalTentativas,
-                aprovadas,
-                reprovadas,
-                mediaNotas,
-                notaMin,
-                notaMax,
-                taxaAprovacao
+                avaliacao.getId(),           // avaliacaoId
+                avaliacao.getTitulo(),       // avaliacaoTitulo
+                totalTentativas,             // totalTentativas
+                aprovadas,                   // tentativasAprovadas
+                reprovadas,                  // tentativasReprovadas
+                mediaNotas,                  // mediaNotas
+                notaMin,                     // notaMinima
+                notaMax,                     // notaMaxima
+                taxaAprovacao                // taxaAprovacao
         );
     }
 }

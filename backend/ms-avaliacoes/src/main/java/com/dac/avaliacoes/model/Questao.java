@@ -1,46 +1,69 @@
 package com.dac.avaliacoes.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import java.util.List;
 
 @Entity
 @Table(name = "questoes")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Questao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne                             // ← Muitas questões para uma avaliação
+    @ManyToOne
     @JoinColumn(name = "avaliacao_id", nullable = false)
     private Avaliacao avaliacao;
 
-    @Enumerated(EnumType.STRING)           // ← Salva tipo como STRING (MULTIPLA_ESCOLHA, etc)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoQuestao tipoQuestao;
 
-    @Column(nullable = false, columnDefinition = "TEXT")  // ← TEXT para textos longos
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String enunciado;
 
-    @Column(columnDefinition = "TEXT")     // ← JSON com opções: ["A", "B", "C", "D"]
+    @Column(columnDefinition = "TEXT")
     private String opcoesResposta;
 
-    private String respostaCorreta;        // ← A resposta certa (pode ser "A" ou "Verdadeiro" ou null se dissertativa)
+    private String respostaCorreta;
 
     @Column(nullable = false)
-    private Double peso = 1.0;             // ← Peso da questão (1.0 = 1 ponto, 2.0 = 2 pontos)
+    private Double peso = 1.0;
 
     @Column(nullable = false)
-    private Integer ordem;                 // ← Ordem de exibição (1ª, 2ª, 3ª...)
+    private Integer ordem;
 
     @OneToMany(mappedBy = "questao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resposta> respostas;
+
+    // Construtor vazio
+    public Questao() {}
+
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Avaliacao getAvaliacao() { return avaliacao; }
+    public void setAvaliacao(Avaliacao avaliacao) { this.avaliacao = avaliacao; }
+
+    public TipoQuestao getTipoQuestao() { return tipoQuestao; }
+    public void setTipoQuestao(TipoQuestao tipoQuestao) { this.tipoQuestao = tipoQuestao; }
+
+    public String getEnunciado() { return enunciado; }
+    public void setEnunciado(String enunciado) { this.enunciado = enunciado; }
+
+    public String getOpcoesResposta() { return opcoesResposta; }
+    public void setOpcoesResposta(String opcoesResposta) { this.opcoesResposta = opcoesResposta; }
+
+    public String getRespostaCorreta() { return respostaCorreta; }
+    public void setRespostaCorreta(String respostaCorreta) { this.respostaCorreta = respostaCorreta; }
+
+    public Double getPeso() { return peso; }
+    public void setPeso(Double peso) { this.peso = peso; }
+
+    public Integer getOrdem() { return ordem; }
+    public void setOrdem(Integer ordem) { this.ordem = ordem; }
+
+    public List<Resposta> getRespostas() { return respostas; }
+    public void setRespostas(List<Resposta> respostas) { this.respostas = respostas; }
 }
