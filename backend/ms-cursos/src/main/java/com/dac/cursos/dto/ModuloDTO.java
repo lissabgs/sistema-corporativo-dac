@@ -5,6 +5,7 @@ import java.util.List;
 public class ModuloDTO {
     private String titulo;
     private int ordem;
+    private boolean obrigatorio; // NOVO CAMPO
     private List<AulaDTO> aulas;
 
     public String getTitulo() { return titulo; }
@@ -12,6 +13,9 @@ public class ModuloDTO {
 
     public int getOrdem() { return ordem; }
     public void setOrdem(int ordem) { this.ordem = ordem; }
+
+    public boolean isObrigatorio() { return obrigatorio; }
+    public void setObrigatorio(boolean obrigatorio) { this.obrigatorio = obrigatorio; }
 
     public List<AulaDTO> getAulas() { return aulas; }
     public void setAulas(List<AulaDTO> aulas) { this.aulas = aulas; }

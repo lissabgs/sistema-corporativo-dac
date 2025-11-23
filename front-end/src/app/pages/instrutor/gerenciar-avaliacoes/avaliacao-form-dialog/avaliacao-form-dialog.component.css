@@ -1,0 +1,213 @@
+/* Container Global do Dialog */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh; /* Limita a altura total */
+}
+
+/* CABEÇALHO (Estilo igual Cursos) */
+.form-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #0d47a1; /* Azul Escuro */
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.form-header p {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* CORPO DO SCROLL */
+.custom-content {
+  flex-grow: 1;
+  padding: 24px !important; /* Sobrescreve padrão do Material */
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+/* TÍTULOS DE SEÇÃO (Barra azul lateral) */
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  border-left: 4px solid #0d47a1;
+  padding-left: 10px;
+}
+
+.no-margin { margin-bottom: 0; }
+
+/* GRID SYSTEMS */
+.full-width { width: 100%; }
+.row-section { margin-bottom: 10px; }
+
+.grid-2-custom {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.my-4 { margin: 25px 0; }
+
+/* BOX DO TIPO DE AVALIAÇÃO */
+.tipo-prova-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 0 15px;
+  height: 56px;
+  box-sizing: border-box;
+  margin-top: 4px;
+  background-color: transparent;
+  transition: border-color 0.2s;
+}
+
+.tipo-prova-box:hover {
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+/* LABEL */
+.label-tipo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* GRUPO DE RADIOS */
+.tipo-prova-box mat-radio-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.tipo-prova-box mat-radio-button {
+  display: flex;
+  align-items: center;
+}
+
+
+.label-tipo {
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+}
+
+/* CABEÇALHO QUESTÕES */
+.header-questoes-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* ESTILO "EMPTY STATE" (Quando não tem questões) */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  background: #f9f9f9;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.empty-state mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+/* QUESTÕES */
+.mb-2 { margin-bottom: 10px; display: block; }
+
+.questao-content {
+  padding-top: 10px;
+}
+
+.questao-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.field-peso { width: 100px; flex-shrink: 0; }
+.field-enunciado { flex-grow: 1; }
+
+/* ALTERNATIVAS */
+.alternativas-section {
+  background-color: #f5f7fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.hint-text {
+  margin: 0 0 10px 0;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.alternativa-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.radio-correta { margin: 0; }
+.letra-label { font-weight: bold; width: 20px; color: #333; }
+
+.no-subscript ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+.discursiva-info {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  padding: 15px;
+  border-radius: 4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.justify-end { display: flex; justify-content: flex-end; width: 100%; }
+.clickable { cursor: pointer; }
+.error-msg { color: #f44336; font-weight: 500; font-size: 12px; margin-top: 5px; }
+
+/* RODAPÉ (ACTIONS) */
+.dialog-actions {
+  padding: 15px 24px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

@@ -36,6 +36,12 @@ public class AvaliacaoController {
 
     // ========== BUSCAR POR ID ==========
     // TODOS autenticados
+    // Adicione este método ao seu Controller existente
+    @GetMapping("/cursos-disponiveis")
+    public ResponseEntity<List<Object>> listarCursosSemAvaliacao() {
+        List<Object> cursosDisponiveis = avaliacaoService.buscarCursosSemAvaliacao();
+        return ResponseEntity.ok(cursosDisponiveis);
+    }
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AvaliacaoDTO> buscarAvaliacao(@PathVariable Long id) {

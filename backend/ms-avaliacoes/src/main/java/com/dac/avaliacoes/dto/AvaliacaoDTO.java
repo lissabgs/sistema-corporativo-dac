@@ -14,13 +14,15 @@ public class AvaliacaoDTO {
     private Boolean ativo;
     private LocalDateTime dataCriacao;
 
+    private boolean temTentativas;
+
     // Construtor vazio
     public AvaliacaoDTO() {}
 
-    // Construtor completo
+    // Construtor completo (atualizado)
     public AvaliacaoDTO(Long id, String codigo, String titulo, String descricao, Long cursoId,
                         Integer tempoLimiteMinutos, Integer tentativasPermitidas, Double notaMinima,
-                        Boolean ativo, LocalDateTime dataCriacao) {
+                        Boolean ativo, LocalDateTime dataCriacao, boolean temTentativas) {
         this.id = id;
         this.codigo = codigo;
         this.titulo = titulo;
@@ -31,6 +33,7 @@ public class AvaliacaoDTO {
         this.notaMinima = notaMinima;
         this.ativo = ativo;
         this.dataCriacao = dataCriacao;
+        this.temTentativas = temTentativas;
     }
 
     // Getters e Setters
@@ -63,4 +66,7 @@ public class AvaliacaoDTO {
 
     public LocalDateTime getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+
+    public boolean isTemTentativas() { return temTentativas; }
+    public void setTemTentativas(boolean temTentativas) { this.temTentativas = temTentativas; }
 }

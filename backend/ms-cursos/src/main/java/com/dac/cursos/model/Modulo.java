@@ -23,14 +23,18 @@ public class Modulo {
     private String titulo;
     private int ordem;
 
-    // Relacionamento OneToMany com Aula
+    // NOVO CAMPO
+    private boolean obrigatorio = true;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "modulo_id") // Cria coluna FK na tabela 'aulas'
+    @JoinColumn(name = "modulo_id")
     private List<Aula> aulas = new ArrayList<>();
 
-    public Modulo(String titulo, int ordem, List<Aula> aulas) {
+    // Construtor utilitário atualizado
+    public Modulo(String titulo, int ordem, boolean obrigatorio, List<Aula> aulas) {
         this.titulo = titulo;
         this.ordem = ordem;
+        this.obrigatorio = obrigatorio;
         this.aulas = aulas;
     }
 }

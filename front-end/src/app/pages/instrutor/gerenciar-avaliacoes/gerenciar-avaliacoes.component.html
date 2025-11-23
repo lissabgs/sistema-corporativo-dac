@@ -1,0 +1,70 @@
+<div class="page-background">
+  
+  <div class="table-container mat-elevation-z8">
+    
+    <div class="page-header">
+      <div class="header-text">
+        <h2>Gerenciar Avaliações</h2>
+        <p>Crie, edite e gerencie as avaliações dos seus cursos.</p>
+      </div>
+      <button mat-raised-button color="primary" class="btn-novo" (click)="abrirDialog()">
+        <mat-icon>add</mat-icon> Nova Avaliação
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="avaliacoes" class="custom-table">
+
+      <ng-container matColumnDef="codigo">
+        <th mat-header-cell *matHeaderCellDef> Código </th>
+        <td mat-cell *matCellDef="let element" class="code-cell"> {{element.codigo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="titulo">
+        <th mat-header-cell *matHeaderCellDef> Título da Avaliação </th>
+        <td mat-cell *matCellDef="let element" class="title-cell"> {{element.titulo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cursoId">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Curso (ID) </th>
+        <td mat-cell *matCellDef="let element" class="text-center"> {{element.cursoId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tempo">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Tempo </th>
+        <td mat-cell *matCellDef="let element" class="text-center"> {{element.tempoLimiteMinutos}} min </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Ações </th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          
+          <div class="actions-container">
+            <button mat-icon-button color="primary" 
+                    (click)="abrirDialog(element)"
+                    [disabled]="element.temTentativas"
+                    [matTooltip]="element.temTentativas ? 'Bloqueado: Alunos já iniciaram' : 'Editar'">
+              <mat-icon>edit</mat-icon>
+            </button>
+    
+            <button mat-icon-button color="warn" 
+                    (click)="deletar(element.id)"
+                    [disabled]="element.temTentativas"
+                    [matTooltip]="element.temTentativas ? 'Bloqueado: Alunos já iniciaram' : 'Excluir'">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    
+    <div *ngIf="avaliacoes.length === 0" class="empty-state">
+      <mat-icon>quiz</mat-icon>
+      <p>Nenhuma avaliação cadastrada.</p>
+    </div>
+
+  </div>
+</div>
