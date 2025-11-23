@@ -1,0 +1,120 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Editar' : 'Nova' }} Avaliação</h2>
+
+<mat-dialog-content class="form-content">
+  <form [formGroup]="form">
+    
+    <div class="grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="codigo" placeholder="EX: PROVA-JAVA-01">
+        <mat-error *ngIf="form.get('codigo')?.hasError('required')">Obrigatório</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="titulo">
+        <mat-error *ngIf="form.get('titulo')?.hasError('required')">Obrigatório</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descrição</mat-label>
+      <textarea matInput formControlName="descricao" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="grid-3">
+      <mat-form-field appearance="outline">
+        <mat-label>ID do Curso</mat-label>
+        <input matInput type="number" formControlName="cursoId">
+        <mat-error *ngIf="form.get('cursoId')?.hasError('required')">Obrigatório</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tempo Limite (min)</mat-label>
+        <input matInput type="number" formControlName="tempoLimiteMinutos">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tentativas</mat-label>
+        <input matInput type="number" formControlName="tentativasPermitidas">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="half-width">
+      <mat-label>Nota Mínima (%)</mat-label>
+      <input matInput type="number" formControlName="notaMinima">
+      <span matSuffix>%</span>
+    </mat-form-field>
+
+    <mat-divider class="my-3"></mat-divider>
+
+    <div class="header-questoes">
+      <h3>Questões</h3>
+      <button mat-stroked-button color="primary" type="button" (click)="adicionarQuestao()">
+        <mat-icon>add_circle</mat-icon> Adicionar Questão
+      </button>
+    </div>
+
+    <div formArrayName="questoes">
+      <mat-accordion multi>
+        <mat-expansion-panel *ngFor="let q of questoes.controls; let i = index" [formGroupName]="i" [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Q{{ i + 1 }}</strong>
+            </mat-panel-title>
+            <mat-panel-description class="justify-between">
+              {{ q.get('tipoQuestao')?.value }}
+              <mat-icon color="warn" (click)="removerQuestao(i); $event.stopPropagation()">delete</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="grid-2 mt-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Tipo</mat-label>
+              <mat-select formControlName="tipoQuestao">
+                <mat-option value="OBJETIVA">Objetiva</mat-option>
+                <mat-option value="DISCURSIVA">Discursiva</mat-option>
+                <mat-option value="VERDADEIRO_FALSO">V ou F</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Peso da Questão</mat-label>
+              <input matInput type="number" formControlName="peso">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Enunciado</mat-label>
+            <textarea matInput formControlName="enunciado"></textarea>
+          </mat-form-field>
+
+          <div *ngIf="q.get('tipoQuestao')?.value === 'OBJETIVA'">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Opções (Ex: A) Sim; B) Não)</mat-label>
+              <input matInput formControlName="opcoesResposta" placeholder="Separe as opções com ponto e vírgula">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Resposta Correta</mat-label>
+            <input matInput formControlName="respostaCorreta" placeholder="Ex: A ou Texto da resposta">
+          </mat-form-field>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <div *ngIf="questoes.controls.length === 0" class="empty-questoes">
+      Nenhuma questão adicionada.
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+    Salvar
+  </button>
+</mat-dialog-actions>

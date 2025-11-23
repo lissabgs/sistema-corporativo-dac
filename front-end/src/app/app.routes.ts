@@ -9,9 +9,11 @@ import { GerenciarCursosComponent } from './pages/instrutor/gerenciar-cursos/ger
 import { CadastrarCursoComponent } from './pages/instrutor/cadastrar-curso/cadastrar-curso.component';
 import { AcessoNegadoComponent } from './pages/acesso-negado/acesso-negado.component';
 import { DashboardAdminComponent } from './pages/admin/dashboard-admin/dashboard-admin.component';
-import { GerenciarUsuariosComponent } from './pages/admin/gerenciar-usuarios/gerenciar-usuarios.component'; // Novo
-import { FormUsuarioComponent } from './pages/admin/form-usuario/form-usuario.component'; // Novo
-import { GerenciarDepartamentosComponent } from './pages/admin/gerenciar-departamentos/gerenciar-departamentos.component'; // Novo
+import { GerenciarUsuariosComponent } from './pages/admin/gerenciar-usuarios/gerenciar-usuarios.component'; 
+import { FormUsuarioComponent } from './pages/admin/form-usuario/form-usuario.component'; 
+import { GerenciarDepartamentosComponent } from './pages/admin/gerenciar-departamentos/gerenciar-departamentos.component'; 
+import { GerenciarAvaliacoesComponent } from './pages/instrutor/gerenciar-avaliacoes/gerenciar-avaliacoes.component'; // <--- Importe aqui
+
 import { roleGuard } from './guards/auth.guard';
 
 const APENAS_FUNCIONARIO = ['FUNCIONARIO'];
@@ -60,6 +62,11 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
   {
+    path: 'gerenciar-avaliacoes', 
+    component: GerenciarAvaliacoesComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
+  {
     path: 'dashboard-admin',
     component: DashboardAdminComponent,
     canActivate: [roleGuard(APENAS_ADMIN)]
@@ -82,6 +89,6 @@ export const routes: Routes = [
   {
     path: 'gerenciar-departamentos',
     component: GerenciarDepartamentosComponent,
-    canActivate: [roleGuard(APENAS_ADMIN)] // Proteção total
+    canActivate: [roleGuard(APENAS_ADMIN)] 
   }
 ];

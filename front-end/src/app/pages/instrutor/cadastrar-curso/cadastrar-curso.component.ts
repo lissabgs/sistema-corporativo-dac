@@ -190,8 +190,8 @@ export class CadastrarCursoComponent implements OnInit {
           titulo: [aula.titulo, Validators.required],
           urlConteudo: [aula.urlConteudo, Validators.required],
           ordem: [aula.ordem],
-          obrigatorio: [aula.obrigatorio],
-          xpModulo: [aula.xpModulo]
+          obrigatorio: [aula.obrigatorio]
+          // REMOVIDO: xpModulo: [aula.xpModulo]
         }));
       });
     }
@@ -212,8 +212,8 @@ export class CadastrarCursoComponent implements OnInit {
       titulo: ['', Validators.required],
       urlConteudo: ['', Validators.required],
       ordem: [aulas.length + 1],
-      obrigatorio: [true],
-      xpModulo: [10, Validators.min(0)]
+      obrigatorio: [true]
+      // REMOVIDO: xpModulo: [10, Validators.min(0)]
     }));
   }
 

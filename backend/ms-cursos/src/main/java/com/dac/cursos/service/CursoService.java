@@ -97,20 +97,31 @@ public class CursoService {
             curso.setPreRequisitos(new ArrayList<>());
         }
 
-        try {
-            if (dto.getStatus() != null) {
-                curso.setStatus(StatusCurso.valueOf(dto.getStatus().toUpperCase()));
-            } else {
-                if (curso.getStatus() == null) curso.setStatus(StatusCurso.RASCUNHO);
-            }
-        } catch (IllegalArgumentException e) {
-            curso.setStatus(StatusCurso.RASCUNHO);
+        // LÓGICA DE DISTRIBUIÇÃO DE XP (NOVA)
+        int xpTotal = dto.getXpOferecido();
+        int xpParaAulas = (int) (xpTotal * 0.25); // 25% do total para distribuir entre as aulas
+        int xpPorAula = 0;
+
+        // Primeiro, contamos quantas aulas existem no total para fazer a divisão
+        long totalAulas = 0;
+        if (dto.getModulos() != null) {
+            totalAulas = dto.getModulos().stream()
+                    .filter(m -> m.getAulas() != null)
+                    .mapToLong(m -> m.getAulas().size())
+                    .sum();
         }
 
-        // Conversão de Módulos e Aulas
+        // Evita divisão por zero
+        if (totalAulas > 0) {
+            xpPorAula = xpParaAulas / (int) totalAulas;
+        }
+
+        // Conversão de Módulos e Aulas com XP calculado
         if (dto.getModulos() != null) {
-            // Limpa a lista atual para substituir (se for update)
             curso.getModulos().clear();
+
+            // Variável final efetiva para uso no lambda
+            int finalXpPorAula = xpPorAula;
 
             List<Modulo> novosModulos = dto.getModulos().stream().map(modDto -> {
                 List<Aula> aulas = new ArrayList<>();
@@ -121,7 +132,7 @@ public class CursoService {
                             aulaDto.getUrlConteudo(),
                             aulaDto.getOrdem(),
                             aulaDto.isObrigatorio(),
-                            aulaDto.getXpModulo()
+                            finalXpPorAula // AQUI: Usamos o valor calculado, ignorando o do DTO
                     )).collect(Collectors.toList());
                 }
                 return new Modulo(modDto.getTitulo(), modDto.getOrdem(), aulas);

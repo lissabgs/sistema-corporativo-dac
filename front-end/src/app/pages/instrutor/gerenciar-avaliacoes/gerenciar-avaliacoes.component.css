@@ -1,0 +1,54 @@
+.container-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-actions h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th.mat-header-cell {
+  font-weight: bold;
+  color: #555;
+  background-color: #f5f5f5;
+  font-size: 14px;
+}
+
+td.mat-cell {
+  color: #333;
+  padding: 12px;
+}
+
+/* Responsividade simples para tabela */
+.mat-column-acoes {
+  width: 120px;
+  text-align: right;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  color: #888;
+  margin-top: 20px;
+  border: 1px dashed #ccc;
+}
