@@ -49,11 +49,9 @@ export class AvaliacaoFormDialogComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       id: [null],
-      // O código e título serão preenchidos ao selecionar o curso
-      codigo: ['', Validators.required], 
+      codigo: ['', Validators.required],
       titulo: ['', Validators.required],
       descricao: [''],
-      // Novo campo global para definir o tipo da prova inteira
       tipoAvaliacao: ['OBJETIVA', Validators.required], 
       cursoId: [null, Validators.required],
       tempoLimiteMinutos: [60, [Validators.required, Validators.min(1)]],
@@ -66,7 +64,7 @@ export class AvaliacaoFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.carregarCursos();
 
-    // Se o usuário trocar o tipo de prova, limpamos as questões para evitar erros
+    // Limpa questões se trocar o tipo de prova para evitar inconsistências
     this.form.get('tipoAvaliacao')?.valueChanges.subscribe(() => {
       this.questoes.clear();
     });
@@ -89,26 +87,24 @@ export class AvaliacaoFormDialogComponent implements OnInit {
     const curso = this.cursosDisponiveis.find(c => c.id === cursoId);
     if (curso) {
       this.form.patchValue({
-        codigo: curso.codigo, // Código do curso vira código da avaliação
-        titulo: `Avaliação Final - ${curso.titulo}`
+        codigo: curso.codigo,
+        titulo: `Avaliação - ${curso.titulo}`
       });
     }
   }
 
   preencherDados(avaliacao: Avaliacao) {
-    // Preenche dados básicos
     this.form.patchValue(avaliacao);
     
-    // Detecta o tipo da primeira questão para definir o tipo da prova (se houver questões)
     if (avaliacao.questoes && avaliacao.questoes.length > 0) {
+      // Define o tipo com base na primeira questão
       const tipo = avaliacao.questoes[0].tipoQuestao;
       this.form.patchValue({ tipoAvaliacao: tipo });
       
-      // Recria o FormArray de questões
       avaliacao.questoes.forEach(q => {
         const group = this.criarQuestaoGroup();
         
-        // Se for objetiva, precisamos "explodir" o JSON de volta para os campos A, B, C...
+        // Se for objetiva, faz o parse do JSON de volta para os campos A, B, C...
         if (tipo === 'OBJETIVA' && q.opcoesResposta) {
           try {
             const opcoes = JSON.parse(q.opcoesResposta);
@@ -120,9 +116,7 @@ export class AvaliacaoFormDialogComponent implements OnInit {
               alternativaE: opcoes.E,
               respostaCorretaSelecionada: q.respostaCorreta
             });
-          } catch (e) {
-            console.error('Erro ao parsear opções', e);
-          }
+          } catch (e) { console.error('Erro ao ler opções', e); }
         }
         
         group.patchValue({
@@ -148,21 +142,20 @@ export class AvaliacaoFormDialogComponent implements OnInit {
       enunciado: ['', Validators.required],
       peso: [1, [Validators.required, Validators.min(0.1)]],
       
-      // Campos visuais para as alternativas (usados apenas no front)
+      // Campos Visuais (Alternativas)
       alternativaA: [''],
       alternativaB: [''],
       alternativaC: [''],
       alternativaD: [''],
       alternativaE: [''],
-      respostaCorretaSelecionada: [''], // Armazena "A", "B", etc.
+      respostaCorretaSelecionada: [''],
       
-      // Campos ocultos que serão enviados ao backend
+      // Campos Ocultos (para o Backend)
       tipoQuestao: [tipo], 
       opcoesResposta: [''], 
       respostaCorreta: ['']
     });
 
-    // Validação condicional: Se for objetiva, obriga preencher alternativas e selecionar a correta
     if (tipo === 'OBJETIVA') {
       group.get('alternativaA')?.setValidators(Validators.required);
       group.get('alternativaB')?.setValidators(Validators.required);
@@ -189,13 +182,15 @@ export class AvaliacaoFormDialogComponent implements OnInit {
     const formValue = this.form.getRawValue();
     const tipoGlobal = formValue.tipoAvaliacao;
 
-    // PREPARAÇÃO DOS DADOS PARA O BACKEND
-    formValue.questoes = formValue.questoes.map((q: any) => {
+    // --- AQUI ESTÁ A CORREÇÃO CRUCIAL ---
+    // Transforma os dados do formulário no formato que o Java espera (QuestaoDTO)
+    formValue.questoes = formValue.questoes.map((q: any, index: number) => {
       
-      q.tipoQuestao = tipoGlobal; // Garante que todas seguem o tipo da prova
+      q.tipoQuestao = tipoGlobal;
+      q.ordem = index + 1; // Define a ordem sequencial (1, 2, 3...)
 
       if (tipoGlobal === 'OBJETIVA') {
-        // Monta o JSON das opções: {"A": "Texto...", "B": "Texto..."}
+        // Cria o JSON das opções
         const opcoesObj = {
           A: q.alternativaA,
           B: q.alternativaB,
@@ -203,23 +198,21 @@ export class AvaliacaoFormDialogComponent implements OnInit {
           D: q.alternativaD,
           E: q.alternativaE
         };
-        q.opcoesResposta = JSON.stringify(opcoesObj);
-        q.respostaCorreta = q.respostaCorretaSelecionada; // Ex: "C"
-
+        q.opcoesResposta = JSON.stringify(opcoesObj); // Campo que o Java lê
+        q.respostaCorreta = q.respostaCorretaSelecionada; // Campo que o Java lê
       } else {
-        // Discursiva: campos de resposta ficam nulos
         q.opcoesResposta = null;
         q.respostaCorreta = null; 
       }
 
-      // Remove campos temporários do front para não enviar lixo
+      // Limpa o objeto para não enviar lixo
       delete q.alternativaA; delete q.alternativaB; delete q.alternativaC;
       delete q.alternativaD; delete q.alternativaE; delete q.respostaCorretaSelecionada;
 
       return q;
     });
 
-    // Envio (Create ou Update)
+    // Envio
     const request$ = this.isEditMode 
       ? this.avaliacaoService.atualizar(formValue.id, formValue)
       : this.avaliacaoService.criar(formValue);
@@ -231,7 +224,7 @@ export class AvaliacaoFormDialogComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.snackBar.open('Erro ao salvar. Verifique os campos.', 'Fechar');
+        this.snackBar.open('Erro ao salvar. Verifique o console.', 'Fechar');
       }
     });
   }

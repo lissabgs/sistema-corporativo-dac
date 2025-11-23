@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays; // Necessário para o método listarDisponiveis
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 @Service
 public class CursoService {
@@ -24,9 +24,7 @@ public class CursoService {
     @Transactional
     public Curso createCurso(CursoRequestDTO dto) {
         Curso curso = new Curso();
-
         preencherDadosCurso(curso, dto);
-
         return cursoRepository.save(curso);
     }
 
@@ -36,7 +34,6 @@ public class CursoService {
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado com ID: " + id));
 
         preencherDadosCurso(curso, dto);
-
         return cursoRepository.save(curso);
     }
 
@@ -59,16 +56,13 @@ public class CursoService {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado com ID: " + id));
 
-        StatusCurso statusAtual = curso.getStatus();
         StatusCurso novoStatus;
-
         try {
             novoStatus = StatusCurso.valueOf(novoStatusStr.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Status inválido: " + novoStatusStr);
         }
 
-        // (Lógica de validação de estado mantém a mesma...)
         curso.setStatus(novoStatus);
         return cursoRepository.save(curso);
     }
@@ -76,8 +70,30 @@ public class CursoService {
     public List<Curso> listarPorInstrutor(Long instrutorId) {
         return cursoRepository.findByInstrutorId(instrutorId);
     }
+
     public List<Curso> listarTodos() {
         return cursoRepository.findAll();
+    }
+
+    public List<Curso> listarDisponiveisParaAluno(String departamento, String nivelAluno) {
+        List<String> niveisPermitidos;
+        String nivel = nivelAluno != null ? nivelAluno.toUpperCase() : "INICIANTE";
+
+        switch (nivel) {
+            case "AVANCADO":
+            case "AVANÇADO":
+                niveisPermitidos = Arrays.asList("Iniciante", "Intermediário", "Avançado", "INICIANTE", "INTERMEDIARIO", "AVANCADO");
+                break;
+            case "INTERMEDIARIO":
+            case "INTERMEDIÁRIO":
+                niveisPermitidos = Arrays.asList("Iniciante", "Intermediário", "INICIANTE", "INTERMEDIARIO");
+                break;
+            default:
+                niveisPermitidos = Arrays.asList("Iniciante", "INICIANTE");
+                break;
+        }
+
+        return cursoRepository.buscarCursosDisponiveis(StatusCurso.ATIVO, departamento, niveisPermitidos);
     }
 
     private void preencherDadosCurso(Curso curso, CursoRequestDTO dto) {
@@ -87,22 +103,43 @@ public class CursoService {
         curso.setCategoriaId(dto.getCategoriaId());
         curso.setInstrutorId(dto.getInstrutorId());
         curso.setDuracaoEstimada(dto.getDuracaoEstimada());
-        curso.setXpOferecido(dto.getXpOferecido());
         curso.setNivelDificuldade(dto.getNivelDificuldade());
 
-        // Garante que a lista não seja nula
+        // Define XP Total (Input do Usuário)
+        int xpTotal = dto.getXpOferecido();
+        curso.setXpOferecido(xpTotal);
+
+        // --- CÁLCULO AUTOMÁTICO DOS CAMPOS DE XP ---
+
+        // 1. XP Conclusão (50%)
+        int xpConclusao = (int) (xpTotal * 0.50);
+        curso.setXpConclusao(xpConclusao);
+
+        // 2. XP Avaliação (25%)
+        int xpAvaliacao = (int) (xpTotal * 0.25);
+        curso.setXpAvaliacao(xpAvaliacao);
+
+        // 3. XP Distribuído nas Aulas (25%)
+        int xpParaAulas = (int) (xpTotal * 0.25);
+        int xpPorAula = 0;
+
         if (dto.getPreRequisitos() != null) {
             curso.setPreRequisitos(new ArrayList<>(dto.getPreRequisitos()));
         } else {
             curso.setPreRequisitos(new ArrayList<>());
         }
 
-        // LÓGICA DE DISTRIBUIÇÃO DE XP (NOVA)
-        int xpTotal = dto.getXpOferecido();
-        int xpParaAulas = (int) (xpTotal * 0.25); // 25% do total para distribuir entre as aulas
-        int xpPorAula = 0;
+        if (dto.getStatus() != null) {
+            try {
+                curso.setStatus(StatusCurso.valueOf(dto.getStatus().toUpperCase()));
+            } catch (Exception e) {
+                curso.setStatus(StatusCurso.RASCUNHO);
+            }
+        } else if (curso.getStatus() == null) {
+            curso.setStatus(StatusCurso.RASCUNHO);
+        }
 
-        // Primeiro, contamos quantas aulas existem no total para fazer a divisão
+        // Conta aulas para divisão
         long totalAulas = 0;
         if (dto.getModulos() != null) {
             totalAulas = dto.getModulos().stream()
@@ -111,16 +148,13 @@ public class CursoService {
                     .sum();
         }
 
-        // Evita divisão por zero
         if (totalAulas > 0) {
             xpPorAula = xpParaAulas / (int) totalAulas;
         }
 
-        // Conversão de Módulos e Aulas com XP calculado
+        // Conversão de Módulos e Aulas
         if (dto.getModulos() != null) {
             curso.getModulos().clear();
-
-            // Variável final efetiva para uso no lambda
             int finalXpPorAula = xpPorAula;
 
             List<Modulo> novosModulos = dto.getModulos().stream().map(modDto -> {
@@ -132,9 +166,10 @@ public class CursoService {
                             aulaDto.getUrlConteudo(),
                             aulaDto.getOrdem(),
                             aulaDto.isObrigatorio(),
-                            finalXpPorAula // AQUI: Usamos o valor calculado, ignorando o do DTO
+                            finalXpPorAula // Usa o valor calculado da divisão
                     )).collect(Collectors.toList());
                 }
+                // Passa também o isObrigatorio do Módulo
                 return new Modulo(modDto.getTitulo(), modDto.getOrdem(), modDto.isObrigatorio(), aulas);
             }).collect(Collectors.toList());
 

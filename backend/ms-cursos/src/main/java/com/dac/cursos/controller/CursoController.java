@@ -54,6 +54,15 @@ public class CursoController {
         return ResponseEntity.ok(curso);
     }
 
+    @GetMapping("/disponiveis")
+    public ResponseEntity<List<Curso>> listarCursosDisponiveis(
+            @RequestParam String departamento,
+            @RequestParam String nivel) {
+
+        List<Curso> cursos = cursoService.listarDisponiveisParaAluno(departamento, nivel);
+        return ResponseEntity.ok(cursos);
+    }
+
     // NOVO: DELETE Lógico (Muda status para INATIVO)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarCurso(@PathVariable Long id) {
