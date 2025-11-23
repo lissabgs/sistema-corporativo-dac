@@ -6,6 +6,7 @@
 /* Remove o espaço gigante acima dos cards */
 .dashboard-content {
   padding: 0 32px 32px 32px; 
+  margin-top: 25px;
 }
 
 /* -------------------------
@@ -77,20 +78,47 @@ mat-progress-bar .mdc-linear-progress__bar-inner {
   background-color: #002F54 !important;
 }
 
+/* -------------------------
+   CHIP (cor original preservada)
+   + correção do alinhamento torto
+-------------------------- */
 mat-chip.mat-chip {
   background: #002F54 !important;
   color: #fff !important;
   font-weight: 600;
+
+  /* 🔥 Correção do desalinhamento */
+  display: flex !important;
+  align-items: center !important;
+  align-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
 }
 
+mat-chip.mat-chip mat-icon {
+  font-size: 16px !important;
+  margin: 0 !important;
+  line-height: 1 !important; /* 🔥 evita o ícone ficar mais alto */
+}
+
+/* -------------------------
+   ÍCONES
+-------------------------- */
 mat-icon {
   color: #002F54 !important;
 }
 
+/* -------------------------
+   LIST ITEMS
+-------------------------- */
 mat-list-item {
   padding: 70px 0;
 }
 
+/* -------------------------
+   BUTTONS
+-------------------------- */
 .card button[color="primary"],
 .card button.mat-mdc-raised-button[color="primary"] {
   background-color: #002F54 !important;
@@ -101,4 +129,45 @@ mat-list-item {
 .card button.mat-mdc-stroked-button[color="primary"] {
   border-color: #002F54 !important;
   color: #002F54 !important;
+}
+
+.card-scroll {
+  max-height: 260px;   /* altura fixa do conteúdo */
+  overflow-y: auto;    /* scroll vertical */
+  padding-right: 8px;  /* espaço para o scroll não cortar o texto */
+}
+
+/* opcional: deixa o scroll mais bonito */
+.card-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background: #b5b5b5;
+  border-radius: 4px;
+}
+
+.card-scroll::-webkit-scrollbar-thumb:hover {
+  background: #8b8b8b;
+}
+
+/* ====== CARDS COM SCROLL INTERNO ====== */
+.card.scrollable {
+  max-height: 420px;        /* altura máxima do card */
+  overflow-y: auto;         /* ativa rolagem vertical */
+  padding-right: 6px;       /* evita cortar o conteúdo */
+}
+
+/* deixa a scrollbar bonitinha */
+.card.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card.scrollable::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 4px;
+}
+
+.card.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #9e9e9e;
 }

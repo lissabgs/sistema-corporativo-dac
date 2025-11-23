@@ -46,13 +46,14 @@
 /* -------- SIDEBAR -------- */
 .app-sidebar {
   width: var(--sidebar-width);
-  height: 100%;
+  height: auto !important;
+  min-height: calc(100vh - var(--topbar-height)) !important;
   position: fixed;
   top: var(--topbar-height);
   left: 0;
   background: #fff;
   border-right: 1px solid #e0e0e0;
-  overflow-y: auto;
+  overflow-y: visible !important;
   z-index: 100;
 }
 
@@ -61,7 +62,6 @@
   flex-grow: 1;
   height: calc(100vh - var(--topbar-height));
   margin-left: var(--sidebar-width);
-  margin-top: var(--topbar-height);
   overflow-y: auto;
   overflow-x: hidden;
   width: calc(100vw - var(--sidebar-width));
@@ -71,3 +71,4 @@
   width: 100vw;
   margin-left: 0;
 }
+

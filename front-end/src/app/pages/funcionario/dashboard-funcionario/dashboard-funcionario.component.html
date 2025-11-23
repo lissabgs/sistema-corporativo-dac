@@ -70,24 +70,27 @@
       <mat-card-title>Cursos em andamento</mat-card-title>
       <mat-divider></mat-divider>
 
-      <mat-list>
-        <mat-list-item *ngFor="let c of cursosEmAndamento">
+      <!-- 🔥 SCROLL INTERNO -->
+      <div class="card-scroll">
+        <mat-list>
+          <mat-list-item *ngFor="let c of cursosEmAndamento">
 
-          <mat-icon matListItemIcon>play_circle</mat-icon>
+            <mat-icon matListItemIcon>play_circle</mat-icon>
 
-          <div class="item-info">
-            <div class="item-title">{{ c.titulo }}</div>
-            <div class="item-category muted">{{ c.categoria }}</div>
+            <div class="item-info">
+              <div class="item-title">{{ c.titulo }}</div>
+              <div class="item-category muted">{{ c.categoria }}</div>
 
-            <div class="progress-row">
-              <span class="pct">{{ c.progresso }}%</span>
-              <mat-progress-bar mode="determinate"
-                                [value]="c.progresso"></mat-progress-bar>
+              <div class="progress-row">
+                <span class="pct">{{ c.progresso }}%</span>
+                <mat-progress-bar mode="determinate"
+                                  [value]="c.progresso"></mat-progress-bar>
+              </div>
             </div>
-          </div>
 
-        </mat-list-item>
-      </mat-list>
+          </mat-list-item>
+        </mat-list>
+      </div>
 
       <button mat-raised-button color="primary"
               class="btn-continuar w-full"
@@ -103,25 +106,29 @@
       <mat-card-title>Cursos concluídos</mat-card-title>
       <mat-divider></mat-divider>
 
-      <mat-list>
-        <mat-list-item *ngFor="let c of cursosConcluidos">
+      <!-- 🔥 SCROLL INTERNO -->
+      <div class="card-scroll">
+        <mat-list>
+          <mat-list-item *ngFor="let c of cursosConcluidos">
 
-          <mat-icon matListItemIcon>check_circle</mat-icon>
+            <mat-icon matListItemIcon>check_circle</mat-icon>
 
-          <div class="item-info">
-            <div class="item-title">{{ c.titulo }}</div>
-            <div class="item-category muted">{{ c.categoria }}</div>
-          </div>
+            <div class="item-info">
+              <div class="item-title">{{ c.titulo }}</div>
+              <div class="item-category muted">{{ c.categoria }}</div>
+            </div>
 
-          <button mat-stroked-button color="primary"
-                  class="btn-certificado"
-                  (click)="baixarCertificado(c)">
-            <mat-icon>workspace_premium</mat-icon>
-            Certificado
-          </button>
+            <button mat-stroked-button color="primary"
+                    class="btn-certificado"
+                    (click)="baixarCertificado(c)">
+              <mat-icon>workspace_premium</mat-icon>
+              Certificado
+            </button>
 
-        </mat-list-item>
-      </mat-list>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
     </mat-card>
 
 
@@ -131,27 +138,32 @@
       <mat-card-title>Cursos disponíveis</mat-card-title>
       <mat-divider></mat-divider>
 
-      <mat-list>
-        <mat-list-item *ngFor="let c of cursosDisponiveis">
+      <!-- 🔥 SCROLL INTERNO -->
+      <div class="card-scroll">
+        <mat-list>
+          <mat-list-item *ngFor="let c of cursosDisponiveis">
 
-          <mat-icon matListItemIcon>school</mat-icon>
+            <mat-icon matListItemIcon>school</mat-icon>
 
-          <div class="item-info">
-            <div class="item-title">{{ c.titulo }}</div>
-            <div class="item-category muted">{{ c.categoria }}</div>
-          </div>
+            <div class="item-info">
+              <div class="item-title">{{ c.titulo }}</div>
+              <div class="item-category muted">{{ c.categoria }}</div>
+            </div>
 
-          <button mat-raised-button color="primary"
-                  class="btn-iniciar"
-                  (click)="iniciarCurso(c)">
-            Iniciar
-          </button>
+            <button mat-raised-button color="primary"
+                    class="btn-iniciar"
+                    (click)="iniciarCurso(c)">
+              Iniciar
+            </button>
 
-        </mat-list-item>
-      </mat-list>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
     </mat-card>
 
   </section>
+
 
 
 
@@ -163,20 +175,24 @@
       <mat-card-title>Ranking do Departamento</mat-card-title>
       <mat-divider></mat-divider>
 
-      <mat-list>
-        <mat-list-item *ngFor="let r of ranking; let i = index">
+      <!-- 🔥 SCROLL INTERNO -->
+      <div class="card-scroll">
+        <mat-list>
+          <mat-list-item *ngFor="let r of ranking; let i = index">
 
-          <div matListItemIcon class="rank-badge">{{ i + 1 }}</div>
+            <div matListItemIcon class="rank-badge">{{ i + 1 }}</div>
 
-          <div class="item-info">
-            <div class="item-title">{{ r.nome }}</div>
-            <div class="item-category muted">{{ r.cargo }}</div>
-          </div>
+            <div class="item-info">
+              <div class="item-title">{{ r.nome }}</div>
+              <div class="item-category muted">{{ r.cargo }}</div>
+            </div>
 
-          <div class="xp">{{ r.xp | number }} XP</div>
+            <div class="xp">{{ r.xp | number }} XP</div>
 
-        </mat-list-item>
-      </mat-list>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
     </mat-card>
 
 
@@ -186,24 +202,27 @@
       <mat-card-title>Últimas atividades</mat-card-title>
       <mat-divider></mat-divider>
 
-      <mat-list>
-        <mat-list-item *ngFor="let a of atividades">
+      <!-- 🔥 SCROLL INTERNO -->
+      <div class="card-scroll">
+        <mat-list>
+          <mat-list-item *ngFor="let a of atividades">
 
-          <mat-icon matListItemIcon>{{ a.icone }}</mat-icon>
+            <mat-icon matListItemIcon>{{ a.icone }}</mat-icon>
 
-          <div class="item-info">
-            <div class="item-title">{{ a.titulo }}</div>
-            <div class="item-category muted">{{ a.data | date:'short' }}</div>
-          </div>
+            <div class="item-info">
+              <div class="item-title">{{ a.titulo }}</div>
+              <div class="item-category muted">{{ a.data | date:'short' }}</div>
+            </div>
 
-          <div class="xp" *ngIf="a.xpDelta !== 0">
-            <mat-chip color="primary" class="selected-chip">
-              {{ a.xpDelta >= 0 ? '+' : ''}}{{ a.xpDelta }} XP
-            </mat-chip>
-          </div>
+            <div class="xp" *ngIf="a.xpDelta !== 0">
+              <mat-chip color="primary" class="selected-chip">
+                {{ a.xpDelta >= 0 ? '+' : ''}}{{ a.xpDelta }} XP
+              </mat-chip>
+            </div>
 
-        </mat-list-item>
-      </mat-list>
+          </mat-list-item>
+        </mat-list>
+      </div>
 
     </mat-card>
 
