@@ -1,0 +1,236 @@
+<div class="page-container">
+  
+  <!-- CABEÇALHO COM FILTRO -->
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Acompanhamento de Turmas</h1>
+      <p class="page-subtitle">Visão geral do desempenho e atividades pendentes</p>
+    </div>
+    
+    <!-- Filtro de Matéria -->
+    <div class="filter-wrapper">
+      <mat-form-field appearance="outline" class="curso-select">
+        <mat-label>Filtrar por Matéria</mat-label>
+        <mat-select [(ngModel)]="cursoSelecionado">
+          <mat-option *ngFor="let curso of cursosDisponiveis" [value]="curso">
+            {{ curso }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- CARDS DE MÉTRICAS (Dinâmicos com o filtro) -->
+  <div class="metrics-grid">
+    <mat-card class="metric-card">
+      <div class="metric-content">
+        <div class="metric-info">
+          <span class="metric-value">{{ alunosFiltrados.length }}</span>
+          <span class="metric-label">Alunos Visíveis</span>
+        </div>
+        <div class="metric-icon bg-blue">
+          <mat-icon>group</mat-icon>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <div class="metric-content">
+        <div class="metric-info">
+          <!-- Você pode criar uma lógica no TS para calcular essa média real se quiser -->
+          <span class="metric-value">72%</span>
+          <span class="metric-label">Engajamento Médio</span>
+        </div>
+        <div class="metric-icon bg-green">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+      </div>
+      <mat-progress-bar mode="determinate" value="72" class="metric-bar green-bar"></mat-progress-bar>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <div class="metric-content">
+        <div class="metric-info">
+          <span class="metric-value">{{ correcoesFiltradas.length }}</span>
+          <span class="metric-label">Correções Pendentes</span>
+        </div>
+        <div class="metric-icon bg-orange">
+          <mat-icon>assignment_late</mat-icon>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL (ABAS) -->
+  <mat-card class="main-content-card">
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
+      
+      <!-- ABA 1: PROGRESSO DOS ALUNOS -->
+      <mat-tab label="Progresso dos Alunos">
+        <div class="tab-content">
+          
+          <table mat-table [dataSource]="alunosFiltrados" class="full-width-table">
+
+            <!-- Coluna Aluno -->
+            <ng-container matColumnDef="aluno">
+              <th mat-header-cell *matHeaderCellDef> Aluno </th>
+              <td mat-cell *matCellDef="let aluno">
+                <div class="aluno-info">
+                  <div class="avatar-circle">{{ aluno.nome.charAt(0) }}</div>
+                  <div class="text-info">
+                    <span class="name">{{ aluno.nome }}</span>
+                    <span class="email">{{ aluno.email }}</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- NOVA Coluna Curso -->
+            <ng-container matColumnDef="curso">
+              <th mat-header-cell *matHeaderCellDef> Matéria </th>
+              <td mat-cell *matCellDef="let aluno">
+                <span class="curso-badge">{{ aluno.curso }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Coluna Progresso -->
+            <ng-container matColumnDef="progresso">
+              <th mat-header-cell *matHeaderCellDef> Progresso </th>
+              <td mat-cell *matCellDef="let aluno" class="col-progress">
+                <div class="progress-wrapper">
+                  <span class="progress-text">{{ aluno.progresso }}%</span>
+                  <mat-progress-bar mode="determinate" [value]="aluno.progresso"></mat-progress-bar>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Coluna Nota -->
+            <ng-container matColumnDef="nota">
+              <th mat-header-cell *matHeaderCellDef> Média </th>
+              <td mat-cell *matCellDef="let aluno">
+                <span class="badge-nota" [ngClass]="getClassPorNota(aluno.notaMedia)">
+                  {{ aluno.notaMedia | number:'1.1-1' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Coluna Último Acesso -->
+            <ng-container matColumnDef="ultimoAcesso">
+              <th mat-header-cell *matHeaderCellDef> Último Acesso </th>
+              <td mat-cell *matCellDef="let aluno">
+                {{ aluno.ultimoAcesso | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+            </ng-container>
+
+            <!-- Coluna Status -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let aluno">
+                <span class="status-pill" 
+                      [class.status-ativo]="aluno.status === 'Ativo'"
+                      [class.status-inativo]="aluno.status === 'Inativo'"
+                      [class.status-concluido]="aluno.status === 'Concluido'">
+                  {{ aluno.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Coluna Ações -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let aluno">
+                <button mat-icon-button color="primary" matTooltip="Enviar Mensagem" (click)="enviarMensagem(aluno)">
+                  <mat-icon>chat</mat-icon>
+                </button>
+                <button mat-icon-button [matMenuTriggerFor]="menuAluno">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menuAluno="matMenu">
+                  <button mat-menu-item>
+                    <mat-icon>visibility</mat-icon> Ver Detalhes
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon>history</mat-icon> Histórico
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsAlunos"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsAlunos;"></tr>
+          </table>
+
+          <!-- Empty State se filtro não achar nada -->
+          <div *ngIf="alunosFiltrados.length === 0" class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <p>Nenhum aluno encontrado para esta matéria.</p>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- ABA 2: CORREÇÕES -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span [matBadge]="correcoesFiltradas.length" matBadgeOverlap="false" matBadgeColor="warn">Correções</span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div class="alert-info" *ngIf="correcoesFiltradas.length > 0">
+            <mat-icon>info</mat-icon>
+            <span>Você tem <strong>{{ correcoesFiltradas.length }} atividades</strong> aguardando correção nesta seleção.</span>
+          </div>
+
+          <table mat-table [dataSource]="correcoesFiltradas" class="full-width-table">
+            
+            <ng-container matColumnDef="aluno">
+              <th mat-header-cell *matHeaderCellDef> Aluno </th>
+              <td mat-cell *matCellDef="let item"> <strong>{{ item.alunoNome }}</strong> </td>
+            </ng-container>
+
+            <!-- NOVA Coluna Curso -->
+            <ng-container matColumnDef="curso">
+              <th mat-header-cell *matHeaderCellDef> Matéria </th>
+              <td mat-cell *matCellDef="let item"> {{ item.curso }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="atividade">
+              <th mat-header-cell *matHeaderCellDef> Atividade </th>
+              <td mat-cell *matCellDef="let item"> {{ item.atividadeTitulo }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="data">
+              <th mat-header-cell *matHeaderCellDef> Enviado em </th>
+              <td mat-cell *matCellDef="let item"> {{ item.dataEnvio | date:'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let item">
+                <span class="status-pill status-pendente" *ngIf="item.status === 'Pendente'">Pendente</span>
+                <span class="status-pill status-correcao" *ngIf="item.status === 'Em Correção'">Em Análise</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> Ação </th>
+              <td mat-cell *matCellDef="let item">
+                <button mat-flat-button color="primary" (click)="corrigirAtividade(item)">
+                  <mat-icon>rate_review</mat-icon> Corrigir
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsCorrecoes"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsCorrecoes;"></tr>
+          </table>
+
+          <div *ngIf="correcoesFiltradas.length === 0" class="empty-state">
+            <mat-icon>check_circle</mat-icon>
+            <p>Nenhuma correção pendente para esta seleção.</p>
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card>
+</div>

@@ -25,6 +25,7 @@ import { DepartamentoFormDialogComponent } from './departamento-form-dialog/depa
   styleUrls: ['./gerenciar-departamentos.css']
 })
 export class GerenciarDepartamentosComponent implements OnInit {
+  departamentos: any[] = [];
   displayedColumns: string[] = ['codigo', 'nome', 'descricao', 'acoes'];
   dataSource: any[] = [];
 
