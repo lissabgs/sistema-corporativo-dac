@@ -30,7 +30,7 @@ public class ProgressoService {
     private CursosClient cursosClient; // <--- INJEÇÃO DO CLIENTE
 
     // ========== MATRICULAR ALUNO ==========
-    @Transactional
+//    @Transactional
     public Progresso matricularAluno(Long funcionarioId, String cursoId) {
         Optional<Progresso> existente = progressoRepository.findByFuncionarioIdAndCursoId(funcionarioId, cursoId);
 
@@ -100,7 +100,7 @@ public class ProgressoService {
     }
 
     // ========== CONCLUIR AULA E VERIFICAR TÉRMINO ==========
-    @Transactional
+//    @Transactional
     public Progresso concluirAula(ConcluirAulaRequestDTO dto) {
         Progresso progresso = progressoRepository
                 .findByFuncionarioIdAndCursoId(dto.getFuncionarioId(), dto.getCursoId())
