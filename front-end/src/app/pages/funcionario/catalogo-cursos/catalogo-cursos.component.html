@@ -3,7 +3,11 @@
     
     <div class="header-page">
       <h1>Catálogo de Cursos</h1>
-      <p>Explore os cursos disponíveis para o seu departamento ({{ usuario?.departamentoNome }}) e nível ({{ usuario?.nivel }}).</p>
+      <p>
+        Explore os cursos disponíveis para o seu departamento 
+        ({{ usuario?.departamentoNome }}) 
+        e nível ({{ usuario?.nivel }}).
+      </p>
     </div>
 
     <div *ngIf="loading" class="loading-box">
@@ -13,10 +17,12 @@
     <div class="curso-grid" *ngIf="!loading">
       
       <mat-card *ngFor="let curso of cursosDisponiveis" class="curso-card">
+        
         <mat-card-header>
           <div mat-card-avatar class="course-avatar">
             <mat-icon>school</mat-icon>
           </div>
+
           <mat-card-title>{{ curso.titulo }}</mat-card-title>
           <mat-card-subtitle>{{ curso.codigo }}</mat-card-subtitle>
         </mat-card-header>
@@ -28,10 +34,12 @@
             <mat-chip [color]="getCorNivel(curso.nivelDificuldade)" selected>
               {{ curso.nivelDificuldade }}
             </mat-chip>
+
             <mat-chip class="xp-chip">
               <mat-icon matChipAvatar>star</mat-icon>
               {{ curso.xpOferecido }} XP
             </mat-chip>
+
             <mat-chip class="time-chip">
               <mat-icon matChipAvatar>schedule</mat-icon>
               {{ curso.duracaoEstimada }}
@@ -39,11 +47,14 @@
           </div>
         </mat-card-content>
         
-        <mat-card-actions align="end">
-          <button mat-raised-button color="primary" (click)="inscrever(curso)">
-            <mat-icon>login</mat-icon> Inscrever-se
+        <!-- BOTÃO CORRIGIDO -->
+        <mat-card-actions class="actions-area">
+          <button mat-raised-button class="btn-inscrever" (click)="inscrever(curso)">
+            <mat-icon>login</mat-icon>
+            Inscrever-se
           </button>
         </mat-card-actions>
+
       </mat-card>
 
     </div>

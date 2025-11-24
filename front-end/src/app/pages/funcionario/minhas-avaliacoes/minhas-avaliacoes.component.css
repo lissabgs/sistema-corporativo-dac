@@ -1,0 +1,178 @@
+/* =========================
+   Variáveis e Estrutura
+========================= */
+:host {
+  /* Cores baseadas no estilo corporativo */
+  --primary-dark: #002F54;
+  --text-subtle: #6e6e6e;
+
+  /* Cores Semânticas dos Status */
+  --color-pendente: #1976d2; /* Azul */
+  --bg-icon-pendente: #e3f2fd;
+  --color-aguardando: #f57c00; /* Laranja */
+  --bg-icon-aguardando: #fff3e0;
+  --color-concluida: #2e7d32; /* Verde */
+  --bg-icon-concluida: #e8f5e9;
+
+  --card-radius: 12px;
+}
+
+.dashboard-wrapper {
+  padding: 24px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Poppins', Roboto, sans-serif;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+.page-header h1 {
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+.page-header p {
+  color: var(--text-subtle);
+  margin: 0;
+}
+
+/* =========================
+   SEÇÃO 1: Métricas (Topo)
+========================= */
+.summary-cards-container {
+  display: grid;
+  /* Grid responsivo: cria colunas automaticamente dependendo do espaço */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 24px !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+.metric-icon {
+  border-radius: 50%;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
+.metric-icon mat-icon {
+  font-size: 32px;
+  height: 32px;
+  width: 32px;
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+}
+.metric-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  line-height: 1.2;
+}
+.metric-label {
+  font-size: 14px;
+  color: var(--text-subtle);
+  font-weight: 500;
+}
+
+/* Variações de cores para os cards */
+.accent-pendente .metric-icon { background-color: var(--bg-icon-pendente); color: var(--color-pendente); }
+.accent-aguardando .metric-icon { background-color: var(--bg-icon-aguardando); color: var(--color-aguardando); }
+.accent-concluida .metric-icon { background-color: var(--bg-icon-concluida); color: var(--color-concluida); }
+
+/* =========================
+   SEÇÃO 2: Abas de Detalhes
+========================= */
+.details-container-card {
+  border-radius: var(--card-radius) !important;
+  padding: 0 !important; /* Remover padding padrão do card para as abas */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  overflow: hidden;
+}
+
+.tab-icon { margin-right: 8px; }
+.tab-body {
+  padding: 16px 0; /* Padding interno das abas */
+  min-height: 300px;
+}
+
+/* Estilização da Lista */
+[matListItemTitle] {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 16px !important;
+}
+.sub-text {
+  color: var(--text-subtle);
+  font-size: 13px;
+}
+.item-hover:hover {
+  background-color: #f5f7fa; /* Efeito hover suave nas linhas */
+}
+
+/* Badges e Chips */
+.chip-aguardo {
+  background-color: #fff3e0 !important;
+  color: #f57c00 !important;
+}
+
+.nota-badge {
+  background-color: var(--bg-icon-concluida);
+  color: var(--color-concluida);
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 24px;
+  font-size: 14px;
+}
+
+/* Cores utilitárias para textos/ícones */
+.text-pendente { color: var(--color-pendente); }
+.text-aguardando { color: var(--color-aguardando); }
+.text-concluida { color: var(--color-concluida); }
+
+/* =========================
+   Estados (Loading/Empty)
+========================= */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  gap: 16px;
+  color: var(--primary-dark);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #aaa;
+  text-align: center;
+}
+.empty-state mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* Animação simples de entrada */
+.fade-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

@@ -13,6 +13,8 @@ import { GerenciarUsuariosComponent } from './pages/admin/gerenciar-usuarios/ger
 import { FormUsuarioComponent } from './pages/admin/form-usuario/form-usuario.component'; 
 import { GerenciarDepartamentosComponent } from './pages/admin/gerenciar-departamentos/gerenciar-departamentos.component'; 
 import { GerenciarAvaliacoesComponent } from './pages/instrutor/gerenciar-avaliacoes/gerenciar-avaliacoes.component'; // <--- Importe aqui
+import { MinhasAvaliacoesComponent } from './pages/funcionario/minhas-avaliacoes/minhas-avaliacoes.component';
+import { RealizarAvaliacaoComponent } from './pages/funcionario/avaliacao/avaliacao.component';
 
 import { roleGuard } from './guards/auth.guard';
 
@@ -90,5 +92,14 @@ export const routes: Routes = [
     path: 'gerenciar-departamentos',
     component: GerenciarDepartamentosComponent,
     canActivate: [roleGuard(APENAS_ADMIN)] 
-  }
+  },
+  {
+    path: 'minhas-avaliacoes',
+    component: MinhasAvaliacoesComponent,
+    canActivate: [roleGuard(APENAS_FUNCIONARIO)]
+  },
+  { path: 'avaliacao',
+    component: RealizarAvaliacaoComponent,
+    canActivate: [roleGuard(APENAS_FUNCIONARIO)]
+  },  
 ];
