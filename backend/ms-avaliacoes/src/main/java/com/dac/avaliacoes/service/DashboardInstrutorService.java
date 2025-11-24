@@ -118,18 +118,22 @@ public class DashboardInstrutorService {
 
         try {
             Map<String, Object> funcionario = usuariosClient.buscarFuncionario(tentativa.getFuncionarioId());
-            funcionarioNome = (String) funcionario.get("nome");
+            if (funcionario != null && funcionario.get("nome") != null) {
+                funcionarioNome = (String) funcionario.get("nome");
+            }
         } catch (Exception e) {
             logger.warn("Não foi possível buscar dados do funcionário ID: " + tentativa.getFuncionarioId());
         }
 
+        // AQUI ESTAVA O ERRO: Adicionei o 7º argumento (Status)
         return new TentativaPendenteDTO(
                 tentativa.getId(),
                 tentativa.getFuncionarioId(),
                 funcionarioNome,
                 tentativa.getAvaliacao().getTitulo(),
                 tentativa.getDataFim(),
-                tentativa.getNotaObtida()
+                tentativa.getNotaObtida(),
+                tentativa.getStatus().toString() // <--- ADICIONADO
         );
     }
 

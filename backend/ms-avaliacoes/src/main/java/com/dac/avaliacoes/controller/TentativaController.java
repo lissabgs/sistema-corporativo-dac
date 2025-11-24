@@ -1,6 +1,7 @@
 package com.dac.avaliacoes.controller;
 
 import com.dac.avaliacoes.service.TentativaService;
+import com.dac.avaliacoes.dto.TentativaPendenteDTO;
 import com.dac.avaliacoes.model.Tentativa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,5 +57,17 @@ public class TentativaController {
             @PathVariable Long avaliacaoId) {
         List<Tentativa> tentativas = tentativaService.listarPorAvaliacao(avaliacaoId);
         return ResponseEntity.ok(tentativas);
+    }
+     // 1. Endpoint para listar lista da turma
+    @GetMapping("/curso/{cursoId}")
+    public ResponseEntity<List<TentativaPendenteDTO>> listarPorCurso(@PathVariable Long cursoId) {
+        return ResponseEntity.ok(tentativaService.buscarPorCurso(cursoId));
+    }
+
+    // 2. Endpoint para pegar a prova completa para corrigir
+    @GetMapping("/{id}/detalhes")
+    public ResponseEntity<Tentativa> buscarDetalhes(@PathVariable Long id) {
+        // Retorna a entidade completa (ou um DTO detalhado) com as respostas
+        return ResponseEntity.ok(tentativaService.buscarDetalhes(id));
     }
 }

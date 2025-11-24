@@ -19,13 +19,10 @@
     <mat-list *ngIf="!loading">
       
       <mat-list-item *ngFor="let curso of cursos">
-        <!-- Ícone à esquerda -->
         <mat-icon matListItemIcon color="primary">menu_book</mat-icon>
         
-        <!-- Container Flex Principal -->
         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
           
-          <!-- Lado Esquerdo: Textos -->
           <div style="display: flex; flex-direction: column;">
             <span style="font-weight: 500; font-size: 16px; color: #333;">
               {{ curso.titulo }}
@@ -42,8 +39,15 @@
             </span>
           </div>
 
-          <!-- Lado Direito: Botões -->
           <div class="actions" style="display: flex; gap: 8px;">
+            
+            <button mat-icon-button 
+                    [routerLink]="['/instrutor/curso', curso.id, 'avaliacoes']" 
+                    matTooltip="Ver Turma e Avaliações"
+                    title="Ver Avaliações">
+              <mat-icon color="accent">assignment_turned_in</mat-icon>
+            </button>
+
             <button mat-icon-button (click)="editarCurso(curso.id!)" title="Editar">
               <mat-icon style="color: #757575;">edit</mat-icon>
             </button>
@@ -56,7 +60,6 @@
         </div>
       </mat-list-item>
       
-      <!-- Mensagem de lista vazia -->
       <div *ngIf="cursos.length === 0" style="padding: 40px; text-align: center; color: #888;">
         <mat-icon style="font-size: 48px; height: 48px; width: 48px; margin-bottom: 10px; color: #ddd;">library_books</mat-icon>
         <p>Nenhum curso encontrado.</p>

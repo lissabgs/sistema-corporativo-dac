@@ -1,0 +1,70 @@
+<div class="page-container">
+  <mat-card>
+    <div class="card-header">
+      <button mat-icon-button routerLink="/instrutor/gerenciar-cursos">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h2>Avaliações da Turma</h2>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Buscando avaliações...</p>
+    </div>
+
+    <div *ngIf="!loading">
+      
+      <table mat-table [dataSource]="tentativas" class="full-width-table">
+
+        <ng-container matColumnDef="aluno">
+          <th mat-header-cell *matHeaderCellDef> Aluno </th>
+          <td mat-cell *matCellDef="let t"> 
+            <div style="display: flex; flex-direction: column; padding: 10px 0;">
+              <strong>{{ t.usuarioNome }}</strong>
+              <span class="email-text">{{ t.usuarioEmail }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="avaliacao">
+          <th mat-header-cell *matHeaderCellDef> Avaliação </th>
+          <td mat-cell *matCellDef="let t"> {{ t.avaliacaoTitulo }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataEnvio">
+          <th mat-header-cell *matHeaderCellDef> Enviado em </th>
+          <td mat-cell *matCellDef="let t"> {{ t.dataFim | date:'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let t">
+            <span [class]="'badge ' + (t.status === 'CORRIGIDA' ? 'badge-success' : 'badge-warning')">
+              {{ t.status === 'CORRIGIDA' ? 'Corrigida' : 'Pendente' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef> Ação </th>
+          <td mat-cell *matCellDef="let t">
+            <button mat-flat-button color="primary" 
+                    [routerLink]="['/instrutor/corrigir-tentativa', t.id]">
+              <mat-icon style="font-size: 18px;">edit_note</mat-icon>
+              {{ t.status === 'CORRIGIDA' ? 'Revisar' : 'Corrigir' }}
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="tentativas.length === 0" class="empty-state">
+        <mat-icon>assignment_late</mat-icon>
+        <p>Nenhuma avaliação entregue para este curso ainda.</p>
+      </div>
+
+    </div>
+  </mat-card>
+</div>

@@ -2,6 +2,7 @@ package com.dac.avaliacoes.controller;
 
 import com.dac.avaliacoes.service.CorrecaoService;
 import com.dac.avaliacoes.dto.CorrecaoDTO;
+import com.dac.avaliacoes.dto.CorrecaoRequestDTO; // Certifique-se de importar o novo DTO
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ public class CorrecaoController {
     @Autowired
     private CorrecaoService correcaoService;
 
-    // ========== CORRIGIR QUESTÃO ==========
+    // ========== CORRIGIR QUESTÃO (Método Antigo) ==========
     // APENAS INSTRUTOR + ADMIN
-    @PostMapping
+    @PostMapping("/questao") // Mudei levemente a rota para não conflitar com o novo POST raiz, ou mantenha se a assinatura for diferente
     @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
     public ResponseEntity<CorrecaoDTO> corrigirQuestao(
             @RequestParam Long tentativaId,
@@ -29,7 +30,7 @@ public class CorrecaoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(correcaoDTO);
     }
 
-    // ========== VER MINHAS CORREÇÕES ==========
+    // ========== VER MINHAS CORREÇÕES (Método Antigo) ==========
     // APENAS INSTRUTOR + ADMIN
     @GetMapping("/minhas-correcoes")
     @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
@@ -39,7 +40,7 @@ public class CorrecaoController {
         return ResponseEntity.ok(correcoes);
     }
 
-    // ========== VER TODAS AS CORREÇÕES ==========
+    // ========== VER TODAS AS CORREÇÕES (Método Antigo) ==========
     //  APENAS ADMIN
     @GetMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -48,7 +49,7 @@ public class CorrecaoController {
         return ResponseEntity.ok(correcoes);
     }
 
-    // ========== VER FEEDBACK DE MINHA TENTATIVA ==========
+    // ========== VER FEEDBACK DE MINHA TENTATIVA (Método Antigo) ==========
     //  APENAS FUNCIONÁRIO
     @GetMapping("/minhas-correcoes-recebidas/{tentativaId}")
     @PreAuthorize("hasRole('FUNCIONARIO')")
@@ -56,5 +57,14 @@ public class CorrecaoController {
             @PathVariable Long tentativaId) {
         List<CorrecaoDTO> correcoes = correcaoService.listarPorTentativa(tentativaId);
         return ResponseEntity.ok(correcoes);
+    }
+
+    // ========== NOVO ENDPOINT: SALVAR CORREÇÃO COMPLETA ==========
+    // Usado pela nova tela de correção do Front-end
+    @PostMapping
+    @PreAuthorize("hasAnyRole('INSTRUTOR', 'ADMINISTRADOR')")
+    public ResponseEntity<Void> salvarCorrecao(@RequestBody CorrecaoRequestDTO dto) {
+        correcaoService.salvarCorrecao(dto);
+        return ResponseEntity.ok().build();
     }
 }

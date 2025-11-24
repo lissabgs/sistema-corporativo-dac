@@ -1,0 +1,103 @@
+<div class="page-container">
+  
+  <div class="header-action">
+    <button mat-icon-button (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Corrigir Avaliação</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Carregando prova do aluno...</p>
+  </div>
+
+  <div *ngIf="!loading && tentativa" class="content-wrapper">
+    
+    <mat-card class="info-card">
+      <mat-card-header>
+        <div mat-card-avatar class="avatar-icon">
+          <mat-icon>person</mat-icon>
+        </div>
+        <mat-card-title>{{ tentativa.alunoNome }}</mat-card-title>
+        <mat-card-subtitle>{{ tentativa.avaliacaoTitulo }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="meta-info">
+          <span><strong>Data de Envio:</strong> {{ tentativa.dataFim | date:'dd/MM/yyyy HH:mm' }}</span>
+          <span><strong>Nota Atual:</strong> {{ calcularNotaTotal() }} pontos</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-divider style="margin: 20px 0;"></mat-divider>
+
+    <div class="questoes-list">
+      
+      <div *ngFor="let resposta of tentativa.respostas; let i = index" class="questao-block">
+        <mat-card class="questao-card">
+          <mat-card-content>
+            
+            <div class="questao-header">
+              <span class="q-number">Questão {{ i + 1 }}</span>
+              <span class="q-valor">(Vale: {{ resposta.questao.notaMaxima }} pts)</span>
+            </div>
+            
+            <p class="enunciado">{{ resposta.questao.enunciado }}</p>
+
+            <div class="resposta-aluno">
+              <span class="label">Resposta do Aluno:</span>
+              <p *ngIf="resposta.tipo === 'DISCURSIVA'">
+                {{ resposta.textoResposta }}
+              </p>
+              <p *ngIf="resposta.tipo === 'OBJETIVA'" class="resposta-objetiva">
+                <em>Alternativa Selecionada:</em> <strong>{{ resposta.textoResposta }}</strong>
+              </p>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="area-correcao">
+              <h3>Avaliação do Instrutor</h3>
+              
+              <div class="inputs-row">
+                <mat-form-field appearance="outline" class="nota-input">
+                  <mat-label>Nota</mat-label>
+                  <input matInput type="number" 
+                         [(ngModel)]="correcoes[i].notaAtribuida" 
+                         min="0" 
+                         [max]="resposta.questao.notaMaxima">
+                  <mat-hint>Máx: {{ resposta.questao.notaMaxima }}</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="feedback-input">
+                  <mat-label>Comentários / Feedback</mat-label>
+                  <textarea matInput 
+                            [(ngModel)]="correcoes[i].comentarios" 
+                            rows="2"
+                            placeholder="Deixe uma observação para o aluno..."></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <div class="actions-footer">
+      <div class="total-display">
+        Nota Final: <strong>{{ calcularNotaTotal() }}</strong>
+      </div>
+      <div class="buttons">
+        <button mat-stroked-button color="warn" (click)="voltar()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="salvarCorrecao()">
+          <mat-icon>check_circle</mat-icon>
+          Finalizar Correção
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

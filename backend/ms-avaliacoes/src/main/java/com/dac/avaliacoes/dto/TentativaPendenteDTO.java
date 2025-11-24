@@ -9,19 +9,21 @@ public class TentativaPendenteDTO {
     private String avaliacaoTitulo;
     private LocalDateTime dataFim;
     private Double notaObtida;
+    private String status; // <--- CAMPO NOVO
 
     // Construtor vazio
     public TentativaPendenteDTO() {}
 
-    // Construtor completo
+    // Construtor completo (Agora com 7 argumentos)
     public TentativaPendenteDTO(Long tentativaId, Long funcionarioId, String funcionarioNome,
-                                String avaliacaoTitulo, LocalDateTime dataFim, Double notaObtida) {
+                                String avaliacaoTitulo, LocalDateTime dataFim, Double notaObtida, String status) {
         this.tentativaId = tentativaId;
         this.funcionarioId = funcionarioId;
         this.funcionarioNome = funcionarioNome;
         this.avaliacaoTitulo = avaliacaoTitulo;
         this.dataFim = dataFim;
         this.notaObtida = notaObtida;
+        this.status = status; // <--- Atribuição nova
     }
 
     // Getters e Setters
@@ -42,4 +44,7 @@ public class TentativaPendenteDTO {
 
     public Double getNotaObtida() { return notaObtida; }
     public void setNotaObtida(Double notaObtida) { this.notaObtida = notaObtida; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

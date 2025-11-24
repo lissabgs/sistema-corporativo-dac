@@ -2,97 +2,91 @@ const express = require('express');
 const { createProxyMiddleware, fixRequestBody } = require('http-proxy-middleware');
 const cors = require('cors');
 const app = express();
-const port = 8080; // Porta do Gateway
+const port = 8080;
 
-// 1. Middleware de Autenticação
 const authMiddleware = require('./middleware/auth');
 
-// 2. Configuração Global (CORS e JSON)
 app.use(cors());
 app.use(express.json());
 
-// 3. Endereços dos Microsserviços (Docker)
+// Endereços dos Microsserviços
 const MS_AUTENTICACAO = 'http://ms-autenticacao:8081';
 const MS_USUARIOS     = 'http://ms-usuarios:8082';
 const MS_CURSOS       = 'http://ms-cursos:8083';
 const MS_AVALIACOES   = 'http://ms-avaliacoes:8084';
 const MS_PROGRESSO    = 'http://ms-progresso:8085';
-// const MS_GAMIFICACAO= 'http://ms-gamificacao:8086';
-// const MS_NOTIFICACOES='http://ms-notificacoes:8087';
+const MS_GAMIFICACAO  = 'http://ms-gamificacao:8086'; // Adicionei caso precise
+const MS_NOTIFICACOES = 'http://ms-notificacoes:8087';
 
-// ===================================================================
-// ROTAS PÚBLICAS (Sem Auth)
-// ===================================================================
-
-// Login (Auth)
+// --- ROTAS PÚBLICAS ---
 app.use('/api/auth', createProxyMiddleware({
     target: MS_AUTENTICACAO,
     changeOrigin: true,
     onProxyReq: fixRequestBody,
 }));
 
-// Autocadastro de Funcionário (Usuários)
 app.use('/api/funcionarios/autocadastro', createProxyMiddleware({
     target: MS_USUARIOS,
     changeOrigin: true,
     onProxyReq: fixRequestBody,
 }));
 
-// ===================================================================
-// ROTAS MISTAS (GET Público / Outros Protegidos)
-// ===================================================================
-
-// Departamentos
+// --- ROTAS MISTAS ---
 app.use('/api/departamentos', (req, res, next) => {
-    if (req.method === 'GET') {
-        return next();
-    }
+    if (req.method === 'GET') return next();
     return authMiddleware(req, res, next);
 }, createProxyMiddleware({
     target: MS_USUARIOS,
     changeOrigin: true,
-    pathRewrite: { '^/usuarios': '/api/funcionarios' },
     onProxyReq: fixRequestBody,
 }));
 
-// Notificações
-app.use('/notificacoes', (req, res, next) => {
-    return authMiddleware(req, res, next);
-}, createProxyMiddleware({
-    target: 'http://ms-notificacoes:8087',
-    changeOrigin: true,
-    pathRewrite: { '^/notificacoes': '/api/notificacoes' },
-    onProxyReq: fixRequestBody,
-}));
+// --- ROTAS PROTEGIDAS ---
 
-// ===================================================================
-// ROTAS PROTEGIDAS (Exigem Token)
-// ===================================================================
-
-// Funcionários
+// 1. Usuários e Funcionários
 app.use('/api/funcionarios', authMiddleware, createProxyMiddleware({
     target: MS_USUARIOS,
     changeOrigin: true,
     onProxyReq: fixRequestBody,
 }));
 
-// Cursos
+// 2. Cursos
 app.use('/api/cursos', authMiddleware, createProxyMiddleware({
     target: MS_CURSOS,
     changeOrigin: true,
     onProxyReq: fixRequestBody,
 }));
 
-// Avaliações (ADICIONADO AQUI)
+// 3. Avaliações (CORRIGIDO E EXPANDIDO)
+// O Gateway precisa saber que /api/avaliacoes, /api/tentativas e /api/correcoes vão para o mesmo lugar
 app.use('/api/avaliacoes', authMiddleware, createProxyMiddleware({
     target: MS_AVALIACOES,
     changeOrigin: true,
     onProxyReq: fixRequestBody
 }));
 
-// Progresso
+app.use('/api/tentativas', authMiddleware, createProxyMiddleware({
+    target: MS_AVALIACOES,
+    changeOrigin: true,
+    onProxyReq: fixRequestBody
+}));
+
+app.use('/api/correcoes', authMiddleware, createProxyMiddleware({
+    target: MS_AVALIACOES,
+    changeOrigin: true,
+    onProxyReq: fixRequestBody
+}));
+
+// 4. Progresso
 app.use('/api/progresso', authMiddleware, createProxyMiddleware({
     target: MS_PROGRESSO,
+    changeOrigin: true,
+    onProxyReq: fixRequestBody,
+}));
+
+// 5. Gamificação
+app.use('/api/gamificacao', authMiddleware, createProxyMiddleware({
+    target: MS_GAMIFICACAO,
     changeOrigin: true,
     onProxyReq: fixRequestBody,
 }));

@@ -1,14 +1,18 @@
 package com.dac.avaliacoes.service;
 
+import com.dac.avaliacoes.dto.TentativaPendenteDTO;
+import com.dac.avaliacoes.exception.ResourceNotFoundException;
 import com.dac.avaliacoes.model.*;
 import com.dac.avaliacoes.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
 
 @Service
 public class TentativaService {
@@ -52,6 +56,11 @@ public class TentativaService {
 
         tentativa.setDataFim(LocalDateTime.now());
         tentativa.setNotaObtida(notaFinal);
+        
+        // Se a prova tiver questões discursivas, o status ideal seria 'AGUARDANDO_CORRECAO',
+        // mas aqui vamos manter o padrão do seu código original 'CONCLUIDA' se necessário, 
+        // ou alterar para o fluxo correto de correção.
+        // Vamos assumir CONCLUIDA por enquanto, o método de correção mudará depois.
         tentativa.setStatus(StatusTentativa.CONCLUIDA);
 
         tentativaRepository.save(tentativa);
@@ -68,5 +77,31 @@ public class TentativaService {
     @Transactional(readOnly = true)
     public List<Tentativa> listarPorFuncionario(Long funcionarioId) {
         return tentativaRepository.findByFuncionarioId(funcionarioId);
+    }
+
+    // ========== NOVOS MÉTODOS PARA O FLUXO DE CORREÇÃO DO INSTRUTOR ==========
+
+    // 1. Buscar tentativas pendentes/concluídas de um curso específico (para a lista)
+    @Transactional(readOnly = true)
+    public List<TentativaPendenteDTO> buscarPorCurso(Long cursoId) {
+        // Nota: 'tentativaRepository.findByAvaliacaoCursoId' deve existir no Repository
+        return tentativaRepository.findByAvaliacaoCursoId(cursoId).stream()
+            .map(t -> new TentativaPendenteDTO(
+                t.getId(),
+                t.getFuncionarioId(), 
+                "Aluno " + t.getFuncionarioId(), // Placeholder para nome
+                t.getAvaliacao().getTitulo(),
+                t.getDataFim(),
+                t.getNotaObtida() != null ? t.getNotaObtida() : 0.0, // Nota segura
+                t.getStatus().toString()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    // 2. Buscar detalhes completos de uma tentativa (para a tela de correção)
+    @Transactional(readOnly = true)
+    public Tentativa buscarDetalhes(Long id) {
+        return tentativaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Tentativa não encontrada com id: " + id));
     }
 }

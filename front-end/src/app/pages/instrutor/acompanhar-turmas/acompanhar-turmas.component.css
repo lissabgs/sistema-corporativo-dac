@@ -1,0 +1,87 @@
+.page-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.manager-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 24px;
+  background: #fff;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #1a237e;
+  font-weight: 500;
+}
+
+.card-header p {
+  margin: 8px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px;
+  color: #777;
+}
+
+/* Estilização do item da lista */
+.hover-item {
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  /* Altura automática para acomodar o conteúdo */
+  height: auto; 
+  min-height: 72px;
+}
+
+.hover-item:hover {
+  background-color: #f5f9ff;
+}
+
+/* Textos */
+.curso-titulo {
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+}
+
+.curso-meta {
+  font-size: 13px;
+  color: #888;
+}
+
+.status-ativo {
+  color: green;
+  font-weight: bold;
+}
+
+/* Ícone/Ação do lado direito */
+.action-arrow {
+  color: #3f51b5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Estado vazio */
+.empty-state {
+  padding: 60px;
+  text-align: center;
+  color: #aaa;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+}

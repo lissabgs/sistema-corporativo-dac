@@ -1,0 +1,48 @@
+<div class="page-container">
+  <mat-card class="manager-card">
+    <div class="card-header">
+      <h2>Acompanhar Turmas</h2>
+      <p>Selecione um curso para ver o progresso dos alunos e corrigir avaliações.</p>
+    </div>
+    <mat-divider></mat-divider>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Carregando turmas...</p>
+    </div>
+
+    <!-- Lista de Cursos -->
+    <mat-nav-list *ngIf="!loading">
+      
+      <!-- Item da Lista (Transformado em Link) -->
+      <a mat-list-item *ngFor="let curso of cursos" 
+         [routerLink]="['/instrutor/curso', curso.id, 'avaliacoes']"
+         class="hover-item">
+        
+        <!-- Ícone (Início) -->
+        <mat-icon matListItemIcon color="primary">school</mat-icon>
+        
+        <!-- Título e Subtítulo (Diretivas Obrigatórias no Material Novo) -->
+        <span matListItemTitle class="curso-titulo">{{ curso.titulo }}</span>
+        <span matListItemLine class="curso-meta">
+          Código: {{ curso.codigo }} 
+          <span *ngIf="curso.status" [class.status-ativo]="curso.status === 'ATIVO'">
+            | {{ curso.status }}
+          </span>
+        </span>
+
+        <!-- Ícone de Ação (Fim) -->
+        <div matListItemMeta class="action-arrow">
+          <mat-icon>chevron_right</mat-icon>
+        </div>
+      </a>
+
+      <!-- Lista Vazia -->
+      <div *ngIf="cursos.length === 0" class="empty-state">
+        <mat-icon>class</mat-icon>
+        <p>Nenhum curso encontrado.</p>
+      </div>
+
+    </mat-nav-list>
+  </mat-card>
+</div>

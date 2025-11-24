@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router'; // <--- Adicionado RouterModule
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';  //  <<=== AQUI
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Importe o Service e o Modelo
 import { CursoService } from '../../../services/curso.service';
@@ -18,6 +18,7 @@ import { Curso } from '../../../models/curso.model';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule, // <--- Importante para o routerLink funcionar
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -31,7 +32,6 @@ import { Curso } from '../../../models/curso.model';
 })
 export class GerenciarCursosComponent implements OnInit {
   
-  // Usamos a interface Curso real definida no models
   cursos: Curso[] = []; 
   loading = true;
 
@@ -51,7 +51,7 @@ export class GerenciarCursosComponent implements OnInit {
 
     if (usuarioId) {
       this.loading = true;
-      // 2. Chama o serviço (GET /api/cursos/instrutor/{id})
+      // 2. Chama o serviço
       this.cursoService.listarPorInstrutor(+usuarioId).subscribe({
         next: (dados) => {
           this.cursos = dados;
@@ -69,20 +69,20 @@ export class GerenciarCursosComponent implements OnInit {
   }
 
   editarCurso(cursoId: number) {
-    // Passa o ID via State para a página de cadastro preencher o form
-    this.router.navigate(['/cadastrar-curso'], { state: { cursoId: cursoId } });
+    // Ajustei a rota para incluir '/instrutor' caso suas rotas filhas precisem
+    this.router.navigate(['/instrutor/cadastrar-curso'], { state: { cursoId: cursoId } });
   }
 
   excluirCurso(cursoId: number) {
-    // TODO: Implementar chamada real de delete no Service
     if (confirm('Tem certeza que deseja inativar este curso?')) {
+      // Mock visual de exclusão (aqui você chamaria o this.cursoService.delete(cursoId))
       console.log(`Curso ${cursoId} seria excluído.`);
-      // Mock visual de exclusão
       this.cursos = this.cursos.filter(c => c.id !== cursoId);
+      this.snackBar.open('Curso inativado (simulação).', 'Fechar', { duration: 2000 });
     }
   }
 
   cadastrarNovoCurso() {
-    this.router.navigate(['/cadastrar-curso']);
+    this.router.navigate(['/instrutor/cadastrar-curso']);
   }
 }
