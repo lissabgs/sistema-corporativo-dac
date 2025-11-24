@@ -34,4 +34,19 @@ export class AvaliacaoService {
   listarCursosDisponiveis(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/cursos-disponiveis`);
   }
+
+  // 1. Pendentes (Para fazer)
+  listarPendentes(funcionarioId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funcionario/${funcionarioId}/pendentes`);
+  }
+
+  // 2. Aguardando (Já fiz, esperando professor)
+  listarAguardando(funcionarioId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funcionario/${funcionarioId}/aguardando`);
+  }
+
+  // 3. Concluídas (Histórico de notas)
+  listarConcluidas(funcionarioId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/funcionario/${funcionarioId}/concluidas`);
+  }
 }

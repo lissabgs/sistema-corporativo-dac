@@ -142,21 +142,62 @@ export class VideoaulasComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
 
+// ... imports
+
   concluirAula() {
     if (!this.aulaAtual || !this.aulaAtual.id) return;
 
     const aulaIdStr = this.aulaAtual.id.toString();
 
-    // Simulação visual
-    this.snackBar.open(`Aula concluída!`, 'OK', { duration: 2000 });
+    const dto = {
+      funcionarioId: this.funcionarioId,
+      cursoId: this.cursoId.toString(),
+      aulaId: aulaIdStr,
+      xpGanho: this.aulaAtual.xpModulo || 10
+    };
+
+    // 1. Chama o backend
+    this.progressoService.concluirAula(dto).subscribe({
+      next: (progressoAtualizado) => {
+        this.progresso = progressoAtualizado;
+        
+        // 2. Feedback visual
+        if (progressoAtualizado.status === 'CONCLUIDO') {
+           this.snackBar.open('PARABÉNS! Curso Concluído! Avaliação Liberada.', 'OK', { duration: 5000 });
+           // Poderia redirecionar para a tela de avaliação aqui
+        } else {
+           this.snackBar.open(`Aula concluída! (+${dto.xpGanho} XP)`, 'Próxima', { duration: 3000 })
+               .onAction().subscribe(() => this.irParaProximaAula());
+        }
+        
+        // 3. Tenta avançar automaticamente
+        this.irParaProximaAula();
+      },
+      error: (err) => {
+        console.error('Erro ao concluir:', err);
+        this.snackBar.open('Erro ao salvar progresso.', 'Fechar');
+      }
+    });
+  }
+
+  irParaProximaAula() {
+    // Lógica simples para encontrar a próxima aula na lista
+    if (!this.curso || !this.aulaAtual) return;
     
-    // Atualiza localmente
-    if (this.progresso) {
-        if (!this.progresso.aulasConcluidas) this.progresso.aulasConcluidas = [];
-        this.progresso.aulasConcluidas.push(aulaIdStr);
+    let achouAtual = false;
+    for (const modulo of this.curso.modulos) {
+        for (const aula of modulo.aulas) {
+            if (achouAtual) {
+                this.selecionarAula(aula);
+                return;
+            }
+            if (aula.id === this.aulaAtual.id) {
+                achouAtual = true;
+            }
+        }
     }
   }
-  
+    
   voltar() {
     this.router.navigate(['/meus-cursos']);
   }

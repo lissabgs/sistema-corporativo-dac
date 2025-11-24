@@ -35,4 +35,8 @@ export class ProgressoService {
   obterProgressoEspecifico(funcionarioId: number, cursoId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/busca-especifica?funcionarioId=${funcionarioId}&cursoId=${cursoId}`);
   }
+  
+  concluirAula(dto: { funcionarioId: number, cursoId: string, aulaId: string, xpGanho: number }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/concluir-aula`, dto);
+  }
 }

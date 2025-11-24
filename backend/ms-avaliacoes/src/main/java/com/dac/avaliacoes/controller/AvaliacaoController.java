@@ -32,11 +32,11 @@ public class AvaliacaoController {
     }
 
     @GetMapping("/cursos-disponiveis")
-    public List<CursoDTO> listarCursosDisponiveis(@RequestParam Long funcionarioId) {
-        // O erro 400 acontece se o front-end não enviar o "?funcionarioId=..."
-        return avaliacaoService.buscarCursosDisponiveis(funcionarioId);
+    public ResponseEntity<List<Object>> listarCursosSemAvaliacao() {
+        // Chame o método com o nome CORRETO definido no Service
+        List<Object> cursos = avaliacaoService.buscarCursosSemAvaliacao();
+        return ResponseEntity.ok(cursos);
     }
-
     @GetMapping("/cursos-sem-avaliacao")
     public ResponseEntity<List<Object>> buscarCursosSemAvaliacao() {
         return ResponseEntity.ok(avaliacaoService.buscarCursosSemAvaliacao());
