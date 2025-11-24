@@ -28,7 +28,7 @@
 
 .form-header h2 {
   margin: 0;
-  color: #0d47a1; /* Azul Escuro */
+  color: #002F54; /* Azul Escuro */
   font-size: 24px;
   font-weight: 500;
 }
@@ -44,7 +44,7 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 15px;
-  border-left: 4px solid #0d47a1;
+  border-left: 4px solid #002F54;
   padding-left: 10px;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .clean-input:focus {
-  border-color: #0d47a1;
+  border-color: #002F54;
   outline: none;
 }
 
@@ -173,7 +173,7 @@
 }
 
 .btn-save {
-  background-color: #0d47a1 !important;
+  background-color: #002F54 !important;
   color: white !important;
   padding: 0 25px;
 }
@@ -216,4 +216,9 @@
 .checkbox-box mat-checkbox {
   font-weight: 500;
   color: #555;
+}
+
+.btn-modulo {
+  background-color: #002F54 !important;
+  color: white !important;
 }

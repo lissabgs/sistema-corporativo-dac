@@ -62,3 +62,8 @@ mat-icon[matListItemIcon] {
   height: 28px;
   margin-right: 16px; /* Espaço entre ícone e texto */
 }
+
+.btn-cadastrarNovoCurso {
+  background-color: #002F54 !important; 
+  color: white !important;
+}
