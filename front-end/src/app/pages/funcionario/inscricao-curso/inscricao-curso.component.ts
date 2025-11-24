@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
+// Removi MatChipsModule e MatListModule pois fiz com div/css puro para ter mais controle visual, mas pode manter se quiser.
 
 @Component({
   selector: 'app-inscricao-curso',
@@ -14,10 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    MatChipsModule,
-    MatListModule,
-    MatDividerModule
+    MatIconModule
   ],
   templateUrl: './inscricao-curso.component.html',
   styleUrls: ['./inscricao-curso.component.css']
@@ -44,7 +39,7 @@ export class InscricaoCursoComponent {
       xp: 160,
       duracao: 12,
       instrutor: "Carlos Mendes",
-      avaliacaoMedia: null,
+      avaliacaoMedia: 4.8,
       status: "em-andamento"
     },
     {
@@ -55,15 +50,21 @@ export class InscricaoCursoComponent {
       xp: 110,
       duracao: 6,
       instrutor: "Ana Paula",
-      avaliacaoMedia: null,
+      avaliacaoMedia: 5.0,
       status: "pausado"
     }
   ];
 
+  assistir(curso: any) {
+    // Aqui você faria o redirecionamento, ex: this.router.navigate(['/player', curso.id]);
+    console.log(`Iniciando player para o curso: ${curso.titulo}`);
+    alert(`Redirecionando para a aula de ${curso.titulo}...`);
+  }
+
   cancelar(curso: any) {
     const confirmar = confirm(`Deseja realmente cancelar sua inscrição no curso "${curso.titulo}"?`);
-
     if (confirmar) {
+      // Lógica real de cancelamento
       this.cursos = this.cursos.filter(c => c !== curso);
     }
   }
@@ -74,5 +75,15 @@ export class InscricaoCursoComponent {
 
   retomar(curso: any) {
     curso.status = 'em-andamento';
+  }
+
+  // Helper para deixar o texto do status bonito na tela
+  formatarStatus(status: string): string {
+    switch(status) {
+      case 'inscrito': return 'Inscrito';
+      case 'em-andamento': return 'Em Andamento';
+      case 'pausado': return 'Pausado';
+      default: return status;
+    }
   }
 }

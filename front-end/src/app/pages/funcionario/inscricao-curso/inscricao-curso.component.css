@@ -1,136 +1,163 @@
 /* GRID DE CARDS */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 22px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  background-color: #f4f6f8; /* Fundo levemente cinza para destacar os cards */
 }
 
 /* CARD */
 .mini-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 22px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #eee;
+}
+
+.mini-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* HEADER DO CARD */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
 }
 
 /* TAGS */
 .tags {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .tag {
-  background: #eef2ff;
-  padding: 4px 12px;
-  border-radius: 14px;
-  color: #002F54;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* TÍTULO */
-.curso-titulo {
-  font-size: 22px;
+  background: #f0f4f8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #5a6b7c;
+  font-size: 11px;
+  text-transform: uppercase;
   font-weight: 700;
-  margin-bottom: 6px;
+  letter-spacing: 0.5px;
 }
 
-/* INSTRUTOR */
-.instrutor {
-  font-size: 14px;
-  color: #444;
-  margin-bottom: 14px;
-}
-
-/* XP */
-.xp-row {
+/* XP BADGE */
+.xp-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  margin-bottom: 18px;
-}
-
-.xp-row mat-icon {
-  color: #002F54;
-}
-
-/* SOBRE */
-.sobre-title {
-  font-size: 15px;
+  gap: 4px;
   font-weight: 700;
-  margin-bottom: 6px;
+  color: #f59e0b; /* Cor dourada/laranja para XP */
+  font-size: 13px;
+}
+
+.xp-badge mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+/* CORPO */
+.curso-titulo {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 4px 0;
+}
+
+.instrutor {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 12px;
 }
 
 .sobre-text {
   font-size: 14px;
-  color: #555;
-  margin-bottom: 18px;
+  color: #4a5568;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  min-height: 42px; /* Mantém altura uniforme mesmo com textos curtos */
 }
 
-/* METADADOS */
+/* METADADOS ROW */
 .meta-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #edf2f7;
   margin-bottom: 20px;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  font-size: 13px;
+  color: #4a5568;
+  font-weight: 500;
 }
 
 .meta-item mat-icon {
-  color: #002F54;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  color: #a0aec0;
 }
 
-/* AÇÕES */
+/* Status Indicators */
+.status-item mat-icon { font-size: 10px; height: 10px; width: 10px; }
+.status-item.inscrito mat-icon { color: #718096; }
+.status-item.em-andamento mat-icon { color: #f59e0b; }
+.status-item.pausado mat-icon { color: #e53e3e; }
+
+/* AÇÕES E BOTÕES */
 .acoes {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: auto; /* Empurra botões para baixo se sobrar espaço */
 }
 
-/* BOTÕES COMPRIDOS */
-.botao-cheio {
+.btn-full {
   width: 100%;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 15px;
+  padding: 8px 16px !important; /* Ajuste fino no material button */
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-half {
+  flex: 1;
+}
+
+/* Estilo Botão Primário (Assistir) */
+.btn-primary {
+  background-color: #002F54 !important; /* Azul da marca */
+  color: #fff !important;
   font-weight: 600;
 }
 
-/* BOTÃO VERMELHO */
-.btn-vermelho {
-  background-color: #d62d2d !important;
-  color: #fff !important;
-  border: none !important;
-}
-
-.btn-vermelho:hover {
-  background-color: #b71f1f !important;
-}
-
-/* BOTÃO VERDE */
+/* Estilo Botão Verde (Retomar) */
 .btn-verde {
-  background-color: #1f8a40 !important;
-  color: #fff !important;
-  border: none !important;
+  color: #2f855a !important;
+  border-color: #2f855a !important;
 }
 
-.btn-verde:hover {
-  background-color: #176b31 !important;
-}
-
-.btn-amarelo {
-  background-color: #d3a014 !important;
-  color: #fff !important;
-  border: none !important;
+.btn-link {
+  font-weight: normal;
+  opacity: 0.8;
 }

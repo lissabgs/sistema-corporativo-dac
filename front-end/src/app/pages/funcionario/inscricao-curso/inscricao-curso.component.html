@@ -2,85 +2,75 @@
 
   <div class="mini-card" *ngFor="let curso of cursos">
 
-    <!-- TAGS SUPERIORES -->
-    <div class="tags">
-      <span class="tag">{{ curso.categoria }}</span>
-      <span class="tag">{{ curso.dificuldade }}</span>
-    </div>
-
-    <!-- TÍTULO -->
-    <h2 class="curso-titulo">{{ curso.titulo }}</h2>
-
-    <!-- INSTRUTOR -->
-    <p class="instrutor">
-      Instrutor: <strong>{{ curso.instrutor }}</strong>
-    </p>
-
-    <!-- XP -->
-    <div class="xp-row">
-      <mat-icon>bolt</mat-icon>
-      <span>{{ curso.xp }} XP</span>
-    </div>
-
-    <!-- SOBRE -->
-    <h3 class="sobre-title">Sobre o curso</h3>
-    <p class="sobre-text">{{ curso.descricao }}</p>
-
-    <!-- METADADOS -->
-    <div class="meta-row">
-      <div class="meta-item">
-        <mat-icon>timer</mat-icon>
-        <span>Duração: {{ curso.duracao }}h</span>
+    <div class="card-header">
+      <div class="tags">
+        <span class="tag">{{ curso.categoria }}</span>
+        <span class="tag">{{ curso.dificuldade }}</span>
       </div>
-
-      <div class="meta-item">
-        <mat-icon>star</mat-icon>
-        <span>Avaliação: {{ curso.avaliacaoMedia || 'Nova' }}</span>
-      </div>
-
-      <div class="meta-item">
-        <mat-icon>school</mat-icon>
-        <span>Status: {{ curso.status }}</span>
+      <div class="xp-badge">
+        <mat-icon>bolt</mat-icon>
+        <span>{{ curso.xp }} XP</span>
       </div>
     </div>
 
-    <!-- AÇÕES DOS BOTÕES -->
+    <div class="card-body">
+      <h2 class="curso-titulo">{{ curso.titulo }}</h2>
+      
+      <p class="instrutor">
+        Instrutor: <strong>{{ curso.instrutor }}</strong>
+      </p>
+
+      <p class="sobre-text">{{ curso.descricao }}</p>
+
+      <div class="meta-row">
+        <div class="meta-item" title="Duração">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ curso.duracao }}h</span>
+        </div>
+
+        <div class="meta-item" title="Avaliação">
+          <mat-icon>star</mat-icon>
+          <span>{{ curso.avaliacaoMedia || 'Nova' }}</span>
+        </div>
+
+        <div class="meta-item status-item" [ngClass]="curso.status">
+          <mat-icon>circle</mat-icon>
+          <span>{{ formatarStatus(curso.status) }}</span>
+        </div>
+      </div>
+    </div>
+
     <div class="acoes">
 
-      <!-- STATUS: INSCRITO -->
-      <button *ngIf="curso.status === 'inscrito'"
-              mat-raised-button
-              class="botao-cheio btn-vermelho"
-              (click)="cancelar(curso)">
-        Cancelar inscrição
-      </button>
-
-      <!-- STATUS: EM ANDAMENTO -->
-      <ng-container *ngIf="curso.status === 'em-andamento'">
-        <button mat-raised-button 
-                class="botao-cheio btn-amarelo"
-                (click)="pausar(curso)">
-          Pausar curso
-        </button>
-
-        <button mat-raised-button 
-                class="botao-cheio btn-vermelho"
-                (click)="cancelar(curso)">
+      <ng-container *ngIf="curso.status === 'inscrito'">
+        <button mat-stroked-button color="warn" class="btn-full" (click)="cancelar(curso)">
           Cancelar inscrição
         </button>
       </ng-container>
 
-      <!-- STATUS: PAUSADO -->
-      <ng-container *ngIf="curso.status === 'pausado'">
-        <button mat-raised-button 
-                class="botao-cheio btn-verde"
-                (click)="retomar(curso)">
-          Retomar curso
+      <ng-container *ngIf="curso.status === 'em-andamento'">
+        <button mat-flat-button class="btn-primary btn-full" (click)="assistir(curso)">
+          <mat-icon>play_circle_outline</mat-icon>
+          Assistir a aula
         </button>
 
-        <button mat-raised-button 
-                class="botao-cheio btn-vermelho"
-                (click)="cancelar(curso)">
+        <div class="btn-row">
+          <button mat-stroked-button class="btn-half" (click)="pausar(curso)">
+            Pausar
+          </button>
+          <button mat-stroked-button color="warn" class="btn-half" (click)="cancelar(curso)">
+            Cancelar
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="curso.status === 'pausado'">
+        <button mat-stroked-button class="btn-verde btn-full" (click)="retomar(curso)">
+          <mat-icon>play_arrow</mat-icon>
+          Retomar curso
+        </button>
+        
+        <button mat-button color="warn" class="btn-full btn-link" (click)="cancelar(curso)">
           Cancelar inscrição
         </button>
       </ng-container>
@@ -88,5 +78,4 @@
     </div>
 
   </div>
-
 </div>
