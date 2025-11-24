@@ -81,4 +81,14 @@ public class ProgressoController {
     public ResponseEntity<List<Map<String, Object>>> buscarProgressoFuncionario(@PathVariable Long funcionarioId) {
         return listarMeusCursos(funcionarioId);
     }
+
+    @GetMapping("/busca-especifica")
+    public ResponseEntity<Progresso> buscarProgressoEspecifico(
+            @RequestParam Long funcionarioId,
+            @RequestParam String cursoId) {
+
+        return progressoRepository.findByFuncionarioIdAndCursoId(funcionarioId, cursoId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

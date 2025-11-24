@@ -31,4 +31,8 @@ export class ProgressoService {
   cancelarInscricao(progressoId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/cancelar/${progressoId}`);
   }
+
+  obterProgressoEspecifico(funcionarioId: number, cursoId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/busca-especifica?funcionarioId=${funcionarioId}&cursoId=${cursoId}`);
+  }
 }
