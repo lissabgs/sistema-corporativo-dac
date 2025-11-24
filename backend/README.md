@@ -109,5 +109,9 @@ docker-compose down
 ---
 
 ## 👨‍💻 Autor
-Arthur Dias Baptista - UFPR - TADS - DS152  
+Arthur Dias Baptista
+Larissa Borges
+Vinicius augustus 
+Luiz michel - UFPR - TADS - 
+DS152  
 Desenvolvimento de Aplicações Corporativas (DAC) - 2025
