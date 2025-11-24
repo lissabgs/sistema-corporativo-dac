@@ -1,0 +1,134 @@
+<div class="container mt-4 fade-in">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people me-2"></i>Acompanhar Turmas</h2>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+
+      <div *ngIf="!cursoSelecionado">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="bg-light text-secondary">
+            <tr>
+              <th class="ps-4">Curso</th>
+              <th>Descrição</th>
+              <th class="text-end pe-4">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let curso of cursos">
+              <td class="ps-4 fw-bold text-dark">
+                <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>
+                {{ curso.titulo }}
+              </td>
+              <td class="text-muted text-truncate" style="max-width: 400px;">
+                {{ curso.descricao }}
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="selecionarCurso(curso)">
+                  Acessar Turma <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="cursos.length === 0">
+              <td colspan="3" class="text-center py-5 text-muted">
+                <i class="bi bi-journal-x display-4 d-block mb-3"></i>
+                Nenhum curso encontrado para o seu perfil.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="cursoSelecionado" class="fade-in">
+        
+        <div class="p-3 border-bottom bg-light d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-outline-secondary btn-sm me-3" (click)="voltar()" title="Voltar">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <h5 class="mb-0 text-primary fw-bold">{{ cursoSelecionado.titulo }}</h5>
+          </div>
+          <span class="badge bg-white text-secondary border">Área de Acompanhamento</span>
+        </div>
+
+        <div class="row g-0"> <div class="col-md-3 border-end bg-light-subtle" style="min-height: 400px;">
+            <div class="p-3">
+              <small class="text-uppercase text-muted fw-bold mb-2 d-block">Avaliações</small>
+              <div class="list-group list-group-flush shadow-sm rounded">
+                <button *ngFor="let av of avaliacoes" 
+                        class="list-group-item list-group-item-action border-0 mb-1"
+                        [class.active-item]="avaliacaoSelecionada?.id === av.id"
+                        (click)="selecionarAvaliacao(av)">
+                  <i class="bi bi-file-text me-2"></i> {{ av.titulo }}
+                </button>
+                <div *ngIf="avaliacoes.length === 0" class="text-muted small text-center py-3">
+                  Nenhuma avaliação vinculada.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-9 bg-white">
+            <div *ngIf="avaliacaoSelecionada; else selecioneMsg" class="p-0">
+              
+              <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
+                <h6 class="mb-0 fw-bold">Notas: {{ avaliacaoSelecionada.titulo }}</h6>
+                <button class="btn btn-success btn-sm" (click)="exportarRelatorio()">
+                  <i class="bi bi-file-excel"></i> Exportar
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="bg-light text-secondary">
+                    <tr>
+                      <th class="ps-4">Aluno</th>
+                      <th>Data Entrega</th>
+                      <th>Nota</th>
+                      <th class="text-end pe-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let t of tentativas">
+                      <td class="ps-4">
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-sm me-2">{{ t.funcionarioId }}</div> <span class="fw-bold text-dark">Funcionário #{{ t.funcionarioId }}</span>
+                        </div>
+                      </td>
+                      <td class="text-muted small">{{ t.dataTentativa | date:'dd/MM/yyyy HH:mm' }}</td>
+                      <td>
+                        <span class="fw-bold fs-6">{{ t.nota | number:'1.1-2' }}</span>
+                      </td>
+                      <td class="text-end pe-4">
+                        <span class="badge rounded-pill" 
+                              [ngClass]="{'bg-success': t.nota >= 7, 'bg-danger': t.nota < 7}">
+                          {{ t.nota >= 7 ? 'Aprovado' : 'Reprovado' }}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="tentativas.length === 0">
+                      <td colspan="4" class="text-center py-5 text-muted">
+                        Nenhum aluno realizou esta avaliação.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <ng-template #selecioneMsg>
+              <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-5">
+                <i class="bi bi-arrow-left-circle display-4 mb-3 opacity-50"></i>
+                <h5>Selecione uma avaliação</h5>
+                <p class="small">Clique no menu à esquerda para ver os resultados.</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

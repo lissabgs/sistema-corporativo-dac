@@ -1,0 +1,136 @@
+<div class="container mt-4 fade-in">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-pen me-2"></i>Corrigir Avaliações</h2>
+  </div>
+
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link cursor-pointer" 
+         [class.active]="abaAtiva === 'pendentes'" 
+         (click)="abaAtiva = 'pendentes'">
+         Pendentes 
+         <span class="badge rounded-pill bg-danger ms-2" *ngIf="pendentes.length > 0">
+           {{ pendentes.length }}
+         </span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link cursor-pointer" 
+         [class.active]="abaAtiva === 'historico'" 
+         (click)="abaAtiva = 'historico'">
+         Histórico
+      </a>
+    </li>
+  </ul>
+
+  <div *ngIf="abaAtiva === 'pendentes'" class="fade-in">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="bg-light text-secondary">
+            <tr>
+              <th class="ps-4">Avaliação</th>
+              <th>Aluno</th>
+              <th>Data Envio</th>
+              <th class="text-end pe-4">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pendentes">
+              <td class="ps-4 fw-bold text-primary">{{ item.avaliacaoTitulo }}</td>
+              <td>{{ item.alunoNome }}</td>
+              <td>{{ item.dataTentativa | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="text-end pe-4">
+                <button class="btn btn-primary btn-sm shadow-sm" (click)="abrirCorrecao(item)">
+                  <i class="bi bi-check2-circle me-1"></i> Corrigir
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="pendentes.length === 0">
+              <td colspan="4" class="text-center py-5 text-muted">
+                <i class="bi bi-emoji-smile display-4 d-block mb-3"></i>
+                Nenhuma correção pendente.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="abaAtiva === 'historico'" class="fade-in">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0">
+        <table class="table table-striped mb-0 align-middle">
+          <thead class="bg-light text-secondary">
+            <tr>
+              <th class="ps-4">ID</th>
+              <th>Nota Dada</th>
+              <th>Feedback</th>
+              <th>Data Correção</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let h of historico">
+              <td class="ps-4 text-muted">#{{ h.id }}</td>
+              <td>
+                <span class="badge" [ngClass]="{'bg-success': h.notaParcial >= 7, 'bg-warning text-dark': h.notaParcial < 7}">
+                  {{ h.notaParcial }}
+                </span>
+              </td>
+              <td class="text-truncate" style="max-width: 300px;">{{ h.feedback }}</td>
+              <td>{{ h.dataCriacao | date:'dd/MM/yyyy' }}</td>
+            </tr>
+            <tr *ngIf="historico.length === 0">
+              <td colspan="4" class="text-center py-5 text-muted">
+                Nenhuma correção realizada ainda.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal d-block" tabindex="-1" *ngIf="tentativaParaCorrigir" style="background: rgba(0,0,0,0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+            <i class="bi bi-pen me-2"></i>Corrigindo: {{ tentativaParaCorrigir.avaliacaoTitulo }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cancelar()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="mb-3 text-muted">
+            Aluno: <strong class="text-dark">{{ tentativaParaCorrigir.alunoNome }}</strong>
+        </p>
+        
+        <div class="alert alert-secondary mb-4 border-0 bg-light">
+            <h6 class="alert-heading fw-bold">Resposta do Aluno:</h6>
+            <hr>
+            <p class="mb-0 font-italic">Texto da resposta viria aqui...</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Nota (0-10)</label>
+                <input type="number" class="form-control" [(ngModel)]="notaInput" min="0" max="10">
+            </div>
+            <div class="col-md-12">
+                <label class="form-label fw-bold">Feedback</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="feedbackInput" placeholder="Comentários..."></textarea>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-success px-4" (click)="enviarCorrecao()">
+            Salvar Correção
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

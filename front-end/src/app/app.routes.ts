@@ -12,32 +12,32 @@ import { DashboardAdminComponent } from './pages/admin/dashboard-admin/dashboard
 import { GerenciarUsuariosComponent } from './pages/admin/gerenciar-usuarios/gerenciar-usuarios.component'; 
 import { FormUsuarioComponent } from './pages/admin/form-usuario/form-usuario.component'; 
 import { GerenciarDepartamentosComponent } from './pages/admin/gerenciar-departamentos/gerenciar-departamentos.component'; 
-import { GerenciarAvaliacoesComponent } from './pages/instrutor/gerenciar-avaliacoes/gerenciar-avaliacoes.component'; // <--- Importe aqui
-import { MinhasAvaliacoesComponent } from './pages/funcionario/minhas-avaliacoes/minhas-avaliacoes.component';
-import { RealizarAvaliacaoComponent } from './pages/funcionario/avaliacao/avaliacao.component';
+import { GerenciarAvaliacoesComponent } from './pages/instrutor/gerenciar-avaliacoes/gerenciar-avaliacoes.component';
+
+// --- IMPORTAÇÕES QUE ESTAVAM FALTANDO ---
+import { AcompanharTurmasComponent } from './pages/instrutor/acompanhar-turmas/acompanhar-turmas.component';
+import { CorrigirAvaliacoesComponent } from './pages/instrutor/corrigir-avaliacoes/corrigir-avaliacoes.component';
 
 import { roleGuard } from './guards/auth.guard';
 
 const APENAS_FUNCIONARIO = ['FUNCIONARIO'];
 const APENAS_INSTRUTOR = ['INSTRUTOR']; 
 const APENAS_ADMIN = ['ADMINISTRADOR']; 
-const GESTORES = ['INSTRUTOR', 'ADMINISTRADOR'];
 
 export const routes: Routes = [
-  // Rotas Públicas
   { path: '', redirectTo: 'login', pathMatch: 'full' }, 
   { path: 'login', component: LoginComponent },
   { path: 'autocadastro', component: AutocadastroComponent },
   { path: 'acesso-negado', component: AcessoNegadoComponent },
 
-  // --- ROTAS EXCLUSIVAS DE FUNCIONÁRIO ---
+  // --- FUNCIONÁRIO ---
   { 
     path: 'dashboard-funcionario', 
     component: DashboardFuncionarioComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)] 
   },
   { 
-    path: 'catalogo-cursos', // <--- Agora restrita apenas para FUNCIONARIO
+    path: 'catalogo-cursos', 
     component: CatalogoCursosComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },
@@ -47,7 +47,7 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },
 
-  // --- ROTAS DO INSTRUTOR / ADMIN ---
+  // --- INSTRUTOR ---
   { 
     path: 'dashboard-instrutor', 
     component: DashboardInstrutorComponent,
@@ -68,11 +68,21 @@ export const routes: Routes = [
     component: GerenciarAvaliacoesComponent,
     canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
+  
+  // --- ADICIONE ESTAS DUAS ROTAS ABAIXO ---
   {
-    path: 'dashboard-admin',
-    component: DashboardAdminComponent,
-    canActivate: [roleGuard(APENAS_ADMIN)]
+    path: 'acompanhar-turmas',
+    component: AcompanharTurmasComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
+  {
+    path: 'corrigir-avaliacoes',
+    component: CorrigirAvaliacoesComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
+  // ----------------------------------------
+
+  // --- ADMIN ---
   {
     path: 'dashboard-admin',
     component: DashboardAdminComponent,
@@ -81,7 +91,7 @@ export const routes: Routes = [
   {
     path: 'gerenciar-usuarios',
     component: GerenciarUsuariosComponent,
-    canActivate: [roleGuard(APENAS_ADMIN)] // Proteção total
+    canActivate: [roleGuard(APENAS_ADMIN)] 
   },
   {
     path: 'form-usuario',
@@ -92,14 +102,5 @@ export const routes: Routes = [
     path: 'gerenciar-departamentos',
     component: GerenciarDepartamentosComponent,
     canActivate: [roleGuard(APENAS_ADMIN)] 
-  },
-  {
-    path: 'minhas-avaliacoes',
-    component: MinhasAvaliacoesComponent,
-    canActivate: [roleGuard(APENAS_FUNCIONARIO)]
-  },
-  { path: 'avaliacao',
-    component: RealizarAvaliacaoComponent,
-    canActivate: [roleGuard(APENAS_FUNCIONARIO)]
-  },  
+  }
 ];
