@@ -27,7 +27,7 @@
 
 .header-text h2 {
   margin: 0;
-  color: #0d47a1;
+  color: #002F54;
   font-size: 24px;
   font-weight: 500;
 }
@@ -35,7 +35,8 @@
 .header-text p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
 
 .btn-novo {
-  background-color: #0d47a1 !important;
+  background-color: #002F54 !important;
+  color: #fff !important;
   padding: 0 20px;
   height: 45px;
 }
