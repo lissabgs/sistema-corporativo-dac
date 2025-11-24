@@ -1,6 +1,7 @@
 export type StatusCurso = 'RASCUNHO' | 'ATIVO' | 'INATIVO' | 'ARQUIVADO' | 'PAUSADO';
 
 export interface Aula {
+  id?: number;          
   titulo: string;
   descricao: string;
   urlConteudo: string;
@@ -10,6 +11,7 @@ export interface Aula {
 }
 
 export interface Modulo {
+  id?: number;
   titulo: string;
   ordem: number;
   aulas: Aula[];
@@ -24,7 +26,11 @@ export interface Curso {
   categoriaId: string; 
   instrutorId: number;
   duracaoEstimada: string;
+  
   xpOferecido: number;
+  xpConclusao?: number;  // <--- VOCÊ PRECISA ADICIONAR ESTA LINHA AQUI
+  xpAvaliacao?: number;  // <--- RECOMENDO ADICIONAR ESTA TAMBÉM
+
   nivelDificuldade: string;
   status: StatusCurso;
   preRequisitos: string[];

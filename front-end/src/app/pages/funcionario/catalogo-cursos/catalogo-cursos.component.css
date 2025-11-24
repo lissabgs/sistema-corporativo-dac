@@ -14,7 +14,7 @@
 }
 
 .header-page h1 {
-  color: #0d47a1;
+  color: #002F54;
   font-size: 28px;
   font-weight: 500;
   margin: 0;
@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0d47a1;
+  color: #002F54;
 }
 
 .desc-text {
@@ -58,7 +58,7 @@
   font-size: 14px;
   margin: 15px 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limita a 3 linhas */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 60px;
@@ -67,18 +67,21 @@
 .chips-row {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;   
+  align-items: center;
   gap: 8px;
   margin-top: 10px;
+  margin-bottom: 16px; /* 🔥 CRIA RESPIRO ANTES DO BOTÃO */
 }
 
 /* Chips Customizados */
 .xp-chip {
-  background-color: #fff8e1 !important; /* Amarelo claro */
+  background-color: #c1daef !important;
   color: #f57f17 !important;
 }
 
 .time-chip {
-  background-color: #f1f8e9 !important; /* Verde claro */
+  background-color: #edd29c !important;
   color: #33691e !important;
 }
 
@@ -101,4 +104,32 @@
   text-align: center;
   padding: 40px;
   color: #666;
+}
+
+/* ÁREA DO BOTÃO */
+.actions-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;     /* 🔥 antes estava muito grande */
+  margin-bottom: 10px;
+}
+
+/* BOTÃO — versão mais bonita e consistente */
+.btn-inscrever {
+  background-color: #002F54 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;          /* 🔥 leve arredondamento moderno */
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12); /* 🔥 deixa mais premium */
+  transition: 0.2s ease;
+}
+
+.btn-inscrever:hover {
+  background-color: #003869 !important; /* 🔥 hover com contraste suave */
+  transform: translateY(-1px);
 }

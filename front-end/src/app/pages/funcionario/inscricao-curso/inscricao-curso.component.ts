@@ -1,16 +1,9 @@
-import { Component } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, inject } from '@angular/core'; // Adicionado inject
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // Adicionado Router
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Importar SnackBar
-
-// Importar o Serviço
-import { ProgressoService } from '../../../services/progresso.service';
 
 @Component({
   selector: 'app-inscricao-curso',
@@ -19,85 +12,86 @@ import { ProgressoService } from '../../../services/progresso.service';
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    MatChipsModule,
-    MatListModule,
-    MatDividerModule,
-    MatSnackBarModule
+    MatIconModule
   ],
   templateUrl: './inscricao-curso.component.html',
   styleUrls: ['./inscricao-curso.component.css']
 })
 export class InscricaoCursoComponent {
-
-  curso: any;
-  atendeRequisitos = false;
-  inscrito = false;
-  loading = false; // Para desabilitar botão enquanto carrega
   
-  trilhaSugerida = [
-    { titulo: 'Lógica de Programação', status: 'Pendente' },
-    { titulo: 'Fundamentos de Java', status: 'Pendente' }
+  // Injeção do Router para navegação
+  private router = inject(Router);
+
+  // Adicionei IDs aos cursos para a navegação funcionar
+  cursos = [
+    {
+      id: 1, // ID adicionado
+      titulo: "Angular Material Essentials",
+      descricao: "Aprenda componentes do Angular Material na prática.",
+      categoria: "Frontend",
+      dificuldade: "Intermediário",
+      xp: 120,
+      duracao: 8,
+      instrutor: "Maria Oliveira",
+      avaliacaoMedia: null,
+      status: "inscrito"
+    },
+    {
+      id: 2, // ID adicionado
+      titulo: "Java Orientado a Objetos",
+      descricao: "Domine encapsulamento, herança e polimorfismo.",
+      categoria: "Backend",
+      dificuldade: "Avançado",
+      xp: 160,
+      duracao: 12,
+      instrutor: "Carlos Mendes",
+      avaliacaoMedia: 4.8,
+      status: "em-andamento"
+    },
+    {
+      id: 3, // ID adicionado
+      titulo: "Git & GitHub Avançado",
+      descricao: "Fluxos, PRs, branches e automações.",
+      categoria: "Dev Tools",
+      dificuldade: "Intermediário",
+      xp: 110,
+      duracao: 6,
+      instrutor: "Ana Paula",
+      avaliacaoMedia: 5.0,
+      status: "pausado"
+    }
   ];
 
-  constructor(
-    private router: Router, 
-    private location: Location,
-    private progressoService: ProgressoService, // <--- Injetar Service
-    private snackBar: MatSnackBar
-  ) {
-    const nav = this.router.getCurrentNavigation();
-    if (nav?.extras.state && nav.extras.state['curso']) {
-      this.curso = nav.extras.state['curso'];
+  assistir(curso: any) {
+    if (curso.id) {
+      // Redireciona para /videoaulas/2 (por exemplo)
+      this.router.navigate(['/videoaulas', curso.id]);
     } else {
-      // Mock de fallback
-      this.curso = {
-        id: 0, 
-        titulo: "Curso Não Encontrado",
-        descricao: "Volte ao catálogo.",
-        xp: 0,
-        duracao: 0,
-        instrutor: "-",
-        dificuldade: "-",
-        prerequisitosAtendidos: false
-      };
+      console.error('Erro: Curso selecionado não possui ID.');
     }
-    // Se tiver a flag ou se não tiver requisitos, libera
-    this.atendeRequisitos = this.curso.prerequisitosAtendidos !== false;
   }
 
-  inscrever() {
-    const usuarioId = localStorage.getItem('usuarioId');
-
-    if (!usuarioId) {
-      this.snackBar.open('Erro: Usuário não identificado.', 'Fechar');
-      return;
+  cancelar(curso: any) {
+    const confirmar = confirm(`Deseja realmente cancelar sua inscrição no curso "${curso.titulo}"?`);
+    if (confirmar) {
+      this.cursos = this.cursos.filter(c => c !== curso);
     }
-
-    this.loading = true;
-
-    // --- CHAMADA REAL AO BACKEND ---
-    this.progressoService.matricular(Number(usuarioId), this.curso.id.toString())
-      .subscribe({
-        next: (res) => {
-          console.log('Matrícula realizada:', res);
-          this.inscrito = true;
-          this.loading = false;
-          
-          // Redireciona após 1.5s
-          setTimeout(() => {
-            this.router.navigate(['/catalogo-cursos']); // Volta pro catálogo pra ver o botão mudar
-          }, 1500);
-        },
-        error: (err) => {
-          console.error('Erro ao matricular:', err);
-          this.loading = false;
-          this.snackBar.open('Erro ao realizar inscrição. Tente novamente.', 'Fechar');
-        }
-      });
   }
 
-  voltar() {
-    this.location.back();
+  pausar(curso: any) {
+    curso.status = 'pausado';
+  }
+
+  retomar(curso: any) {
+    curso.status = 'em-andamento';
+  }
+
+  formatarStatus(status: string): string {
+    switch(status) {
+      case 'inscrito': return 'Inscrito';
+      case 'em-andamento': return 'Em Andamento';
+      case 'pausado': return 'Pausado';
+      default: return status;
+    }
   }
 }
