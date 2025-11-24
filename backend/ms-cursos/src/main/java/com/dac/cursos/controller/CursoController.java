@@ -54,6 +54,15 @@ public class CursoController {
         return ResponseEntity.ok(curso);
     }
 
+    @GetMapping("/resumo/{id}")
+    public ResponseEntity<Curso> buscarResumoPorId(@PathVariable Long id) {
+        Curso curso = cursoService.buscarPorId(id);
+        if (curso == null) return ResponseEntity.notFound().build();
+
+        // Retorna o curso completo (como era antes, compatível com o Frontend)
+        return ResponseEntity.ok(curso);
+    }
+
     @GetMapping("/disponiveis")
     public ResponseEntity<List<Curso>> listarCursosDisponiveis(
             @RequestParam String departamento,

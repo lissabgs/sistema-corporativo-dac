@@ -1,7 +1,11 @@
-<div class="player-container" *ngIf="curso && aulaAtual">
+<div class="video-container" *ngIf="curso">
   
-  <div class="course-header">
-    <h1 class="titulo-principal">{{ curso.titulo }}</h1>
+  <div class="header">
+    <button mat-icon-button (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>{{ curso.titulo }}</h1>
+    
     <div class="xp-badge" *ngIf="curso.xpConclusao">
       <mat-icon>bolt</mat-icon>
       <span>+{{ curso.xpConclusao }} XP ao concluir</span>
@@ -9,65 +13,78 @@
   </div>
 
   <div class="content-grid">
-
-    <main class="video-section">
-      <div class="video-wrapper">
-        <iframe 
-            [src]="urlVideoSegura" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-        </iframe>
-      </div>
-
-      <div class="aula-info">
-        <h2 class="aula-titulo">{{ aulaAtual.titulo }}</h2>
+    
+    <div class="main-content">
+      <mat-card class="video-card">
         
-        <div class="aula-actions">
-           <button mat-stroked-button color="primary">
-             <mat-icon>check_circle_outline</mat-icon>
-             Marcar como concluída
-           </button>
-           <button mat-button class="btn-next">
-             Próxima aula
-             <mat-icon>skip_next</mat-icon>
-           </button>
+          <div class="video-wrapper" *ngIf="urlVideoSegura; else semVideo">
+            <iframe 
+              [src]="urlVideoSegura"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        
+        <ng-template #semVideo>
+          <div class="no-video-placeholder">
+            <mat-icon>videocam_off</mat-icon>
+            <p>Selecione uma aula ou link indisponível.</p>
+          </div>
+        </ng-template>
+
+        <div class="aula-info" *ngIf="aulaAtual">
+          <h2>{{ aulaAtual.titulo }}</h2>
+          <p>{{ aulaAtual.descricao }}</p>
+          
+          <div class="actions">
+            <button mat-raised-button color="primary" (click)="concluirAula()">
+              <mat-icon>check_circle</mat-icon>
+              Concluir Aula e Avançar
+            </button>
+          </div>
         </div>
-      </div>
-    </main>
+      </mat-card>
+    </div>
 
-    <aside class="playlist-sidebar">
-      <h3 class="sidebar-title">Conteúdo do Curso</h3>
-      
-      <mat-accordion multi="true">
-        <mat-expansion-panel *ngFor="let modulo of curso.modulos; let i = index" [expanded]="i === 0" class="modulo-panel">
-          
-          <mat-expansion-panel-header class="modulo-header">
-            <div class="header-content">
-              <div class="header-top">
-                <span class="modulo-label">Módulo {{ modulo.ordem }}</span>
-                <span class="aula-count">{{ modulo.aulas.length }} aulas</span>
-              </div>
-              <span class="modulo-titulo">{{ modulo.titulo }}</span>
-            </div>
-          </mat-expansion-panel-header>
-          
-          <mat-nav-list class="aulas-list">
-            <a mat-list-item 
-               *ngFor="let aula of modulo.aulas" 
-               (click)="selecionarAula(aula)"
-               [class.active-aula]="aula.id === aulaAtual.id"
-               class="aula-item">
-              <mat-icon matListItemIcon>{{ aula.id === aulaAtual.id ? 'play_circle_filled' : 'play_circle_outline' }}</mat-icon>
-              <span matListItemTitle>{{ aula.titulo }}</span>
-            </a>
-          </mat-nav-list>
+    <div class="sidebar">
+      <mat-card>
+        <h3>Conteúdo do Curso</h3>
+        
+        <mat-accordion multi="true">
+          <mat-expansion-panel 
+              *ngFor="let modulo of curso.modulos; let i = index" 
+              [expanded]="i === 0"
+              class="modulo-panel">
+            
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ modulo.titulo }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <mat-nav-list>
+              <a mat-list-item 
+                 *ngFor="let aula of modulo.aulas" 
+                 (click)="selecionarAula(aula)"
+                 [class.active-aula]="aula === aulaAtual"
+                 [class.completed-aula]="isAulaConcluida(aula)">
+                
+                <mat-icon matListItemIcon>
+                  {{ isAulaConcluida(aula) ? 'check_circle' : (aula === aulaAtual ? 'play_circle_filled' : 'play_circle_outline') }}
+                </mat-icon>
+                
+                <span matListItemTitle>{{ aula.titulo }}</span>
+                <span matListItemLine *ngIf="aula.xpModulo">{{ aula.xpModulo }} XP</span>
+              </a>
+            </mat-nav-list>
 
-        </mat-expansion-panel>
-      </mat-accordion>
+          </mat-expansion-panel>
+        </mat-accordion>
 
-    </aside>
+      </mat-card>
+    </div>
 
   </div>
 </div>

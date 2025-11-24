@@ -7,7 +7,8 @@ import java.util.List;
 
 @FeignClient(name = "ms-progresso", url = "http://ms-progresso:8085")
 public interface ProgressoClient {
-
     @GetMapping("/api/progresso/matriculados/{funcionarioId}")
-    List<String> obterCodigosMatriculados(@PathVariable("funcionarioId") Long funcionarioId);
+    List<String> obterIdsMatriculados(@PathVariable("funcionarioId") Long funcionarioId);
+//    @GetMapping("/api/progresso/matriculados/{funcionarioId}")
+//    List<String> obterCodigosMatriculados(@PathVariable("funcionarioId") Long funcionarioId);
 }

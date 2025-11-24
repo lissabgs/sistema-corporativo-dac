@@ -1,7 +1,13 @@
 package com.dac.avaliacoes.model;
 
 public enum StatusTentativa {
-    EM_PROGRESSO,          // Funcionário está fazendo agora
-    CONCLUIDA,             // Funcionário finalizou
-    CORRIGIDA              // Instrutor corrigiu (dissertativas)
+    PENDENTE,
+    EM_ANDAMENTO,
+    EM_PROGRESSO,       // <-- Adicionado para corrigir o erro
+    CONCLUIDA,
+    APROVADO,
+    REPROVADO,
+    EM_ANALISE,
+    AGUARDANDO_CORRECAO,
+    CORRIGIDA           // <-- Adicionado para corrigir o erro
 }

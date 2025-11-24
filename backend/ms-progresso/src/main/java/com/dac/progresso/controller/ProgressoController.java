@@ -3,7 +3,8 @@ package com.dac.progresso.controller;
 import com.dac.progresso.model.Progresso;
 import com.dac.progresso.dto.MatriculaRequestDTO;
 import com.dac.progresso.repository.ProgressoRepository;
-import com.dac.progresso.service.ProgressoService; // <--- 1. Importar o Service
+import com.dac.progresso.dto.ConcluirAulaRequestDTO; // <--- Verifique isto
+import com.dac.progresso.service.ProgressoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +22,14 @@ public class ProgressoController {
     @Autowired
     private ProgressoService progressoService;
 
-    @GetMapping("/funcionario/{funcionarioId}")
-    public ResponseEntity<List<Map<String, Object>>> buscarProgressoFuncionario(
-            @PathVariable Long funcionarioId) {
-
-        List<Progresso> progressos = progressoRepository.findAll().stream()
-                .filter(p -> p.getFuncionarioId().equals(funcionarioId))
-                .collect(Collectors.toList());
+    @GetMapping("/meus-cursos/{funcionarioId}")
+    public ResponseEntity<List<Map<String, Object>>> listarMeusCursos(@PathVariable Long funcionarioId) {
+        List<Progresso> progressos = progressoService.listarInscricoesDoAluno(funcionarioId);
 
         List<Map<String, Object>> response = progressos.stream()
                 .map(p -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("id", p.getId()); // É bom retornar o ID do registro
+                    map.put("id", p.getId());
                     map.put("funcionarioId", p.getFuncionarioId());
                     map.put("cursoId", p.getCursoId());
                     map.put("status", p.getStatus());
@@ -46,11 +43,9 @@ public class ProgressoController {
 
     @PostMapping("/matricular")
     public ResponseEntity<Progresso> matricularAluno(@RequestBody MatriculaRequestDTO dto) {
-        // Validação simples
         if (dto.getFuncionarioId() == null || dto.getCursoId() == null) {
             return ResponseEntity.badRequest().build();
         }
-
         Progresso novoProgresso = progressoService.matricularAluno(dto.getFuncionarioId(), dto.getCursoId());
         return ResponseEntity.ok(novoProgresso);
     }
@@ -59,5 +54,53 @@ public class ProgressoController {
     public ResponseEntity<List<String>> obterCodigosMatriculados(@PathVariable Long funcionarioId) {
         List<String> codigos = progressoService.listarCodigosMatriculados(funcionarioId);
         return ResponseEntity.ok(codigos);
+    }
+
+    // --- ENDPOINTS CORRIGIDOS (Long -> String) ---
+
+    @PutMapping("/iniciar/{id}")
+    public ResponseEntity<Progresso> iniciarCurso(@PathVariable String id) { // String
+        Progresso progresso = progressoService.iniciarCurso(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    @PutMapping("/pausar/{id}")
+    public ResponseEntity<Progresso> pausarCurso(@PathVariable String id) { // String
+        Progresso progresso = progressoService.pausarCurso(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    @PutMapping("/cancelar/{id}")
+    public ResponseEntity<Progresso> cancelarInscricao(@PathVariable String id) { // String
+        Progresso progresso = progressoService.cancelarInscricao(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    // ---------------------------------------------
+
+    @GetMapping("/funcionario/{funcionarioId}")
+    public ResponseEntity<List<Map<String, Object>>> buscarProgressoFuncionario(@PathVariable Long funcionarioId) {
+        return listarMeusCursos(funcionarioId);
+    }
+
+    @GetMapping("/busca-especifica")
+    public ResponseEntity<Progresso> buscarProgressoEspecifico(
+            @RequestParam Long funcionarioId,
+            @RequestParam String cursoId) {
+
+        return progressoRepository.findByFuncionarioIdAndCursoId(funcionarioId, cursoId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    @PostMapping("/concluir-aula")
+    public ResponseEntity<Progresso> concluirAula(@RequestBody ConcluirAulaRequestDTO dto) {
+        Progresso atualizado = progressoService.concluirAula(dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    @GetMapping("/concluidos/{funcionarioId}")
+    public ResponseEntity<List<String>> listarIdsCursosConcluidos(@PathVariable Long funcionarioId) {
+        List<String> ids = progressoService.listarIdsConcluidos(funcionarioId);
+        return ResponseEntity.ok(ids);
     }
 }

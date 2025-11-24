@@ -13,5 +13,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
 
     List<Avaliacao> findByCursoId(Long cursoId);
 
+    List<Avaliacao> findByCursoIdIn(List<String> cursoIds);
     List<Avaliacao> findByAtivo(Boolean ativo);
 }
