@@ -1,0 +1,96 @@
+<div class="page-container">
+  <div class="header-section">
+    <h1>Acompanhamento de Turmas</h1>
+    <p class="subtitle">Visualize o progresso dos funcionários nos cursos</p>
+  </div>
+
+  <div class="filter-card">
+    <input type="text" placeholder="Buscar funcionário ou curso..." class="search-input">
+  </div>
+
+  <div class="card-table-container">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Funcionário</th>
+          <th>Curso</th>
+          <th>Progresso</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of progressoTurmas">
+          <td>
+            <div class="user-info">
+              <div class="avatar-circle">{{ item.funcionarioNome.charAt(0) }}</div>
+              <span>{{ item.funcionarioNome }}</span>
+            </div>
+          </td>
+          <td class="course-name">{{ item.cursoTitulo }}</td>
+          <td>
+            <div class="progress-wrapper">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="item.progresso"></div>
+              </div>
+              <span class="progress-text">{{ item.progresso }}%</span>
+            </div>
+          </td>
+          <td>
+            <span class="status-badge" [class.concluido]="item.progresso === 100" [class.em-andamento]="item.progresso < 100">
+              {{ item.progresso === 100 ? 'Concluído' : 'Em Andamento' }}
+            </span>
+          </td>
+          <td>
+            <!-- ATENÇÃO: Adicionei o (click) aqui -->
+            <button class="btn-detalhes" (click)="verDetalhes(item)">
+              Ver Detalhes
+            </button>
+          </td>
+        </tr>
+        
+        <tr *ngIf="progressoTurmas.length === 0">
+          <td colspan="5" class="empty-state">Nenhum registro encontrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- --- NOVO: MODAL DE DETALHES --- -->
+  <div class="modal-overlay" *ngIf="turmaSelecionada">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Detalhes do Progresso</h2>
+        <button class="btn-close" (click)="fecharModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="label">Funcionário</span>
+            <span class="value-highlight">{{ turmaSelecionada.funcionarioNome }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Curso</span>
+            <span class="value">{{ turmaSelecionada.cursoTitulo }}</span>
+          </div>
+          <div class="detail-item full-width">
+            <span class="label">Última Atividade</span>
+            <span class="value">{{ turmaSelecionada.ultimaAtividade || 'Sem registro recente' }}</span>
+          </div>
+          <div class="detail-item full-width">
+            <span class="label">Resumo de Módulos</span>
+            <div class="module-stats">
+              <span class="stat-number">{{ turmaSelecionada.modulosConcluidos || 0 }}</span>
+              <span class="stat-separator">/</span>
+              <span class="stat-total">{{ turmaSelecionada.totalModulos || 0 }}</span>
+              <span class="stat-label">concluídos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

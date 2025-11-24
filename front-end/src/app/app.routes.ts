@@ -17,6 +17,10 @@ import { MinhasAvaliacoesComponent } from './pages/funcionario/minhas-avaliacoes
 import { RealizarAvaliacaoComponent } from './pages/funcionario/avaliacao/avaliacao.component';
 import { VideoaulasComponent } from './pages/funcionario/videoaulas/videoaulas.component';
 
+// --- IMPORTAÇÕES NOVAS ---
+import { AcompanharTurmasComponent } from './pages/instrutor/acompanhar-turmas/acompanhar-turmas.component';
+import { CorrigirAvaliacoesComponent } from './pages/instrutor/corrigir-avaliacoes/corrigir-avaliacoes.component';
+
 import { roleGuard } from './guards/auth.guard';
 
 const APENAS_FUNCIONARIO = ['FUNCIONARIO'];
@@ -37,7 +41,7 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_FUNCIONARIO)] 
   },
   { 
-    path: 'catalogo-cursos',
+    path: 'catalogo-cursos', 
     component: CatalogoCursosComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },
@@ -57,7 +61,6 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },  
   { 
-    // CORRIGIDO AQUI: Adicionado /:id para receber o parâmetro
     path: 'videoaulas/:id',
     component: VideoaulasComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
@@ -82,6 +85,17 @@ export const routes: Routes = [
   {
     path: 'gerenciar-avaliacoes', 
     component: GerenciarAvaliacoesComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
+  // --- NOVAS ROTAS ADICIONADAS ---
+  {
+    path: 'acompanhar-turmas',
+    component: AcompanharTurmasComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
+  {
+    path: 'corrigir-avaliacoes',
+    component: CorrigirAvaliacoesComponent,
     canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
 
