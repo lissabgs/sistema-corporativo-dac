@@ -6,6 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // <--- Adicionado MatDialogModule
+
+import { MatriculaDialogComponent } from './matricula-dialog/matricula-dialog.component'; 
 
 // Imports dos Services
 import { CursoService } from '../../../services/curso.service';
@@ -22,7 +25,8 @@ import { Curso } from '../../../models/curso.model';
     MatButtonModule, 
     MatIconModule, 
     MatChipsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule // <--- Importante para o dialog funcionar
   ],
   templateUrl: './catalogo-cursos.component.html',
   styleUrls: ['./catalogo-cursos.component.css']
@@ -37,7 +41,8 @@ export class CatalogoCursosComponent implements OnInit {
     private progressoService: ProgressoService,
     private funcionarioService: FuncionarioService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog // <--- Injeção do Dialog
   ) {}
 
   ngOnInit() {
@@ -67,11 +72,9 @@ export class CatalogoCursosComponent implements OnInit {
     const depto = this.usuario.departamentoNome;
     const nivel = this.usuario.nivel || 'INICIANTE';
 
-    // ALTERAÇÃO: Chama o endpoint específico que filtra no Backend
-    // (Certifique-se de ter adicionado o método listarDisponiveis no CursoService)
     this.cursoService.listarDisponiveis(depto, nivel).subscribe({
       next: (cursos) => {
-        this.cursosDisponiveis = cursos; // O backend já retorna apenas o permitido
+        this.cursosDisponiveis = cursos; 
         this.loading = false;
       },
       error: (err) => {
@@ -82,23 +85,45 @@ export class CatalogoCursosComponent implements OnInit {
     });
   }
 
+  // --- MÉTODO DE INSCRIÇÃO COM MODAL ---
   inscrever(curso: Curso) {
     if (!this.usuario?.id) return;
 
-    if(confirm(`Deseja se matricular em "${curso.titulo}"?`)) {
-      this.progressoService.matricular(this.usuario.id, curso.codigo).subscribe({
-        next: () => {
-          this.snackBar.open('Matrícula realizada com sucesso!', 'Ir para Meus Cursos', { duration: 5000 })
-            .onAction().subscribe(() => {
-              this.router.navigate(['/meus-cursos']);
-            });
-        },
-        error: (err) => {
-          console.error(err);
-          this.snackBar.open('Erro ao realizar matrícula.', 'Fechar');
+    // Abre o Modal Bonito
+    const dialogRef = this.dialog.open(MatriculaDialogComponent, {
+      width: '400px',
+      disableClose: true,
+      data: { titulo: curso.titulo }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmado => {
+      if (confirmado) {
+        this.realizarMatricula(curso);
+      }
+    });
+  }
+
+  // Separei a lógica da requisição
+  realizarMatricula(curso: Curso) {
+    this.progressoService.matricular(this.usuario.id, curso.codigo).subscribe({
+      next: () => {
+        this.snackBar.open('Matrícula realizada com sucesso!', 'Ir para Meus Cursos', { 
+          duration: 5000,
+          // panelClass: ['success-snackbar'] // Se tiver estilo global
+        }).onAction().subscribe(() => {
+          this.router.navigate(['/meus-cursos']);
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        // Tratamento de erro 400 (Bad Request) ou outros
+        if (err.status === 400) {
+           this.snackBar.open('Não foi possível matricular. Verifique se já está inscrito.', 'Fechar');
+        } else {
+           this.snackBar.open('Erro ao realizar matrícula. Tente novamente.', 'Fechar');
         }
-      });
-    }
+      }
+    });
   }
 
   getCorNivel(nivel: string): string {

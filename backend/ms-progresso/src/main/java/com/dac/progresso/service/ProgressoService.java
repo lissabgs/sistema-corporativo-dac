@@ -70,6 +70,13 @@ public class ProgressoService {
         return progressoRepository.findByFuncionarioId(funcionarioId);
     }
 
+    public List<String> listarCodigosMatriculados(Long funcionarioId) {
+        return progressoRepository.findByFuncionarioId(funcionarioId)
+                .stream()
+                .map(Progresso::getCursoId)
+                .collect(Collectors.toList());
+    }
+
     // DTO interno para a mensagem RabbitMQ
     public static class XpMessageDTO {
         public Long funcionarioId;

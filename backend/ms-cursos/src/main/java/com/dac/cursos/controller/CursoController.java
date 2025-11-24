@@ -57,9 +57,10 @@ public class CursoController {
     @GetMapping("/disponiveis")
     public ResponseEntity<List<Curso>> listarCursosDisponiveis(
             @RequestParam String departamento,
-            @RequestParam String nivel) {
+            @RequestParam String nivel,
+            @RequestParam Long funcionarioId) {
 
-        List<Curso> cursos = cursoService.listarDisponiveisParaAluno(departamento, nivel);
+        List<Curso> cursos = cursoService.listarDisponiveisParaAluno(departamento, nivel, funcionarioId);
         return ResponseEntity.ok(cursos);
     }
 
