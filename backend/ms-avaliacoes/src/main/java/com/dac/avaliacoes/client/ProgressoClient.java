@@ -16,4 +16,7 @@ public interface ProgressoClient {
 
     @GetMapping("/api/progresso/funcionario/{funcionarioId}")
     List<Map<String, Object>> buscarProgressoFuncionario(@PathVariable Long funcionarioId);
+
+    @GetMapping("/api/progresso/concluidos/{funcionarioId}")
+    List<String> obterCursosConcluidos(@PathVariable("funcionarioId") Long funcionarioId);
 }

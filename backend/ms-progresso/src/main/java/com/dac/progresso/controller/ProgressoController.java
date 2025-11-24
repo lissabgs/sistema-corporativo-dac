@@ -3,6 +3,7 @@ package com.dac.progresso.controller;
 import com.dac.progresso.model.Progresso;
 import com.dac.progresso.dto.MatriculaRequestDTO;
 import com.dac.progresso.repository.ProgressoRepository;
+import com.dac.progresso.dto.ConcluirAulaRequestDTO; // <--- Verifique isto
 import com.dac.progresso.service.ProgressoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -90,5 +91,16 @@ public class ProgressoController {
         return progressoRepository.findByFuncionarioIdAndCursoId(funcionarioId, cursoId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    @PostMapping("/concluir-aula")
+    public ResponseEntity<Progresso> concluirAula(@RequestBody ConcluirAulaRequestDTO dto) {
+        Progresso atualizado = progressoService.concluirAula(dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    @GetMapping("/concluidos/{funcionarioId}")
+    public ResponseEntity<List<String>> listarIdsCursosConcluidos(@PathVariable Long funcionarioId) {
+        List<String> ids = progressoService.listarIdsConcluidos(funcionarioId);
+        return ResponseEntity.ok(ids);
     }
 }
