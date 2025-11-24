@@ -6,13 +6,14 @@ import com.dac.cursos.model.Curso;
 import com.dac.cursos.model.Modulo;
 import com.dac.cursos.model.StatusCurso;
 import com.dac.cursos.repository.CursoRepository;
+import com.dac.cursos.client.ProgressoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays; // Necessário para o método listarDisponiveis
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +21,9 @@ public class CursoService {
 
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private ProgressoClient progressoClient;
 
     @Transactional
     public Curso createCurso(CursoRequestDTO dto) {
@@ -75,7 +79,9 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
-    public List<Curso> listarDisponiveisParaAluno(String departamento, String nivelAluno) {
+    public List<Curso> listarDisponiveisParaAluno(String departamento, String nivelAluno, Long funcionarioId) {
+
+        // 1. Configura Níveis (Lógica Hierárquica)
         List<String> niveisPermitidos;
         String nivel = nivelAluno != null ? nivelAluno.toUpperCase() : "INICIANTE";
 
@@ -93,7 +99,25 @@ public class CursoService {
                 break;
         }
 
-        return cursoRepository.buscarCursosDisponiveis(StatusCurso.ATIVO, departamento, niveisPermitidos);
+        // 2. Busca cursos que o aluno JÁ TEM (Comunicação entre microsserviços)
+        List<String> codigosMatriculados = new ArrayList<>();
+        try {
+            if (funcionarioId != null) {
+                codigosMatriculados = progressoClient.obterCodigosMatriculados(funcionarioId);
+            }
+        } catch (Exception e) {
+            // Se o serviço de progresso estiver fora, loga e segue sem filtrar para não travar o catálogo
+            System.err.println("Erro ao buscar matrículas: " + e.getMessage());
+        }
+
+        // 3. Decide qual Query usar
+        if (codigosMatriculados.isEmpty()) {
+            // Se não tem matrículas, busca normal
+            return cursoRepository.buscarCursosDisponiveis(StatusCurso.ATIVO, departamento, niveisPermitidos);
+        } else {
+            // Se tem matrículas, usa o NOT IN
+            return cursoRepository.buscarCursosDisponiveisFiltrados(StatusCurso.ATIVO, departamento, niveisPermitidos, codigosMatriculados);
+        }
     }
 
     private void preencherDadosCurso(Curso curso, CursoRequestDTO dto) {

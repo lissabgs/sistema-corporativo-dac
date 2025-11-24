@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.time.LocalDateTime; // Importe para data
 import java.util.Optional;
+import java.util.stream.Collectors; // <--- IMPORT ADICIONADO
 
 @Service
 public class ProgressoService {
@@ -36,7 +37,7 @@ public class ProgressoService {
 
         // 2. Cria novo registro de progresso
         Progresso novoProgresso = new Progresso(funcionarioId, cursoId);
-        novoProgresso.setStatus(StatusProgresso.EM_ANDAMENTO);
+        novoProgresso.setStatus(StatusProgresso.INSCRITO);
         novoProgresso.setDataInicio(LocalDateTime.now());
 
         return progressoRepository.save(novoProgresso);
@@ -49,6 +50,10 @@ public class ProgressoService {
         Progresso progresso = progressoRepository
                 .findByFuncionarioIdAndCursoId(dto.getFuncionarioId(), dto.getCursoId())
                 .orElse(new Progresso(dto.getFuncionarioId(), dto.getCursoId()));
+
+        if (progresso.getStatus() == StatusProgresso.INSCRITO) {
+            progresso.setStatus(StatusProgresso.EM_ANDAMENTO);
+        }
 
         boolean aulaNova = progresso.adicionarAula(dto.getAulaId());
 
@@ -65,9 +70,16 @@ public class ProgressoService {
             rabbitTemplate.convertAndSend(RabbitMQConfig.XP_QUEUE_NAME, message);
         }
     }
-    
+
     public List<Progresso> listarInscricoesDoAluno(Long funcionarioId) {
         return progressoRepository.findByFuncionarioId(funcionarioId);
+    }
+
+    public List<String> listarCodigosMatriculados(Long funcionarioId) {
+        return progressoRepository.findByFuncionarioId(funcionarioId)
+                .stream()
+                .map(Progresso::getCursoId)
+                .collect(Collectors.toList());
     }
 
     // DTO interno para a mensagem RabbitMQ

@@ -1,6 +1,7 @@
 package com.dac.progresso.controller;
 
 import com.dac.progresso.model.Progresso;
+import com.dac.progresso.dto.MatriculaRequestDTO;
 import com.dac.progresso.repository.ProgressoRepository;
 import com.dac.progresso.service.ProgressoService; // <--- 1. Importar o Service
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,19 @@ public class ProgressoController {
     }
 
     @PostMapping("/matricular")
-    public ResponseEntity<Progresso> matricular(
-            @RequestParam Long funcionarioId,
-            @RequestParam String cursoId) {
+    public ResponseEntity<Progresso> matricularAluno(@RequestBody MatriculaRequestDTO dto) {
+        // Validação simples
+        if (dto.getFuncionarioId() == null || dto.getCursoId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        Progresso progresso = progressoService.matricularAluno(funcionarioId, cursoId);
-        return ResponseEntity.ok(progresso);
+        Progresso novoProgresso = progressoService.matricularAluno(dto.getFuncionarioId(), dto.getCursoId());
+        return ResponseEntity.ok(novoProgresso);
+    }
+
+    @GetMapping("/matriculados/{funcionarioId}")
+    public ResponseEntity<List<String>> obterCodigosMatriculados(@PathVariable Long funcionarioId) {
+        List<String> codigos = progressoService.listarCodigosMatriculados(funcionarioId);
+        return ResponseEntity.ok(codigos);
     }
 }
