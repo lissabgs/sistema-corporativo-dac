@@ -3,7 +3,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-// --- CORREÇÃO AQUI: Importar MatCardModule ---
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -21,7 +20,7 @@ import { Curso, Aula } from '../../../models/curso.model';
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule, // <--- ADICIONAR AQUI TAMBÉM NA LISTA DE IMPORTS
+    MatCardModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -141,8 +140,6 @@ export class VideoaulasComponent implements OnInit {
     const embedUrl = `https://www.youtube.com/embed/${videoId}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
-
-// ... imports
 
   concluirAula() {
     if (!this.aulaAtual || !this.aulaAtual.id) return;

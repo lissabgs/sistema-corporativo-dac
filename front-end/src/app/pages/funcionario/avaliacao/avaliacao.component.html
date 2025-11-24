@@ -3,16 +3,22 @@
   <span>Carregando a prova...</span>
 </div>
 
-
 <div class="avaliacao-container fade-in" *ngIf="avaliacaoHeader && !loading">
 
   <mat-card class="prova-header-card mat-elevation-z4">
     <div class="header-info">
       <h1 class="prova-titulo">{{ avaliacaoHeader.titulo }}</h1>
       <p class="prova-descricao">{{ avaliacaoHeader.descricao }}</p>
+
       <div class="meta-info">
-        <span><mat-icon>help_outline</mat-icon> {{ questoesView.length }} Questões</span>
-        <span><mat-icon>replay</mat-icon> Tentativas restantes: {{ avaliacaoHeader.tentativasPermitidas }}</span>
+        <span>
+          <mat-icon>help_outline</mat-icon>
+          {{ questoesView.length }} Questões
+        </span>
+        <span>
+          <mat-icon>replay</mat-icon>
+          Tentativas restantes: {{ avaliacaoHeader.tentativasPermitidas }}
+        </span>
       </div>
     </div>
 
@@ -25,36 +31,44 @@
     </div>
   </mat-card>
 
-
   <div class="questoes-list">
 
     <mat-card class="questao-card mat-elevation-z2" *ngFor="let q of questoesView; let i = index">
 
       <mat-card-header class="questao-header">
         <div mat-card-avatar class="questao-numero">{{ i + 1 }}</div>
+
         <mat-card-title class="questao-titulo-bar">
           <span>Questão {{ i + 1 }}</span>
-          <span class="questao-peso">{{ q.peso | number:'1.1-1' }} pts</span>
+          <span class="questao-peso">{{ q.peso }} pts</span>
         </mat-card-title>
       </mat-card-header>
 
       <mat-card-content class="questao-body">
-        <p class="enunciado" [innerHTML]="q.enunciado"></p> <mat-divider class="divider-espaco"></mat-divider>
 
-        <div [ngSwitch]="q.tipoQuestao" class="area-resposta">
+        <p class="enunciado" [innerHTML]="q.enunciado"></p>
 
-          <div *ngSwitchCase="'OBJETIVA'">
+        <mat-divider class="divider-espaco"></mat-divider>
+
+        <div class="area-resposta">
+
+          <!-- OBJETIVA -->
+          <div *ngIf="q.tipoQuestao === 'OBJETIVA'">
             <mat-radio-group [(ngModel)]="q.respostaUsuario" class="radio-group-vertical">
-              <mat-radio-button *ngFor="let opcao of q.opcoesProcessadas" [value]="opcao.chave" class="radio-opcao">
+              <mat-radio-button *ngFor="let opcao of q.opcoesProcessadas"
+                                [value]="opcao.chave"
+                                class="radio-opcao">
+
                 <span class="opcao-chave">{{ opcao.chave }})</span>
                 <span class="opcao-texto">{{ opcao.texto }}</span>
               </mat-radio-button>
             </mat-radio-group>
           </div>
 
-          <div *ngSwitchCase="'DISSERTATIVA'">
+          <!-- DISSERTATIVA -->
+          <div *ngIf="q.tipoQuestao === 'DISSERTATIVA'">
             <mat-form-field appearance="outline" class="full-width-textarea">
-              <mat-label>Sua resposta dissertativa</mat-label>
+              <mat-label>Sua resposta</mat-label>
               <textarea matInput
                         [(ngModel)]="q.respostaUsuario"
                         rows="6"
@@ -65,28 +79,27 @@
         </div>
 
       </mat-card-content>
+
     </mat-card>
 
   </div>
 
-
-  <div class="action-footer mat-elevation-z8">
-    <p class="footer-info" *ngIf="!enviando">
-      Revise suas respostas antes de finalizar.
-    </p>
+  <div class="finalizar-container">
     <button mat-raised-button
-            color="primary"
             class="btn-finalizar"
             (click)="confirmarEnvio()"
             [disabled]="enviando || tempoRestanteSegundos <= 0">
 
       <span *ngIf="!enviando">
-        <mat-icon>send</mat-icon> Finalizar Avaliação
+        <mat-icon>send</mat-icon>
+        Finalizar Avaliação
       </span>
 
       <span *ngIf="enviando" class="flex-center-gap">
-        <mat-spinner diameter="24" color="accent"></mat-spinner> Enviando...
+        <mat-spinner diameter="24" color="accent"></mat-spinner>
+        Enviando...
       </span>
+
     </button>
   </div>
 
