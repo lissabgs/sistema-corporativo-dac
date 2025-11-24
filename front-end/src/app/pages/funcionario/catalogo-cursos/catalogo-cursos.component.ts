@@ -13,7 +13,6 @@ import { ProgressoService } from '../../../services/progresso.service';
 import { FuncionarioService } from '../../../services/funcionario.service';
 import { Curso } from '../../../models/curso.model';
 
-// --- COMPONENTE DO MODAL (Interno) ---
 @Component({
   selector: 'app-matricula-dialog',
   standalone: true,
