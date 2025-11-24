@@ -70,15 +70,21 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
-      SPRING_DATASOURCE_USERNAME: dac
-      SPRING_DATASOURCE_PASSWORD: dac
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      # Configuração MongoDB
+      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
+
+      # Configuração RabbitMQ
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: dac
+      SPRING_RABBITMQ_PASSWORD: dac
+
+      # Configuração Email
       MAIL_USERNAME: arthurdiasbaptista@gmail.com
       MAIL_PASSWORD: flrw elqg tobs chjt
     depends_on:
-      - postgres
+      - mongo
+      - rabbitmq
     networks:
       - dac-network
 

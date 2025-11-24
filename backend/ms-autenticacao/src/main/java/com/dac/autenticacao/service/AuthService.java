@@ -13,39 +13,34 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-// Imports de Log
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Random;
 
 @Service
-// Implementa UserDetailsService (corrige o crash do SecurityConfig)
 public class AuthService implements UserDetailsService {
 
-    // 1. Adiciona o Logger
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private AuthUserRepository authUserRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Injetado do AppConfig
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private EmailService emailService; // Necessário para enviar a senha
-
-    // AuthenticationManager foi REMOVIDO para quebrar o ciclo
+    private EmailPublisherService emailPublisherService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         AuthUser user = authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
 
         return new User(
                 user.getEmail(),
@@ -54,9 +49,6 @@ public class AuthService implements UserDetailsService {
         );
     }
 
-    /**
-     * Usa a senha fornecida (Admin/Instrutor) ou gera uma aleatória (Autocadastro).
-     */
     public void registerInternal(AuthRegistroDTO dto) {
         if (authUserRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado.");
@@ -64,66 +56,58 @@ public class AuthService implements UserDetailsService {
 
         String senha;
 
-        // NOVO: Verifica se a senha foi fornecida no DTO (Admin/Instrutor)
         if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
-            senha = dto.getSenha(); // Usa a senha padrão "1234"
-            logger.info(">>> [MS-AUTENTICACAO] Usando senha fornecida para " + dto.getEmail() + ": [" + senha + "]");
+            senha = dto.getSenha();
+            logger.info(">>> [MS-AUTENTICACAO] Usando senha fornecida para " + dto.getEmail());
         } else {
-            // Autocadastro de Funcionário (mantém a lógica de senha aleatória)
             senha = gerarSenhaAleatoriaNumerica(6);
-            logger.info(">>> [MS-AUTENTICACAO] Senha temporária gerada (autocadastro) para " + dto.getEmail() + ": [" + senha + "]");
+            logger.info(">>> [MS-AUTENTICACAO] Senha temporária gerada: " + dto.getEmail());
         }
 
         AuthUser newUser = new AuthUser();
         newUser.setEmail(dto.getEmail());
-
-        // 3. Codifica a senha
         newUser.setSenhaHash(passwordEncoder.encode(senha));
-
         newUser.setUsuarioId(dto.getUsuarioId());
         newUser.setTipoUsuario(dto.getPerfil().toString());
         newUser.setStatus(true);
+        newUser.setDataCriacao(LocalDateTime.now());
 
         authUserRepository.save(newUser);
+        logger.info(">>> [MS-AUTENTICACAO] Usuário salvo no MongoDB: " + newUser.getId());
 
-        // 4. Tenta enviar a senha por e-mail
         try {
-            emailService.enviarSenhaInicial(dto.getEmail(), senha);
-            logger.info(">>> [MS-AUTENTICACAO] Tentativa de envio de e-mail de senha.");
+            emailPublisherService.enviarEmailBoasVindas(
+                    dto.getUsuarioId(),
+                    dto.getEmail(),
+                    "Usuário",
+                    senha
+            );
+            logger.info(">>> [MS-AUTENTICACAO] Email enviado para fila RabbitMQ");
         } catch (Exception e) {
-            // Não quebra a transação se o e-mail falhar, mas avisa no log
-            logger.warn(">>> [MS-AUTENTICACAO] Falha ao enviar e-mail de senha. Verifique a configuração do MailSender. Erro: " + e.getMessage());
+            logger.warn(">>> [MS-AUTENTICACAO] Falha ao enviar email: " + e.getMessage());
         }
     }
 
-    /**
-     * Verificação manual da senha (corrige o 401)
-     */
     public LoginResponseDTO login(LoginRequestDTO dto) {
         AuthUser user = authUserRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        // Verifica a senha manualmente
         if (!passwordEncoder.matches(dto.getSenha(), user.getSenhaHash())) {
-            logger.warn(">>> [MS-AUTENTICACAO] Tentativa de login falhou (senha inválida) para: " + dto.getEmail());
+            logger.warn(">>> [MS-AUTENTICACAO] Login falhou para: " + dto.getEmail());
             throw new RuntimeException("Senha inválida.");
         }
 
-        logger.info(">>> [MS-AUTENTICACAO] Login bem-sucedido para: " + dto.getEmail());
-        logger.info(">>> [MS-AUTENTICACAO] Login bem-sucedido para: " + user.getEmail());
-        logger.info(">>> [MS-AUTENTICACAO] Login bem-sucedido para: " + user.getTipoUsuario());
+        logger.info(">>> [MS-AUTENTICACAO] Login bem-sucedido: " + dto.getEmail());
 
         String token = jwtTokenProvider.generateToken(user.getEmail(), user.getTipoUsuario());
-        logger.info(">>> [MS-AUTENTICACAO] TOKEN: " + token);
 
         return new LoginResponseDTO(token, user.getUsuarioId(), user.getTipoUsuario());
     }
 
-    // Método privado para gerar a senha
-    private String gerarSenhaAleatoriaNumerica(int len) {
+    private String gerarSenhaAleatoriaNumerica(int tamanho) {
         Random random = new Random();
-        StringBuilder senha = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
+        StringBuilder senha = new StringBuilder(tamanho);
+        for (int i = 0; i < tamanho; i++) {
             senha.append(random.nextInt(10));
         }
         return senha.toString();

@@ -5,19 +5,11 @@ spring:
   application:
     name: ms-autenticacao
 
-  datasource:
-    url: jdbc:postgresql://postgres:5432/db_autenticacao
-    username: dac
-    password: dac
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  # REMOVER configuração do PostgreSQL
+  # ADICIONAR configuração do MongoDB
+  data:
+    mongodb:
+      uri: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
 
   mail:
     host: smtp.gmail.com
