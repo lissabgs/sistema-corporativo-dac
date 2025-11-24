@@ -5,6 +5,7 @@
     <p>Visão geral do seu desempenho e tarefas pendentes.</p>
   </div>
 
+  <!-- Estado de Carregamento -->
   <div class="loading-overlay" *ngIf="loading">
     <mat-spinner diameter="40"></mat-spinner>
     <span>Carregando dados...</span>
@@ -12,6 +13,7 @@
 
   <div *ngIf="!loading" class="dashboard-content fade-in">
 
+    <!-- Cards de Resumo (Topo) -->
     <div class="summary-cards-container">
       <mat-card class="metric-card accent-pendente">
         <div class="metric-icon">
@@ -45,9 +47,11 @@
     </div>
 
 
+    <!-- Área de Abas com Listas -->
     <mat-card class="details-container-card">
       <mat-tab-group mat-stretch-tabs="false" animationDuration="300ms">
 
+        <!-- ABA 1: PENDENTES -->
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="tab-icon text-pendente">pending_actions</mat-icon>
@@ -58,10 +62,13 @@
               <mat-list-item *ngFor="let a of pendentes" class="item-hover">
                 <h3 matListItemTitle>{{ a.titulo }}</h3>
                 <p matListItemLine class="sub-text">Código: {{ a.codigo }}</p>
-                <button mat-flat-button color="primary" matListItemMeta (click)="iniciarAvaliacao(a.id)">
+                
+                <!-- Botão para iniciar -->
+                <button mat-flat-button class="btn-realizar" matListItemMeta (click)="iniciarAvaliacao(a.id)">
                   <mat-icon>play_arrow</mat-icon> Realizar
                 </button>
               </mat-list-item>
+
             </mat-nav-list>
 
             <ng-template #emptyPendentes>
@@ -74,6 +81,7 @@
         </mat-tab>
 
 
+        <!-- ABA 2: AGUARDANDO -->
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="tab-icon text-aguardando">history_edu</mat-icon>
@@ -98,6 +106,7 @@
         </mat-tab>
 
 
+        <!-- ABA 3: CONCLUÍDAS -->
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="tab-icon text-concluida">check_circle</mat-icon>
@@ -109,8 +118,11 @@
                 <mat-icon matListItemIcon class="text-concluida">check</mat-icon>
                 <h3 matListItemTitle>{{ a.titulo }}</h3>
                 <p matListItemLine class="sub-text">Concluído em: {{ a.dataConclusao | date:'dd/MM/yyyy' }}</p>
-                <div matListItemMeta class="nota-badge">
-                  Nota: {{ a.nota }}
+                
+                <!-- Badge de Nota -->
+                <div matListItemMeta class="nota-badge" 
+                     [ngClass]="{'nota-alta': (a.nota ?? 0) >= 7, 'nota-baixa': (a.nota ?? 0) < 7}">
+                  Nota: {{ a.nota | number:'1.1-1' }}
                 </div>
               </mat-list-item>
             </mat-list>
@@ -127,4 +139,5 @@
       </mat-tab-group>
     </mat-card>
 
-  </div> </div>
+  </div>
+</div>

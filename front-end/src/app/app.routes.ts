@@ -53,16 +53,15 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },
   { 
-    path: 'avaliacao',
-    component: RealizarAvaliacaoComponent,
-    canActivate: [roleGuard(APENAS_FUNCIONARIO)]
-  },  
+  path: 'avaliacao/:id',
+  component: RealizarAvaliacaoComponent,
+  canActivate: [roleGuard(APENAS_FUNCIONARIO)]
+  },
   { 
     path: 'videoaulas/:id',
     component: VideoaulasComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },
-
   // --- ROTAS DO INSTRUTOR ---
   { 
     path: 'dashboard-instrutor', 

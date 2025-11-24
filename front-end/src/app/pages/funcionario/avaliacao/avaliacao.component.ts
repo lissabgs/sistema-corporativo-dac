@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -15,16 +14,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// ===============================
-// INTERFACES
-// ===============================
-
-export interface OpcaoProcessada {
+interface OpcaoProcessada {
   chave: string;
   texto: string;
 }
 
-export interface QuestaoView {
+interface QuestaoView {
   id: number;
   tipoQuestao: 'OBJETIVA' | 'DISSERTATIVA';
   enunciado: string;
@@ -35,18 +30,14 @@ export interface QuestaoView {
   respostaUsuario?: string;
 }
 
-export interface AvaliacaoDados {
+interface AvaliacaoDados {
   id: number;
   titulo: string;
   descricao: string;
   tempoLimiteMinutos: number;
   tentativasPermitidas: number;
-  questoes: any[];
+  questoes: QuestaoView[];
 }
-
-// ===============================
-// COMPONENTE
-// ===============================
 
 @Component({
   selector: 'app-realizar-avaliacao',
@@ -55,6 +46,7 @@ export interface AvaliacaoDados {
     CommonModule,
     RouterModule,
     FormsModule,
+
     MatCardModule,
     MatDividerModule,
     MatButtonModule,
@@ -70,9 +62,8 @@ export interface AvaliacaoDados {
 })
 export class RealizarAvaliacaoComponent implements OnInit, OnDestroy {
 
-  private http = inject(HttpClient);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
 
   avaliacaoHeader: AvaliacaoDados | null = null;
@@ -82,16 +73,16 @@ export class RealizarAvaliacaoComponent implements OnInit, OnDestroy {
   enviando = false;
 
   tempoRestanteSegundos = 0;
-  timerInterval: any;
+  timerInterval: any = null;
   tempoFormatado = '--:--';
   timerCritico = false;
 
   // ===============================
-  // CICLO DE VIDA
+  // INICIALIZAÇÃO
   // ===============================
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.carregarAvaliacao(Number(id));
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.carregarMockAvaliacao(id);
   }
 
   ngOnDestroy(): void {
@@ -99,88 +90,83 @@ export class RealizarAvaliacaoComponent implements OnInit, OnDestroy {
   }
 
   // ===============================
-  // CARREGAMENTO
+  // MOCK (SEM BACKEND)
   // ===============================
-  carregarAvaliacao(id: number) {
+  carregarMockAvaliacao(id: number) {
     this.loading = true;
 
-    this.http.get<AvaliacaoDados[]>(`http://localhost:8080/avaliacoes/${id}`)
-      .subscribe({
-        next: (arr) => {
-          if (!arr || arr.length === 0) {
-            this.mostrarErro('Avaliação não encontrada.');
-            this.loading = false;
-            return;
-          }
-
-          const dados = arr[0];
-          this.avaliacaoHeader = dados;
-
-          this.questoesView = this.processarQuestoesParaView(dados.questoes);
-          this.iniciarTimer(dados.tempoLimiteMinutos * 60);
-
-          this.loading = false;
+    this.avaliacaoHeader = {
+      id,
+      titulo: "Avaliação de Java Básico (DEMO)",
+      descricao: "Esta prova é carregada localmente para testes do front-end.",
+      tempoLimiteMinutos: 10,
+      tentativasPermitidas: 1,
+      questoes: [
+        {
+          id: 1,
+          tipoQuestao: 'OBJETIVA',
+          enunciado: "O que é uma classe em Java?",
+          peso: 1,
+          ordem: 1,
+          opcoesProcessadas: [
+            { chave: 'A', texto: "Um arquivo CSS" },
+            { chave: 'B', texto: "Um molde para criar objetos" },
+            { chave: 'C', texto: "Um banco de dados" },
+            { chave: 'D', texto: "Uma função recursiva" }
+          ]
         },
-        error: () => {
-          this.mostrarErro('Erro ao carregar a avaliação.');
-          this.loading = false;
+        {
+          id: 2,
+          tipoQuestao: 'OBJETIVA',
+          enunciado: "Qual palavra-chave instancia um objeto em Java?",
+          peso: 1,
+          ordem: 2,
+          opcoesProcessadas: [
+            { chave: 'A', texto: "make" },
+            { chave: 'B', texto: "object" },
+            { chave: 'C', texto: "new" },
+            { chave: 'D', texto: "instance" }
+          ]
+        },
+        {
+          id: 3,
+          tipoQuestao: 'DISSERTATIVA',
+          enunciado: "Explique o conceito de encapsulamento.",
+          peso: 2,
+          ordem: 3
         }
-      });
-  }
+      ]
+    };
 
-  // ===============================
-  // PROCESSAR QUESTÕES
-  // ===============================
-  private processarQuestoesParaView(questoesBrutas: any[]): QuestaoView[] {
-    return questoesBrutas.map(q => {
-      const view: QuestaoView = {
-        id: q.id,
-        tipoQuestao: q.tipoQuestao,
-        enunciado: q.enunciado,
-        peso: q.peso,
-        ordem: q.ordem,
-        respostaUsuario: ''
-      };
+    this.questoesView = [...this.avaliacaoHeader.questoes];
 
-      if (q.tipoQuestao === 'OBJETIVA' && q.opcoesResposta) {
-        try {
-          const obj = JSON.parse(q.opcoesResposta);
-          view.opcoesProcessadas = Object.keys(obj).map(key => ({
-            chave: key,
-            texto: obj[key]
-          }));
-        } catch {
-          view.opcoesProcessadas = [];
-          console.error(`Erro ao parsear opções da questão ${q.id}`);
-        }
-      }
+    // Inicia o timer
+    this.iniciarTimer(this.avaliacaoHeader.tempoLimiteMinutos * 60);
 
-      return view;
-    }).sort((a, b) => a.ordem - b.ordem);
+    this.loading = false;
   }
 
   // ===============================
   // TIMER
   // ===============================
-  iniciarTimer(total: number) {
-    this.tempoRestanteSegundos = total;
-    this.atualizarDisplayTempo();
+  iniciarTimer(segundos: number) {
+    this.tempoRestanteSegundos = segundos;
+    this.atualizarTempo();
 
     this.timerInterval = setInterval(() => {
-      this.tempoRestanteSegundos--;
-      this.timerCritico = this.tempoRestanteSegundos < 300;
-
       if (this.tempoRestanteSegundos <= 0) {
-        this.tempoRestanteSegundos = 0;
         clearInterval(this.timerInterval);
-        this.finalizarAutomaticamente();
+        this.enviarAutomaticamente();
+        return;
       }
 
-      this.atualizarDisplayTempo();
+      this.tempoRestanteSegundos--;
+      this.timerCritico = this.tempoRestanteSegundos < 300;
+      this.atualizarTempo();
     }, 1000);
   }
 
-  atualizarDisplayTempo() {
+  atualizarTempo() {
     const m = Math.floor(this.tempoRestanteSegundos / 60);
     const s = this.tempoRestanteSegundos % 60;
 
@@ -188,61 +174,37 @@ export class RealizarAvaliacaoComponent implements OnInit, OnDestroy {
       `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
-  finalizarAutomaticamente() {
-    this.snackBar.open('Tempo esgotado! Enviando suas respostas...', 'OK', { duration: 4000 });
-    this.enviarAvaliacao();
+  enviarAutomaticamente() {
+    this.snackBar.open("Tempo esgotado! Enviando respostas...", "OK", {
+      duration: 3000
+    });
+    this.finalizar();
   }
 
   // ===============================
-  // ENVIO
+  // FINALIZAÇÃO (SIMULADA)
   // ===============================
   confirmarEnvio() {
-    const naoResp = this.questoesView.filter(q => !q.respostaUsuario).length;
+    const faltando = this.questoesView.filter(q => !q.respostaUsuario).length;
 
-    let msg = 'Deseja realmente finalizar a avaliação?';
-    if (naoResp > 0)
-      msg = `Atenção: você tem ${naoResp} questão(ões) sem resposta. Deseja enviar mesmo assim?`;
+    let msg = "Deseja finalizar a avaliação?";
+    if (faltando > 0)
+      msg = `Você deixou ${faltando} questão(ões) em branco. Enviar mesmo assim?`;
 
-    if (confirm(msg)) this.enviarAvaliacao();
+    if (confirm(msg)) this.finalizar();
   }
 
-  enviarAvaliacao() {
+  finalizar() {
     if (this.timerInterval) clearInterval(this.timerInterval);
 
     this.enviando = true;
-    this.loading = true;
 
-    const payload = this.questoesView.map(q => ({
-      questaoId: q.id,
-      resposta: q.respostaUsuario
-    }));
-
-    const id = this.avaliacaoHeader?.id;
-
-    this.http.post(`http://localhost:8080/avaliacoes/${id}/submeter`, payload)
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Avaliação enviada com sucesso!', 'OK', {
-            duration: 3000,
-            panelClass: ['snack-success']
-          });
-          this.router.navigate(['/minhas-avaliacoes']);
-        },
-        error: () => {
-          this.mostrarErro('Erro ao enviar a avaliação.');
-          this.enviando = false;
-          this.loading = false;
-        }
+    setTimeout(() => {
+      this.snackBar.open("Avaliação enviada com sucesso! (modo DEMO)", "OK", {
+        duration: 3000
       });
-  }
 
-  // ===============================
-  // SNACKBAR
-  // ===============================
-  mostrarErro(msg: string) {
-    this.snackBar.open(msg, 'Fechar', {
-      duration: 5000,
-      panelClass: ['snack-error']
-    });
+      this.router.navigate(['/minhas-avaliacoes']);
+    }, 1500);
   }
 }
