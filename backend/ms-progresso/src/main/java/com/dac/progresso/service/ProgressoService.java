@@ -37,7 +37,7 @@ public class ProgressoService {
 
         // 2. Cria novo registro de progresso
         Progresso novoProgresso = new Progresso(funcionarioId, cursoId);
-        novoProgresso.setStatus(StatusProgresso.EM_ANDAMENTO);
+        novoProgresso.setStatus(StatusProgresso.INSCRITO);
         novoProgresso.setDataInicio(LocalDateTime.now());
 
         return progressoRepository.save(novoProgresso);
@@ -50,6 +50,10 @@ public class ProgressoService {
         Progresso progresso = progressoRepository
                 .findByFuncionarioIdAndCursoId(dto.getFuncionarioId(), dto.getCursoId())
                 .orElse(new Progresso(dto.getFuncionarioId(), dto.getCursoId()));
+
+        if (progresso.getStatus() == StatusProgresso.INSCRITO) {
+            progresso.setStatus(StatusProgresso.EM_ANDAMENTO);
+        }
 
         boolean aulaNova = progresso.adicionarAula(dto.getAulaId());
 

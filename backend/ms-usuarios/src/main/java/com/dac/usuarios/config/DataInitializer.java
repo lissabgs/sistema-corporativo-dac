@@ -9,13 +9,13 @@ import com.dac.usuarios.repository.FuncionarioRepository;
 import com.dac.usuarios.repository.InstrutorRepository;
 import com.dac.usuarios.service.FuncionarioService;
 import com.dac.usuarios.dto.UsuarioCadastroDTO;
-import com.dac.usuarios.dto.UsuarioResponseDTO; // Importar DTO
+import com.dac.usuarios.dto.UsuarioResponseDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Map; // Importar Map
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -25,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private DepartamentoRepository departamentoRepository;
 
     @Autowired
-    private FuncionarioRepository funcionarioRepository; // Necessário para buscar o Funcionario completo
+    private FuncionarioRepository funcionarioRepository;
 
     @Autowired
     private FuncionarioService funcionarioService;
@@ -37,13 +37,15 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Long tiDepartamentoId = inicializarDepartamentos();
 
+        // Se não houver nenhum funcionário, cria os usuários padrão
         if (funcionarioRepository.count() == 0) {
-            System.out.println(">>> [MS-USUARIOS] Inicializando Usuários Padrão (ADMINISTRADOR e INSTRUTOR)...");
+            System.out.println(">>> [MS-USUARIOS] Inicializando Usuários Padrão...");
 
             criarAdminPadrao(tiDepartamentoId);
             criarInstrutorPadrao(tiDepartamentoId);
+            criarFuncionarioPadrao(tiDepartamentoId); // <--- CHAMADA DO NOVO MÉTODO
 
-            System.out.println(">>> [MS-USUARIOS] Usuários Padrão criados. Senhas registradas no MS-AUTENTICACAO.");
+            System.out.println(">>> [MS-USUARIOS] Usuários criados: admin@empresa.com, instrutor@empresa.com, funcionario@empresa.com (Senha: 1234)");
         }
     }
 
@@ -99,15 +101,14 @@ public class DataInitializer implements CommandLineRunner {
         // 1. Executa o cadastro (cria Funcionario e Autenticação)
         Map<String, Object> response = funcionarioService.cadastrarFuncionario(instrutorDto);
 
-        // 2. CORREÇÃO: Pega o DTO de resposta do Map e faz o CAST para o tipo correto (UsuarioResponseDTO)
+        // 2. Pega o DTO de resposta e faz o CAST
         UsuarioResponseDTO responseDto = (UsuarioResponseDTO) response.get("funcionario");
 
-        // 3. Busca a entidade Funcionario completa no banco usando o ID do DTO
-        // Isso resolve o ClassCastException
+        // 3. Busca a entidade Funcionario completa
         Funcionario funcionario = funcionarioRepository.findById(responseDto.getId())
                 .orElseThrow(() -> new RuntimeException("Falha ao recuperar Funcionario recém-criado para Instrutor."));
 
-        // 4. Cria a entidade Instrutor
+        // 4. Cria a entidade Instrutor vinculada
         Instrutor instrutor = new Instrutor();
         instrutor.setFuncionario(funcionario);
         instrutor.setEspecialidades("Tecnologia");
@@ -116,5 +117,20 @@ public class DataInitializer implements CommandLineRunner {
         instrutor.setStatus(true);
 
         instrutorRepository.save(instrutor);
+    }
+
+    // --- NOVO MÉTODO: CRIA O FUNCIONÁRIO PADRÃO ---
+    private void criarFuncionarioPadrao(Long departamentoId) {
+        UsuarioCadastroDTO funcDto = new UsuarioCadastroDTO();
+        funcDto.setCpf("11122233344"); // CPF fictício para teste
+        funcDto.setNome("Funcionário Padrão");
+        funcDto.setEmail("funcionario@empresa.com");
+        funcDto.setCargo("Analista de Sistemas");
+        funcDto.setDepartamentoId(departamentoId);
+        funcDto.setPerfil(Perfil.FUNCIONARIO);
+        funcDto.setSenha("1234");
+
+        // Reutiliza a lógica existente do service (salva no Postgres, chama Auth, etc.)
+        funcionarioService.cadastrarFuncionario(funcDto);
     }
 }

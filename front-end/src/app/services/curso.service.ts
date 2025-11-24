@@ -35,8 +35,7 @@ export class CursoService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-
-  listarDisponiveis(departamento: string, nivel: string): Observable<Curso[]> {
-    return this.http.get<Curso[]>(`${this.apiUrl}/disponiveis?departamento=${departamento}&nivel=${nivel}`);
+  listarDisponiveis(departamento: string, nivel: string, funcionarioId: number): Observable<Curso[]> {
+    return this.http.get<Curso[]>(`${this.apiUrl}/disponiveis?departamento=${departamento}&nivel=${nivel}&funcionarioId=${funcionarioId}`);
   }
 }
