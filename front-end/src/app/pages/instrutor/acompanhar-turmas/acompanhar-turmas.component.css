@@ -1,0 +1,272 @@
+.page-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #f5f6f8;
+  min-height: 100vh;
+}
+
+/* --- Cabeçalho e Filtros --- */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Alinha o título com o filtro verticalmente */
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  color: #002F54;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: #64748b;
+  font-size: 16px;
+  margin: 4px 0 0 0;
+}
+
+/* Estilo do Dropdown de Filtro */
+.filter-wrapper {
+  min-width: 250px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.curso-select {
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Remove padding extra do Angular Material para ficar mais compacto e alinhado */
+.curso-select ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+/* --- Cards de Métricas --- */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+.metric-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.bg-blue { background: linear-gradient(135deg, #002F54, #004e8c); }
+.bg-green { background: linear-gradient(135deg, #10b981, #059669); }
+.bg-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+.metric-bar {
+  height: 6px;
+  border-radius: 3px;
+}
+
+.green-bar ::ng-deep .mdc-linear-progress__bar-inner {
+  border-color: #10b981 !important;
+}
+
+/* --- Conteúdo Principal (Abas) --- */
+.main-content-card {
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.tab-content {
+  padding: 24px;
+}
+
+/* --- Tabelas --- */
+.full-width-table {
+  width: 100%;
+}
+
+.full-width-table th {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  background-color: #f8fafc;
+  padding: 16px;
+}
+
+.full-width-table td {
+  color: #334155;
+  font-size: 14px;
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+/* Info do Aluno */
+.aluno-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #002F54;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name { font-weight: 600; color: #1e293b; }
+.email { font-size: 12px; color: #94a3b8; }
+
+/* Badge da Matéria (Novo) */
+.curso-badge {
+  background-color: #f1f5f9;
+  color: #475569;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  white-space: nowrap; /* Evita quebra de linha no nome do curso */
+}
+
+/* Coluna de Progresso */
+.col-progress {
+  width: 180px;
+}
+
+.progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progress-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Status (Ativo/Inativo/Concluido) */
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-ativo { background-color: #e0f2fe; color: #0284c7; }
+.status-inativo { background-color: #f1f5f9; color: #64748b; }
+.status-concluido { background-color: #dcfce7; color: #16a34a; }
+
+/* Status Correção */
+.status-pendente { background-color: #fef3c7; color: #d97706; }
+.status-correcao { background-color: #e0e7ff; color: #4338ca; }
+
+/* Nota Colorida */
+.badge-nota {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+}
+
+.nota-alta { color: #15803d; background: #dcfce7; }
+.nota-media { color: #b45309; background: #ffedd5; }
+.nota-baixa { color: #b91c1c; background: #fee2e2; }
+
+/* Alerta Azul (Info) */
+.alert-info {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Estado Vazio (Empty State) */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #94a3b8;
+  gap: 16px;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #cbd5e0;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
