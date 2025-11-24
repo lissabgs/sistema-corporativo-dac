@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // Importante para SSR
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,33 +29,27 @@ export class InscricaoCursoComponent implements OnInit {
   private cursoService = inject(CursoService);
   private snackBar = inject(MatSnackBar);
   
-  // Injeta o identificador da plataforma para saber se estamos no navegador ou no servidor
   private platformId = inject(PLATFORM_ID);
 
   cursos: any[] = [];
   loading = true;
 
   ngOnInit(): void {
-    // CORREÇÃO CRÍTICA: Só executa se estiver no navegador
     if (isPlatformBrowser(this.platformId)) {
       this.carregarMeusCursos();
     } else {
-      this.loading = false; // Se for servidor, não carrega nada
+      this.loading = false;
     }
   }
 
   carregarMeusCursos() {
-    // Agora é seguro usar localStorage
     const userId = localStorage.getItem('usuarioId');
-    
-    // Se não tiver ID (ex: não logado), usa 1 para teste ou redireciona
     const funcionarioId = userId ? +userId : 1; 
 
     console.log('Buscando cursos para o funcionário:', funcionarioId);
 
     this.progressoService.listarMeusCursos(funcionarioId).subscribe({
       next: (progressos) => {
-        console.log('Progressos encontrados:', progressos);
         this.cursos = [];
         
         if (!progressos || progressos.length === 0) {
@@ -63,8 +57,11 @@ export class InscricaoCursoComponent implements OnInit {
           return;
         }
 
-        // Para cada inscrição, busca os detalhes completos do curso
-        progressos.forEach(progresso => {
+        // Filtra cursos cancelados para não exibir na lista
+        // (Caso o backend retorne tudo, filtramos aqui também por segurança)
+        const progressosAtivos = progressos.filter((p: any) => p.status !== 'CANCELADO');
+
+        progressosAtivos.forEach((progresso: any) => {
           this.cursoService.obterPorId(progresso.cursoId).subscribe({
             next: (detalhesCurso) => {
               this.cursos.push({
@@ -81,11 +78,10 @@ export class InscricaoCursoComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro na requisição GET /progresso:', err);
-        // Exibe erro visual se for 403 (Token inválido) ou 500 (Erro servidor)
         if (err.status === 403) {
             this.snackBar.open('Sessão expirada. Faça login novamente.', 'OK');
         } else {
-            this.snackBar.open('Erro ao carregar cursos. Verifique se o servidor está rodando.', 'Fechar');
+            this.snackBar.open('Erro ao carregar cursos. Verifique o servidor.', 'Fechar');
         }
         this.loading = false;
       }
@@ -97,28 +93,71 @@ export class InscricaoCursoComponent implements OnInit {
     const s = status.toUpperCase();
     if (s === 'EM_ANDAMENTO') return 'em-andamento';
     if (s === 'CONCLUIDO') return 'concluido';
+    // Retorna 'pausado' ou 'cancelado' em minúsculo se vier do Java
     return s.toLowerCase();
   }
 
+  // --- AÇÕES DO CURSO ---
+
+  // Usado tanto para começar (de Inscrito) quanto para retomar (de Pausado)
+  iniciar(curso: any) {
+    if (!curso.progressoId) return;
+
+    this.progressoService.iniciarCurso(curso.progressoId).subscribe({
+      next: () => {
+        curso.status = 'em-andamento';
+        this.router.navigate(['/videoaulas', curso.id]);
+      },
+      error: (err) => {
+        console.error('Erro ao iniciar curso:', err);
+        // Tenta navegar mesmo com erro (fallback), ou exibe aviso
+        this.router.navigate(['/videoaulas', curso.id]);
+      }
+    });
+  }
+
   assistir(curso: any) {
+    // Apenas navegação direta se já estiver em andamento
     if (curso.id) {
       this.router.navigate(['/videoaulas', curso.id]);
     }
   }
 
-  cancelar(curso: any) {
-    if(confirm(`Cancelar inscrição em "${curso.titulo}"?`)) {
-        // Futuramente: Chamar endpoint de delete
-        this.cursos = this.cursos.filter(c => c !== curso);
-    }
+  retomar(curso: any) {
+    this.iniciar(curso);
   }
 
   pausar(curso: any) {
-    curso.status = 'pausado';
+    if (!curso.progressoId) return;
+
+    this.progressoService.pausarCurso(curso.progressoId).subscribe({
+      next: () => {
+        curso.status = 'pausado';
+        this.snackBar.open('Curso pausado.', 'Fechar', { duration: 2000 });
+      },
+      error: (err) => {
+        console.error('Erro ao pausar:', err);
+        this.snackBar.open('Erro ao pausar curso.', 'Fechar');
+      }
+    });
   }
 
-  retomar(curso: any) {
-    curso.status = 'em-andamento';
+  cancelar(curso: any) {
+    const confirmacao = confirm(`Deseja cancelar a inscrição em "${curso.titulo}"?`);
+    
+    if (confirmacao && curso.progressoId) {
+      this.progressoService.cancelarInscricao(curso.progressoId).subscribe({
+        next: () => {
+          // Remove da lista visualmente
+          this.cursos = this.cursos.filter(c => c !== curso);
+          this.snackBar.open('Inscrição cancelada.', 'OK', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Erro ao cancelar:', err);
+          this.snackBar.open('Erro ao cancelar inscrição.', 'Fechar');
+        }
+      });
+    }
   }
 
   formatarStatus(status: string): string {
@@ -127,6 +166,7 @@ export class InscricaoCursoComponent implements OnInit {
       case 'em-andamento': return 'Em Andamento';
       case 'pausado': return 'Pausado';
       case 'concluido': return 'Concluído';
+      case 'cancelado': return 'Cancelado';
       default: return status;
     }
   }

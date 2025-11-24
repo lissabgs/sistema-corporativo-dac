@@ -23,13 +23,8 @@ public class ProgressoController {
 
     @GetMapping("/meus-cursos/{funcionarioId}")
     public ResponseEntity<List<Map<String, Object>>> listarMeusCursos(@PathVariable Long funcionarioId) {
+        List<Progresso> progressos = progressoService.listarInscricoesDoAluno(funcionarioId);
 
-        // Busca tudo que tem o ID do funcionário
-        List<Progresso> progressos = progressoRepository.findAll().stream()
-                .filter(p -> p.getFuncionarioId().equals(funcionarioId))
-                .collect(Collectors.toList());
-
-        // Monta a resposta
         List<Map<String, Object>> response = progressos.stream()
                 .map(p -> {
                     Map<String, Object> map = new HashMap<>();
@@ -44,9 +39,7 @@ public class ProgressoController {
 
         return ResponseEntity.ok(response);
     }
-    // -----------------------------
 
-    // Mantenha os outros métodos existentes abaixo (matricular, etc...)
     @PostMapping("/matricular")
     public ResponseEntity<Progresso> matricularAluno(@RequestBody MatriculaRequestDTO dto) {
         if (dto.getFuncionarioId() == null || dto.getCursoId() == null) {
@@ -60,5 +53,32 @@ public class ProgressoController {
     public ResponseEntity<List<String>> obterCodigosMatriculados(@PathVariable Long funcionarioId) {
         List<String> codigos = progressoService.listarCodigosMatriculados(funcionarioId);
         return ResponseEntity.ok(codigos);
+    }
+
+    // --- ENDPOINTS CORRIGIDOS (Long -> String) ---
+
+    @PutMapping("/iniciar/{id}")
+    public ResponseEntity<Progresso> iniciarCurso(@PathVariable String id) { // String
+        Progresso progresso = progressoService.iniciarCurso(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    @PutMapping("/pausar/{id}")
+    public ResponseEntity<Progresso> pausarCurso(@PathVariable String id) { // String
+        Progresso progresso = progressoService.pausarCurso(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    @PutMapping("/cancelar/{id}")
+    public ResponseEntity<Progresso> cancelarInscricao(@PathVariable String id) { // String
+        Progresso progresso = progressoService.cancelarInscricao(id);
+        return ResponseEntity.ok(progresso);
+    }
+
+    // ---------------------------------------------
+
+    @GetMapping("/funcionario/{funcionarioId}")
+    public ResponseEntity<List<Map<String, Object>>> buscarProgressoFuncionario(@PathVariable Long funcionarioId) {
+        return listarMeusCursos(funcionarioId);
     }
 }

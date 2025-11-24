@@ -9,7 +9,7 @@
       </div>
       <div class="xp-badge">
         <mat-icon>bolt</mat-icon>
-        <span>{{ curso.xp }} XP</span>
+        <span>{{ curso.xpOferecido || curso.xp }} XP</span>
       </div>
     </div>
 
@@ -17,7 +17,7 @@
       <h2 class="curso-titulo">{{ curso.titulo }}</h2>
       
       <p class="instrutor">
-        Instrutor: <strong>{{ curso.instrutor }}</strong>
+        Instrutor: <strong>{{ curso.instrutorNome || curso.instrutor }}</strong>
       </p>
 
       <p class="sobre-text">{{ curso.descricao }}</p>
@@ -25,7 +25,7 @@
       <div class="meta-row">
         <div class="meta-item" title="Duração">
           <mat-icon>schedule</mat-icon>
-          <span>{{ curso.duracao }}h</span>
+          <span>{{ curso.duracaoEstimada || curso.duracao }}</span>
         </div>
 
         <div class="meta-item" title="Avaliação">
@@ -43,6 +43,11 @@
     <div class="acoes">
 
       <ng-container *ngIf="curso.status === 'inscrito'">
+        <button mat-flat-button class="btn-primary btn-full" (click)="iniciar(curso)">
+          <mat-icon>play_circle_outline</mat-icon>
+          Assistir a aula
+        </button>
+
         <button mat-stroked-button color="warn" class="btn-full" (click)="cancelar(curso)">
           Cancelar inscrição
         </button>
@@ -51,7 +56,7 @@
       <ng-container *ngIf="curso.status === 'em-andamento'">
         <button mat-flat-button class="btn-primary btn-full" (click)="assistir(curso)">
           <mat-icon>play_circle_outline</mat-icon>
-          Assistir a aula
+          Continuar aula
         </button>
 
         <div class="btn-row">

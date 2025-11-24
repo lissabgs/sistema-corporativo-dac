@@ -19,4 +19,16 @@ export class ProgressoService {
   listarMeusCursos(funcionarioId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/meus-cursos/${funcionarioId}`);
   }
+
+  iniciarCurso(progressoId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/iniciar/${progressoId}`, {});
+  }
+
+  pausarCurso(progressoId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/pausar/${progressoId}`, {});
+  }
+
+  cancelarInscricao(progressoId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/cancelar/${progressoId}`);
+  }
 }
