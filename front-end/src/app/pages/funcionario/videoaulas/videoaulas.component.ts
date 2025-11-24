@@ -1,138 +1,169 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-// Material Imports
+// --- CORREÇÃO AQUI: Importar MatCardModule ---
+import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// IMPORTANDO SEU MODEL OFICIAL
-import { Curso, Aula } from '../../../models/curso.model'; 
+import { CursoService } from '../../../services/curso.service';
+import { ProgressoService } from '../../../services/progresso.service';
+import { Curso, Aula } from '../../../models/curso.model';
 
 @Component({
   selector: 'app-videoaulas',
   standalone: true,
   imports: [
     CommonModule,
+    MatCardModule, // <--- ADICIONAR AQUI TAMBÉM NA LISTA DE IMPORTS
     MatSidenavModule,
     MatListModule,
     MatIconModule,
     MatExpansionModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSnackBarModule
   ],
   templateUrl: './videoaulas.component.html',
   styleUrls: ['./videoaulas.component.css']
 })
 export class VideoaulasComponent implements OnInit {
-  private sanitizer = inject(DomSanitizer);
 
-  // Usando a tipagem do seu model
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private cursoService = inject(CursoService);
+  private progressoService = inject(ProgressoService);
+  private sanitizer = inject(DomSanitizer);
+  private snackBar = inject(MatSnackBar);
+  private platformId = inject(PLATFORM_ID);
+
   curso: Curso | null = null;
+  progresso: any = null;
   aulaAtual: Aula | null = null;
   urlVideoSegura: SafeResourceUrl | null = null;
+  
+  cursoId: number = 0;
+  funcionarioId: number = 1; 
 
-  ngOnInit() {
-    this.carregarDadosMock();
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const idParam = this.route.snapshot.paramMap.get('id');
+      const userId = localStorage.getItem('usuarioId');
+      
+      if (idParam) {
+        this.cursoId = +idParam;
+        this.funcionarioId = userId ? +userId : 1;
+        this.carregarDados();
+      }
+    }
+  }
+
+  carregarDados() {
+    this.cursoService.obterPorId(this.cursoId).subscribe({
+      next: (curso) => {
+        this.curso = curso;
+        this.buscarProgresso();
+      },
+      error: (err) => {
+        console.error('Erro ao carregar curso:', err);
+        this.snackBar.open('Erro ao carregar o curso.', 'Fechar');
+      }
+    });
+  }
+
+  buscarProgresso() {
+    this.progressoService.obterProgressoEspecifico(this.funcionarioId, this.cursoId.toString()).subscribe({
+      next: (progresso) => {
+        this.progresso = progresso;
+        this.determinarAulaAtual();
+      },
+      error: (err) => {
+        console.error('Progresso não encontrado ou erro:', err);
+        this.determinarAulaAtual(); 
+      }
+    });
+  }
+
+  determinarAulaAtual() {
+    if (!this.curso || !this.curso.modulos) return;
+
+    const aulasConcluidas = new Set(this.progresso?.aulasConcluidas || []);
+    let encontrou = false;
+
+    for (const modulo of this.curso.modulos) {
+      if (!modulo.aulas) continue;
+
+      for (const aula of modulo.aulas) {
+        // Verifica se o ID existe antes de usar
+        if (aula.id && !aulasConcluidas.has(aula.id.toString())) {
+          this.selecionarAula(aula);
+          encontrou = true;
+          break;
+        }
+      }
+      if (encontrou) break;
+    }
+
+    // Se não achou nenhuma pendente, pega a primeira
+    if (!encontrou && this.curso.modulos.length > 0 && this.curso.modulos[0].aulas.length > 0) {
+      this.selecionarAula(this.curso.modulos[0].aulas[0]);
+    }
   }
 
   selecionarAula(aula: Aula) {
     this.aulaAtual = aula;
     this.urlVideoSegura = this.gerarUrlEmbedSegura(aula.urlConteudo);
     
-    // Scroll suave para o topo
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   private gerarUrlEmbedSegura(url: string): SafeResourceUrl {
-    let videoId = '';
-    
     if (!url) return '';
+    let videoId = '';
 
     if (url.includes('v=')) {
-      videoId = url.split('v=')[1];
-      const ampersandPosition = videoId.indexOf('&');
-      if (ampersandPosition !== -1) {
-        videoId = videoId.substring(0, ampersandPosition);
-      }
+      videoId = url.split('v=')[1].split('&')[0];
     } else if (url.includes('youtu.be/')) {
        videoId = url.split('youtu.be/')[1];
+    } else if (url.includes('/embed/')) {
+       videoId = url.split('/embed/')[1];
     }
 
-    // Se não achou ID, retorna vazio ou url original (tratamento de erro simples)
     if (!videoId) return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1`;
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
 
-  // --- MOCK ADAPTADO AO SEU MODEL ---
-  private carregarDadosMock() {
-    // Simulando a resposta do backend exatamente como seu JSON
-    const responseBackend: Curso = {
-      id: 2,
-      codigo: "TES-2345",
-      titulo: "Curso de Teste Financeiro", // Ajustei o titulo para ficar bonito
-      descricao: "Aprenda os conceitos fundamentais...",
-      categoriaId: "Financeiro",
-      duracaoEstimada: "1h",
-      instrutorId: 2,
-      xpOferecido: 343,
-      nivelDificuldade: "Iniciante", // Ajuste conforme seu Enum ou string
-      status: "ATIVO",
-      preRequisitos: [],
-      modulos: [
-        {
-          id: 11,
-          titulo: "Introdução ao Sistema",
-          ordem: 1,
-          aulas: [
-            { 
-              id: 13, 
-              titulo: "Aula 1: Boas vindas", 
-              descricao: "", 
-              urlConteudo: "https://www.youtube.com/watch?v=sDEE_NGBe4s", 
-              ordem: 1, 
-              obrigatorio: true, 
-              xpModulo: 10 
-            },
-            { 
-              id: 14, 
-              titulo: "Aula 2: Configuração Inicial", 
-              descricao: "", 
-              urlConteudo: "https://www.youtube.com/watch?v=sDEE_NGBe4s", 
-              ordem: 2, 
-              obrigatorio: true, 
-              xpModulo: 10 
-            }
-          ]
-        },
-        {
-          id: 12,
-          titulo: "Módulo Avançado",
-          ordem: 2,
-          aulas: [
-            { 
-              id: 15, 
-              titulo: "Aula 3: Análise de Dados", 
-              descricao: "", 
-              urlConteudo: "https://www.youtube.com/watch?v=sDEE_NGBe4s", 
-              ordem: 1, 
-              obrigatorio: true, 
-              xpModulo: 20 
-            }
-          ]
-        }
-      ]
-    };
+  concluirAula() {
+    if (!this.aulaAtual || !this.aulaAtual.id) return;
 
-    this.curso = responseBackend;
+    const aulaIdStr = this.aulaAtual.id.toString();
 
-    // Inicializa a primeira aula
-    if (this.curso.modulos?.length > 0 && this.curso.modulos[0].aulas?.length > 0) {
-      this.selecionarAula(this.curso.modulos[0].aulas[0]);
+    // Simulação visual
+    this.snackBar.open(`Aula concluída!`, 'OK', { duration: 2000 });
+    
+    // Atualiza localmente
+    if (this.progresso) {
+        if (!this.progresso.aulasConcluidas) this.progresso.aulasConcluidas = [];
+        this.progresso.aulasConcluidas.push(aulaIdStr);
     }
+  }
+  
+  voltar() {
+    this.router.navigate(['/meus-cursos']);
+  }
+  
+  // Método auxiliar para o HTML
+  isAulaConcluida(aula: Aula): boolean {
+    if (!aula.id || !this.progresso?.aulasConcluidas) return false;
+    return this.progresso.aulasConcluidas.includes(aula.id.toString());
   }
 }
