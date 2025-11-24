@@ -19,4 +19,12 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
             @Param("departamento") String departamento,
             @Param("niveis") List<String> niveis
     );
+
+    @Query("SELECT c FROM Curso c WHERE c.status = :status AND c.categoriaId = :departamento AND c.nivelDificuldade IN :niveis AND c.codigo NOT IN :matriculados")
+    List<Curso> buscarCursosDisponiveisFiltrados(
+            @Param("status") StatusCurso status,
+            @Param("departamento") String departamento,
+            @Param("niveis") List<String> niveis,
+            @Param("matriculados") List<String> matriculados
+    );
 }

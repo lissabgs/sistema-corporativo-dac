@@ -1,0 +1,130 @@
+<div class="dashboard-wrapper">
+
+  <div class="page-header">
+    <h1>Painel de Avaliações</h1>
+    <p>Visão geral do seu desempenho e tarefas pendentes.</p>
+  </div>
+
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Carregando dados...</span>
+  </div>
+
+  <div *ngIf="!loading" class="dashboard-content fade-in">
+
+    <div class="summary-cards-container">
+      <mat-card class="metric-card accent-pendente">
+        <div class="metric-icon">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="metric-content">
+          <span class="metric-value">{{ pendentes.length }}</span>
+          <span class="metric-label">Pendentes</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card accent-aguardando">
+        <div class="metric-icon">
+          <mat-icon>history_edu</mat-icon>
+        </div>
+        <div class="metric-content">
+          <span class="metric-value">{{ aguardando.length }}</span>
+          <span class="metric-label">Em Correção</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card accent-concluida">
+        <div class="metric-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="metric-content">
+          <span class="metric-value">{{ concluidas.length }}</span>
+          <span class="metric-label">Concluídas</span>
+        </div>
+      </mat-card>
+    </div>
+
+
+    <mat-card class="details-container-card">
+      <mat-tab-group mat-stretch-tabs="false" animationDuration="300ms">
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon text-pendente">pending_actions</mat-icon>
+            Pendentes
+          </ng-template>
+          <div class="tab-body">
+            <mat-nav-list *ngIf="pendentes.length > 0; else emptyPendentes">
+              <mat-list-item *ngFor="let a of pendentes" class="item-hover">
+                <h3 matListItemTitle>{{ a.titulo }}</h3>
+                <p matListItemLine class="sub-text">Código: {{ a.codigo }}</p>
+                <button mat-flat-button color="primary" matListItemMeta (click)="iniciarAvaliacao(a.id)">
+                  <mat-icon>play_arrow</mat-icon> Realizar
+                </button>
+              </mat-list-item>
+            </mat-nav-list>
+
+            <ng-template #emptyPendentes>
+              <div class="empty-state">
+                <mat-icon class="text-pendente">done_all</mat-icon>
+                <p>Tudo em dia! Nenhuma avaliação pendente.</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon text-aguardando">history_edu</mat-icon>
+            Aguardando
+          </ng-template>
+          <div class="tab-body">
+            <mat-list *ngIf="aguardando.length > 0; else emptyAguardando">
+              <mat-list-item *ngFor="let a of aguardando">
+                <h3 matListItemTitle>{{ a.titulo }}</h3>
+                <p matListItemLine class="sub-text">Enviado em: {{ a.dataEnvio | date:'dd/MM/yyyy HH:mm' }}</p>
+                <mat-chip highlighted class="chip-aguardo" matListItemMeta>Aguardando</mat-chip>
+              </mat-list-item>
+            </mat-list>
+
+            <ng-template #emptyAguardando>
+              <div class="empty-state">
+                <mat-icon class="text-aguardando">inbox</mat-icon>
+                <p>Nenhuma avaliação aguardando correção.</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon text-concluida">check_circle</mat-icon>
+            Concluídas
+          </ng-template>
+          <div class="tab-body">
+            <mat-list *ngIf="concluidas.length > 0; else emptyConcluidas">
+              <mat-list-item *ngFor="let a of concluidas">
+                <mat-icon matListItemIcon class="text-concluida">check</mat-icon>
+                <h3 matListItemTitle>{{ a.titulo }}</h3>
+                <p matListItemLine class="sub-text">Concluído em: {{ a.dataConclusao | date:'dd/MM/yyyy' }}</p>
+                <div matListItemMeta class="nota-badge">
+                  Nota: {{ a.nota }}
+                </div>
+              </mat-list-item>
+            </mat-list>
+
+            <ng-template #emptyConcluidas>
+              <div class="empty-state">
+                <mat-icon class="text-concluida">assignment_turned_in</mat-icon>
+                <p>Seu histórico de conclusões aparecerá aqui.</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+
+  </div> </div>

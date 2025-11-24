@@ -15,7 +15,7 @@
 
 .form-header h2 {
   margin: 0;
-  color: #0d47a1; /* Azul Escuro */
+  color: #002F54; /* Azul Escuro */
   font-size: 22px;
   font-weight: 500;
 }
@@ -40,7 +40,7 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
-  border-left: 4px solid #0d47a1;
+  border-left: 4px solid #002F54;
   padding-left: 10px;
 }
 
@@ -190,7 +190,7 @@
 
 .discursiva-info {
   background-color: #e3f2fd;
-  color: #0d47a1;
+  color: #002F54;
   padding: 15px;
   border-radius: 4px;
   display: flex;

@@ -1,0 +1,179 @@
+/* Container Geral */
+.player-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #f4f6f8;
+    min-height: 100vh;
+}
+
+/* Cabeçalho */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.titulo-principal {
+    color: #002F54;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
+}
+
+.xp-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #eef2ff;
+    color: #f59e0b;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* --- GRID LAYOUT --- */
+.content-grid {
+    display: grid;
+    gap: 24px;
+    /* Mobile: 1 coluna */
+    grid-template-columns: 1fr;
+}
+
+/* PC/Tablet: Sidebar fixa à direita, vídeo ocupa o resto */
+@media (min-width: 900px) {
+    .content-grid {
+        grid-template-columns: 1fr 350px; 
+        align-items: start;
+    }
+}
+
+/* --- ÁREA DO VÍDEO (Onde estava o problema) --- */
+.main-content {
+    display: flex;
+    justify-content: center; /* Centraliza a carta do vídeo */
+}
+
+.video-card {
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    overflow: hidden;
+    padding: 0 !important; /* Remove padding padrão do mat-card */
+    
+    /* AQUI ESTÁ A MÁGICA: Força o tamanho máximo do cartão inteiro */
+    max-width: 800px; 
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* Mantém a proporção 16:9 */
+    height: 0;
+    background-color: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Informações da Aula (Texto abaixo do vídeo) */
+.aula-info {
+    padding: 20px 24px;
+}
+
+.aula-titulo {
+    font-size: 18px;
+    color: #1a202c;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.aula-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #edf2f7;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    /* Garante que a sidebar não estique */
+    width: 100%; 
+}
+
+.playlist-sidebar {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    
+    /* Sticky para acompanhar o scroll */
+    position: sticky; 
+    top: 24px;
+    
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+}
+
+/* Títulos e Scrollbars da Sidebar */
+.sidebar-title {
+    padding: 16px 20px;
+    margin: 0;
+    font-size: 16px;
+    color: #002F54;
+    border-bottom: 1px solid #edf2f7;
+    background-color: #fff;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.playlist-sidebar::-webkit-scrollbar { width: 6px; }
+.playlist-sidebar::-webkit-scrollbar-thumb { background-color: #cbd5e0; border-radius: 4px; }
+
+/* Ajustes do Acordeão */
+.modulo-panel.mat-expansion-panel {
+    box-shadow: none !important;
+    border-bottom: 1px solid #f1f5f9;
+    border-radius: 0 !important;
+}
+
+.modulo-header {
+    height: auto !important;
+    padding: 12px 16px !important;
+    background-color: #f8fafc;
+}
+
+.modulo-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.aula-item {
+    font-size: 13px;
+    border-left: 3px solid transparent;
+}
+
+.aula-item mat-icon {
+    font-size: 18px;
+    margin-right: 8px;
+    color: #94a3b8;
+}
+
+.aula-item.active-aula {
+    background-color: #eef2ff !important;
+    border-left-color: #3b82f6;
+}
+
+.aula-item.active-aula mat-icon { color: #3b82f6; }
+.aula-item.completed-aula mat-icon { color: #10b981; }

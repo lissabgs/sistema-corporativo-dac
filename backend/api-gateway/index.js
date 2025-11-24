@@ -84,12 +84,20 @@ app.use('/api/cursos', authMiddleware, createProxyMiddleware({
 }));
 
 // Avaliações (ADICIONADO AQUI)
-app.use('/api/avaliacoes', authMiddleware, createProxyMiddleware({
+// Avaliações (CORRIGIDO)
+app.use('/api/avaliacoes', (req, res, next) => {
+    // Permite que a listagem de cursos disponíveis passe sem o authMiddleware se for GET
+    // O req.path aqui é relativo, então verifica apenas '/cursos-disponiveis'
+    if (req.path === '/cursos-disponiveis' && req.method === 'GET') {
+        return next();
+    }
+    // Para todas as outras rotas (criar, deletar, etc), exige autenticação
+    return authMiddleware(req, res, next);
+}, createProxyMiddleware({
     target: MS_AVALIACOES,
     changeOrigin: true,
     onProxyReq: fixRequestBody
 }));
-
 // Progresso
 app.use('/api/progresso', authMiddleware, createProxyMiddleware({
     target: MS_PROGRESSO,

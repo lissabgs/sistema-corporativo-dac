@@ -31,12 +31,16 @@ public class Curso {
 
     private String categoriaId;
     private Long instrutorId;
+
+    @Transient
+    private String instrutorNome;
+
     private String duracaoEstimada;
 
     private int xpOferecido;
 
-    private int xpAvaliacao; // 25%
-    private int xpConclusao; // 50%
+    private int xpAvaliacao;
+    private int xpConclusao;
 
     private String nivelDificuldade;
 

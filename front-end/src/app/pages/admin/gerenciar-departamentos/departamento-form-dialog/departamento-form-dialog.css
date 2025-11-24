@@ -14,7 +14,7 @@
 
 .form-header h2 {
   margin: 0;
-  color: #0d47a1; /* Azul Escuro */
+  color: #002F54; /* Azul Escuro */
   font-size: 22px;
   font-weight: 500;
 }
@@ -38,7 +38,7 @@
   font-weight: bold;
   color: #333;
   margin-bottom: 15px;
-  border-left: 4px solid #0d47a1;
+  border-left: 4px solid #002F54;
   padding-left: 10px;
   text-transform: uppercase;
 }
@@ -61,4 +61,9 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.btn-salvar {
+  background-color: #002F54;
+  color:#fff;
 }
