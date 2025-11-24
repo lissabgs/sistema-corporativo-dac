@@ -16,6 +16,7 @@ import { GerenciarAvaliacoesComponent } from './pages/instrutor/gerenciar-avalia
 import { MinhasAvaliacoesComponent } from './pages/funcionario/minhas-avaliacoes/minhas-avaliacoes.component';
 import { RealizarAvaliacaoComponent } from './pages/funcionario/avaliacao/avaliacao.component';
 import { VideoaulasComponent } from './pages/funcionario/videoaulas/videoaulas.component';
+import { AcompanharTurmaComponent } from './pages/instrutor/acompanhar-turmas/acompanhar-turmas.component';
 
 import { roleGuard } from './guards/auth.guard';
 
@@ -57,7 +58,6 @@ export const routes: Routes = [
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
   },  
   { 
-    // CORRIGIDO AQUI: Adicionado /:id para receber o parâmetro
     path: 'videoaulas/:id',
     component: VideoaulasComponent,
     canActivate: [roleGuard(APENAS_FUNCIONARIO)]
@@ -84,6 +84,11 @@ export const routes: Routes = [
     component: GerenciarAvaliacoesComponent,
     canActivate: [roleGuard(APENAS_INSTRUTOR)]
   },
+   {
+    path: 'acompanhar-turmas',
+    component: AcompanharTurmaComponent,
+    canActivate: [roleGuard(APENAS_INSTRUTOR)]
+  },
 
   // --- ROTAS DO ADMIN ---
   {
@@ -106,4 +111,5 @@ export const routes: Routes = [
     component: GerenciarDepartamentosComponent,
     canActivate: [roleGuard(APENAS_ADMIN)] 
   },
+
 ];
