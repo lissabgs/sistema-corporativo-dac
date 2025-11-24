@@ -1,16 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Importar SnackBar
-
-// Importar o Serviço
-import { ProgressoService } from '../../../services/progresso.service';
 
 @Component({
   selector: 'app-inscricao-curso',
@@ -22,82 +17,62 @@ import { ProgressoService } from '../../../services/progresso.service';
     MatIconModule,
     MatChipsModule,
     MatListModule,
-    MatDividerModule,
-    MatSnackBarModule
+    MatDividerModule
   ],
   templateUrl: './inscricao-curso.component.html',
   styleUrls: ['./inscricao-curso.component.css']
 })
 export class InscricaoCursoComponent {
 
-  curso: any;
-  atendeRequisitos = false;
-  inscrito = false;
-  loading = false; // Para desabilitar botão enquanto carrega
-  
-  trilhaSugerida = [
-    { titulo: 'Lógica de Programação', status: 'Pendente' },
-    { titulo: 'Fundamentos de Java', status: 'Pendente' }
+  cursos = [
+    {
+      titulo: "Angular Material Essentials",
+      descricao: "Aprenda componentes do Angular Material na prática.",
+      categoria: "Frontend",
+      dificuldade: "Intermediário",
+      xp: 120,
+      duracao: 8,
+      instrutor: "Maria Oliveira",
+      avaliacaoMedia: null,
+      status: "inscrito"
+    },
+    {
+      titulo: "Java Orientado a Objetos",
+      descricao: "Domine encapsulamento, herança e polimorfismo.",
+      categoria: "Backend",
+      dificuldade: "Avançado",
+      xp: 160,
+      duracao: 12,
+      instrutor: "Carlos Mendes",
+      avaliacaoMedia: null,
+      status: "em-andamento"
+    },
+    {
+      titulo: "Git & GitHub Avançado",
+      descricao: "Fluxos, PRs, branches e automações.",
+      categoria: "Dev Tools",
+      dificuldade: "Intermediário",
+      xp: 110,
+      duracao: 6,
+      instrutor: "Ana Paula",
+      avaliacaoMedia: null,
+      status: "pausado"
+    }
   ];
 
-  constructor(
-    private router: Router, 
-    private location: Location,
-    private progressoService: ProgressoService, // <--- Injetar Service
-    private snackBar: MatSnackBar
-  ) {
-    const nav = this.router.getCurrentNavigation();
-    if (nav?.extras.state && nav.extras.state['curso']) {
-      this.curso = nav.extras.state['curso'];
-    } else {
-      // Mock de fallback
-      this.curso = {
-        id: 0, 
-        titulo: "Curso Não Encontrado",
-        descricao: "Volte ao catálogo.",
-        xp: 0,
-        duracao: 0,
-        instrutor: "-",
-        dificuldade: "-",
-        prerequisitosAtendidos: false
-      };
+  cancelar(curso: any) {
+    const confirmar = confirm(`Deseja realmente cancelar sua inscrição no curso "${curso.titulo}"?`);
+
+    if (confirmar) {
+      this.cursos = this.cursos.filter(c => c !== curso);
     }
-    // Se tiver a flag ou se não tiver requisitos, libera
-    this.atendeRequisitos = this.curso.prerequisitosAtendidos !== false;
   }
 
-  inscrever() {
-    const usuarioId = localStorage.getItem('usuarioId');
-
-    if (!usuarioId) {
-      this.snackBar.open('Erro: Usuário não identificado.', 'Fechar');
-      return;
-    }
-
-    this.loading = true;
-
-    // --- CHAMADA REAL AO BACKEND ---
-    this.progressoService.matricular(Number(usuarioId), this.curso.id.toString())
-      .subscribe({
-        next: (res) => {
-          console.log('Matrícula realizada:', res);
-          this.inscrito = true;
-          this.loading = false;
-          
-          // Redireciona após 1.5s
-          setTimeout(() => {
-            this.router.navigate(['/catalogo-cursos']); // Volta pro catálogo pra ver o botão mudar
-          }, 1500);
-        },
-        error: (err) => {
-          console.error('Erro ao matricular:', err);
-          this.loading = false;
-          this.snackBar.open('Erro ao realizar inscrição. Tente novamente.', 'Fechar');
-        }
-      });
+  pausar(curso: any) {
+    curso.status = 'pausado';
   }
 
-  voltar() {
-    this.location.back();
+  retomar(curso: any) {
+    curso.status = 'em-andamento';
   }
 }

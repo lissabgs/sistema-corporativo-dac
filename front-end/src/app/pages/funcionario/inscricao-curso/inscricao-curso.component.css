@@ -1,119 +1,136 @@
-.inscricao-container {
-  padding: 24px;
-  max-width: 900px;
-  margin: 0 auto;
+/* GRID DE CARDS */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+  padding: 20px;
 }
 
-.btn-voltar {
-  margin-bottom: 16px;
-  color: #666;
-}
-
-.detalhe-card {
+/* CARD */
+.mini-card {
+  background: #fff;
   border-radius: 16px;
-  padding: 0;
-  overflow: hidden;
-}
-
-/* Header */
-.card-header {
-  padding: 24px;
-  background: linear-gradient(to right, #f5f7fa, #e4e8f0);
+  padding: 22px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
 }
 
-.header-content h1 {
-  margin: 12px 0 8px 0;
-  font-size: 28px;
-  color: #1f2937;
+/* TAGS */
+.tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
+.tag {
+  background: #eef2ff;
+  padding: 4px 12px;
+  border-radius: 14px;
+  color: #002F54;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* TÍTULO */
+.curso-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* INSTRUTOR */
 .instrutor {
-  color: #555;
-  margin: 0;
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 14px;
 }
 
-.xp-badge {
-  background-color: #fff;
-  padding: 8px 16px;
-  border-radius: 24px;
+/* XP */
+.xp-row {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-weight: 700;
-  color: #f59e0b; /* Cor dourada/XP */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Content */
-.card-content {
-  padding: 24px;
-}
-
-.card-content h3 {
-  font-size: 18px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
-.card-content p {
-  color: #4b5563;
-  line-height: 1.6;
-  margin-bottom: 24px;
+.xp-row mat-icon {
+  color: #002F54;
 }
 
-.meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
+/* SOBRE */
+.sobre-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.sobre-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 18px;
+}
+
+/* METADADOS */
+.meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #374151;
-  font-weight: 500;
 }
 
-/* Avisos e Sucesso */
-.aviso-box {
-  display: flex;
-  gap: 16px;
-  background-color: #fef2f2;
-  padding: 16px;
-  border-radius: 8px;
-  border-left: 4px solid #ef4444;
-  margin-bottom: 16px;
+.meta-item mat-icon {
+  color: #002F54;
 }
 
-.aviso-box h4 { margin: 0; color: #991b1b; }
-.aviso-box p { margin: 4px 0 0 0; color: #b91c1c; }
-
-.sucesso-box {
-  background-color: #ecfdf5;
-  color: #047857;
-  padding: 16px;
-  border-radius: 8px;
+/* AÇÕES */
+.acoes {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
+  margin-top: 20px;
+}
+
+/* BOTÕES COMPRIDOS */
+.botao-cheio {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 600;
-  margin-top: 16px;
-  border: 1px solid #10b981;
 }
 
-/* Actions */
-.card-actions {
-  padding: 16px 24px;
-  background-color: #fafafa;
+/* BOTÃO VERMELHO */
+.btn-vermelho {
+  background-color: #d62d2d !important;
+  color: #fff !important;
+  border: none !important;
 }
 
-button[mat-raised-button] {
-  padding: 0 32px;
-  height: 48px;
-  font-size: 16px;
+.btn-vermelho:hover {
+  background-color: #b71f1f !important;
+}
+
+/* BOTÃO VERDE */
+.btn-verde {
+  background-color: #1f8a40 !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.btn-verde:hover {
+  background-color: #176b31 !important;
+}
+
+.btn-amarelo {
+  background-color: #d3a014 !important;
+  color: #fff !important;
+  border: none !important;
 }

@@ -1,87 +1,92 @@
-<div class="inscricao-container">
-  <button mat-button (click)="voltar()" class="btn-voltar">
-    <mat-icon>arrow_back</mat-icon> Voltar ao Catálogo
-  </button>
+<div class="cards-container">
 
-  <mat-card class="detalhe-card">
-    <!-- Cabeçalho -->
-    <div class="card-header">
-      <div class="header-content">
-        <mat-chip-set>
-          <mat-chip color="accent" selected>{{ curso.categoria || 'Geral' }}</mat-chip>
-          <mat-chip>{{ curso.dificuldade }}</mat-chip>
-        </mat-chip-set>
-        <h1>{{ curso.titulo }}</h1>
-        <p class="instrutor">Instrutor: <strong>{{ curso.instrutor }}</strong></p>
+  <div class="mini-card" *ngFor="let curso of cursos">
+
+    <!-- TAGS SUPERIORES -->
+    <div class="tags">
+      <span class="tag">{{ curso.categoria }}</span>
+      <span class="tag">{{ curso.dificuldade }}</span>
+    </div>
+
+    <!-- TÍTULO -->
+    <h2 class="curso-titulo">{{ curso.titulo }}</h2>
+
+    <!-- INSTRUTOR -->
+    <p class="instrutor">
+      Instrutor: <strong>{{ curso.instrutor }}</strong>
+    </p>
+
+    <!-- XP -->
+    <div class="xp-row">
+      <mat-icon>bolt</mat-icon>
+      <span>{{ curso.xp }} XP</span>
+    </div>
+
+    <!-- SOBRE -->
+    <h3 class="sobre-title">Sobre o curso</h3>
+    <p class="sobre-text">{{ curso.descricao }}</p>
+
+    <!-- METADADOS -->
+    <div class="meta-row">
+      <div class="meta-item">
+        <mat-icon>timer</mat-icon>
+        <span>Duração: {{ curso.duracao }}h</span>
       </div>
-      <div class="xp-badge">
-        <mat-icon>bolt</mat-icon>
-        <span>{{ curso.xp }} XP</span>
+
+      <div class="meta-item">
+        <mat-icon>star</mat-icon>
+        <span>Avaliação: {{ curso.avaliacaoMedia || 'Nova' }}</span>
+      </div>
+
+      <div class="meta-item">
+        <mat-icon>school</mat-icon>
+        <span>Status: {{ curso.status }}</span>
       </div>
     </div>
 
-    <mat-divider></mat-divider>
+    <!-- AÇÕES DOS BOTÕES -->
+    <div class="acoes">
 
-    <mat-card-content class="card-content">
-      <h3>Sobre o curso</h3>
-      <p>{{ curso.descricao }}</p>
-
-      <div class="meta-grid">
-        <div class="meta-item">
-          <mat-icon>timer</mat-icon>
-          <span>Duração: {{ curso.duracao }}h</span>
-        </div>
-        <div class="meta-item">
-          <mat-icon>star</mat-icon>
-          <span>Avaliação: {{ curso.avaliacaoMedia || 'Nova' }}</span>
-        </div>
-        <div class="meta-item">
-          <mat-icon>school</mat-icon>
-          <span>Certificado Digital</span>
-        </div>
-      </div>
-
-      <!-- BLOCO: PRÉ-REQUISITOS (R05) -->
-      <div *ngIf="!atendeRequisitos" class="aviso-requisitos">
-        <div class="aviso-box">
-          <mat-icon color="warn">block</mat-icon>
-          <div>
-            <h4>Pré-requisitos não atendidos</h4>
-            <p>Para realizar este curso, você precisa completar a seguinte trilha sugerida:</p>
-          </div>
-        </div>
-
-        <mat-list>
-          <mat-list-item *ngFor="let item of trilhaSugerida">
-            <mat-icon matListItemIcon>lock</mat-icon>
-            <h4 matListItemTitle>{{ item.titulo }}</h4>
-            <p matListItemLine>{{ item.status }}</p>
-          </mat-list-item>
-        </mat-list>
-      </div>
-
-      <!-- MENSAGEM DE SUCESSO -->
-      <div *ngIf="inscrito" class="sucesso-box">
-        <mat-icon>check_circle</mat-icon>
-        <span>Inscrição confirmada! Redirecionando para seus cursos...</span>
-      </div>
-
-    </mat-card-content>
-
-    <mat-divider></mat-divider>
-
-    <!-- AÇÕES -->
-    <mat-card-actions align="end" class="card-actions">
-      <button mat-stroked-button (click)="voltar()" *ngIf="!inscrito">Cancelar</button>
-      
-      <button 
-        mat-raised-button 
-        color="primary" 
-        (click)="inscrever()" 
-        [disabled]="!atendeRequisitos || inscrito">
-        {{ inscrito ? 'Inscrito' : 'Confirmar Inscrição' }}
+      <!-- STATUS: INSCRITO -->
+      <button *ngIf="curso.status === 'inscrito'"
+              mat-raised-button
+              class="botao-cheio btn-vermelho"
+              (click)="cancelar(curso)">
+        Cancelar inscrição
       </button>
-    </mat-card-actions>
 
-  </mat-card>
+      <!-- STATUS: EM ANDAMENTO -->
+      <ng-container *ngIf="curso.status === 'em-andamento'">
+        <button mat-raised-button 
+                class="botao-cheio btn-amarelo"
+                (click)="pausar(curso)">
+          Pausar curso
+        </button>
+
+        <button mat-raised-button 
+                class="botao-cheio btn-vermelho"
+                (click)="cancelar(curso)">
+          Cancelar inscrição
+        </button>
+      </ng-container>
+
+      <!-- STATUS: PAUSADO -->
+      <ng-container *ngIf="curso.status === 'pausado'">
+        <button mat-raised-button 
+                class="botao-cheio btn-verde"
+                (click)="retomar(curso)">
+          Retomar curso
+        </button>
+
+        <button mat-raised-button 
+                class="botao-cheio btn-vermelho"
+                (click)="cancelar(curso)">
+          Cancelar inscrição
+        </button>
+      </ng-container>
+
+    </div>
+
+  </div>
+
 </div>
