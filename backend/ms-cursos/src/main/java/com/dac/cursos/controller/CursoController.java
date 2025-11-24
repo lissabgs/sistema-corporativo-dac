@@ -64,7 +64,6 @@ public class CursoController {
         return ResponseEntity.ok(cursos);
     }
 
-    // NOVO: DELETE Lógico (Muda status para INATIVO)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarCurso(@PathVariable Long id) {
         cursoService.inativarCurso(id);

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.time.LocalDateTime; // Importe para data
 import java.util.Optional;
+import java.util.stream.Collectors; // <--- IMPORT ADICIONADO
 
 @Service
 public class ProgressoService {
@@ -65,7 +66,7 @@ public class ProgressoService {
             rabbitTemplate.convertAndSend(RabbitMQConfig.XP_QUEUE_NAME, message);
         }
     }
-    
+
     public List<Progresso> listarInscricoesDoAluno(Long funcionarioId) {
         return progressoRepository.findByFuncionarioId(funcionarioId);
     }
