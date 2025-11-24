@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProgressoService {
-  // Ajuste a URL conforme o seu Gateway ou API direta
+  // Aponta para o Gateway na porta 8080
   private apiUrl = 'http://localhost:8080/api/progresso'; 
 
   constructor(private http: HttpClient) { }
@@ -15,8 +15,8 @@ export class ProgressoService {
     return this.http.post(`${this.apiUrl}/matricular`, { funcionarioId, cursoId });
   }
 
-  // CORREÇÃO: A rota no controller é /funcionario/{id}
+  // ATUALIZADO: Agora chama a rota /meus-cursos
   listarMeusCursos(funcionarioId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/funcionario/${funcionarioId}`);
+    return this.http.get<any[]>(`${this.apiUrl}/meus-cursos/${funcionarioId}`);
   }
 }

@@ -3,7 +3,7 @@ package com.dac.progresso.controller;
 import com.dac.progresso.model.Progresso;
 import com.dac.progresso.dto.MatriculaRequestDTO;
 import com.dac.progresso.repository.ProgressoRepository;
-import com.dac.progresso.service.ProgressoService; // <--- 1. Importar o Service
+import com.dac.progresso.service.ProgressoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +21,19 @@ public class ProgressoController {
     @Autowired
     private ProgressoService progressoService;
 
-    @GetMapping("/funcionario/{funcionarioId}")
-    public ResponseEntity<List<Map<String, Object>>> buscarProgressoFuncionario(
-            @PathVariable Long funcionarioId) {
+    @GetMapping("/meus-cursos/{funcionarioId}")
+    public ResponseEntity<List<Map<String, Object>>> listarMeusCursos(@PathVariable Long funcionarioId) {
 
+        // Busca tudo que tem o ID do funcionário
         List<Progresso> progressos = progressoRepository.findAll().stream()
                 .filter(p -> p.getFuncionarioId().equals(funcionarioId))
                 .collect(Collectors.toList());
 
+        // Monta a resposta
         List<Map<String, Object>> response = progressos.stream()
                 .map(p -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("id", p.getId()); // É bom retornar o ID do registro
+                    map.put("id", p.getId());
                     map.put("funcionarioId", p.getFuncionarioId());
                     map.put("cursoId", p.getCursoId());
                     map.put("status", p.getStatus());
@@ -43,14 +44,14 @@ public class ProgressoController {
 
         return ResponseEntity.ok(response);
     }
+    // -----------------------------
 
+    // Mantenha os outros métodos existentes abaixo (matricular, etc...)
     @PostMapping("/matricular")
     public ResponseEntity<Progresso> matricularAluno(@RequestBody MatriculaRequestDTO dto) {
-        // Validação simples
         if (dto.getFuncionarioId() == null || dto.getCursoId() == null) {
             return ResponseEntity.badRequest().build();
         }
-
         Progresso novoProgresso = progressoService.matricularAluno(dto.getFuncionarioId(), dto.getCursoId());
         return ResponseEntity.ok(novoProgresso);
     }

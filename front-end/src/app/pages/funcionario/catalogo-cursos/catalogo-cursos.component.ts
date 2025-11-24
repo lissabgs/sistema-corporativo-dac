@@ -145,7 +145,14 @@ export class CatalogoCursosComponent implements OnInit {
   }
 
   realizarMatricula(curso: Curso) {
-    this.progressoService.matricular(this.usuario.id, curso.codigo).subscribe({
+    const cursoIdParaSalvar = curso.id ? curso.id.toString() : '';
+
+    if (!cursoIdParaSalvar) {
+      this.snackBar.open('Erro: Curso sem ID válido.', 'Fechar');
+      return;
+    }
+
+    this.progressoService.matricular(this.usuario.id, cursoIdParaSalvar).subscribe({
       next: () => {
         this.snackBar.open('Matrícula realizada com sucesso!', 'Ir para Meus Cursos', { 
           duration: 5000
@@ -157,7 +164,7 @@ export class CatalogoCursosComponent implements OnInit {
       error: (err) => {
         console.error(err);
         if (err.status === 400) {
-           this.snackBar.open('Não foi possível matricular. Verifique os dados.', 'Fechar');
+           this.snackBar.open('Não foi possível matricular. Verifique se já possui este curso.', 'Fechar');
         } else {
            this.snackBar.open('Erro ao realizar matrícula.', 'Fechar');
         }
