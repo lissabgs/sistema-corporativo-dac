@@ -1,32 +1,29 @@
 package com.dac.autenticacao.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDateTime;
 
-@Document(collection = "usuarios")
+@Document(collection = "usuarios") // Mudou de @Entity para @Document
 public class AuthUser {
 
     @Id
-    private String id;
+    private String id; // MongoDB usa String (ObjectId) por padrão
 
-    @Indexed(unique = true)
+    private Long usuarioId; // ID vindo do ms-usuarios (Postgres) para vínculo
     private String email;
-
     private String senhaHash;
-
-    private String tipoUsuario; // FUNCIONARIO, INSTRUTOR, ADMINISTRADOR
-
-    private Long usuarioId; // Referência ao ID no ms-usuarios
-
+    private String tipoUsuario;
     private Boolean status = true;
 
-    private LocalDateTime dataCriacao;
+    // Construtor vazio
+    public AuthUser() {}
 
     // Getters e Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public Long getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -37,12 +34,6 @@ public class AuthUser {
     public String getTipoUsuario() { return tipoUsuario; }
     public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
 
-    public Long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
-
     public Boolean getStatus() { return status; }
     public void setStatus(Boolean status) { this.status = status; }
-
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
 }

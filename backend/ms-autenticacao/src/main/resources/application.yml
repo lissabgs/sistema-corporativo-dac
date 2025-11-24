@@ -5,23 +5,17 @@ spring:
   application:
     name: ms-autenticacao
 
-  # REMOVER configuração do PostgreSQL
-  # ADICIONAR configuração do MongoDB
+  # Conexão MongoDB
   data:
     mongodb:
       uri: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: arthurdiasbaptista@gmail.com
-    password: flrw elqg tobs chjt
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  # Conexão RabbitMQ
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: dac
+    password: dac
 
 jwt:
   secret: "bWluaGFTZW5oYVN1cGVyU2VjcmV0YURlMzJCeXRlcyEh"

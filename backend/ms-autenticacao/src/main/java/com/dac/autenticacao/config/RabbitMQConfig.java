@@ -13,11 +13,15 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue emailQueue() {
+        // 'durable = true' garante que a fila sobreviva se o RabbitMQ reiniciar
         return new Queue(EMAIL_QUEUE, true);
     }
 
     @Bean
     public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+        // Isso ajuda a evitar erros se o pacote da classe DTO for diferente entre os microsserviços
+        converter.setCreateMessageIds(true);
+        return converter;
     }
 }
