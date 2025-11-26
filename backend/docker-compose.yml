@@ -1,51 +1,43 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:15
-    container_name: backend-postgres-1
+    container_name: postgres
     environment:
+      POSTGRES_DB: dacdb
       POSTGRES_USER: dac
       POSTGRES_PASSWORD: dac
-      POSTGRES_DB: dacdb
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - dac-network
 
   mongo:
-    image: mongo:7
+    image: mongo:latest
     container_name: mongo
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: dac
       MONGO_INITDB_ROOT_PASSWORD: dac
-      MONGO_INITDB_DATABASE: db_notificacoes # O Mongo cria esta DB, mas os serviços podem criar outras
+      MONGO_INITDB_DATABASE: db_autenticacao
     volumes:
-      - mongodata:/data/db
+      - mongo_data:/data/db
     networks:
       - dac-network
 
-  redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
-    networks:
-      - dac-network
-
-  # NOVO SERVIÇO: RABBITMQ
   rabbitmq:
-    image: rabbitmq:3.13-management-alpine
+    image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # Porta do AMQP (para os serviços Spring)
-      - "15672:15672" # Porta da Interface Web de Gestão
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: dac
       RABBITMQ_DEFAULT_PASS: dac
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq/ # NOVO VOLUME
     networks:
       - dac-network
 
@@ -56,12 +48,6 @@ services:
     depends_on:
       - ms-autenticacao
       - ms-usuarios
-      - ms-cursos
-      - ms-avaliacoes
-      - ms-progresso
-      - ms-gamificacao
-      - ms-notificacoes
-      - rabbitmq # ADICIONADO
     networks:
       - dac-network
 
@@ -70,15 +56,14 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
-      SPRING_DATASOURCE_USERNAME: dac
-      SPRING_DATASOURCE_PASSWORD: dac
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      MAIL_USERNAME: arthurdiasbaptista@gmail.com
-      MAIL_PASSWORD: flrw elqg tobs chjt
+      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_autenticacao?authSource=admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: dac
+      SPRING_RABBITMQ_PASSWORD: dac
     depends_on:
-      - postgres
+      - mongo
+      - rabbitmq
     networks:
       - dac-network
 
@@ -90,15 +75,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
       SPRING_DATASOURCE_USERNAME: dac
       SPRING_DATASOURCE_PASSWORD: dac
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
-      - ms-autenticacao
     networks:
       - dac-network
 
-  # 📚 Microsserviço de Cursos (CORRIGIDO)
   ms-cursos:
     build: ./ms-cursos
     ports:
@@ -107,20 +88,16 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
       SPRING_DATASOURCE_USERNAME: dac
       SPRING_DATASOURCE_PASSWORD: dac
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - postgres
     networks:
       - dac-network
 
-  # 📝 Microsserviço de Avaliações
   ms-avaliacoes:
     build: ./ms-avaliacoes
     ports:
       - "8084:8084"
     environment:
-      # (Este ainda usa Postgres, o que está correto por agora)
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
       SPRING_DATASOURCE_USERNAME: dac
       SPRING_DATASOURCE_PASSWORD: dac
@@ -131,45 +108,29 @@ services:
     networks:
       - dac-network
 
-  # 📈 Microsserviço de Progresso (CORRIGIDO)
   ms-progresso:
     build: ./ms-progresso
     ports:
       - "8085:8085"
     environment:
-      # Aponta para o MongoDB
-      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_progresso?authSource=admin
-      # Configuração do RabbitMQ
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: dac
-      SPRING_RABBITMQ_PASSWORD: dac
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
     depends_on:
-      - mongo # MUDADO
-      - rabbitmq # ADICIONADO
+      - postgres
     networks:
       - dac-network
 
-  # 🏆 Microsserviço de Gamificação (CORRIGIDO)
   ms-gamificacao:
     build: ./ms-gamificacao
     ports:
       - "8086:8086"
     environment:
-      # Aponta para o MongoDB
-      SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_gamificacao?authSource=admin
-      # Configuração do RabbitMQ
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: dac
-      SPRING_RABBITMQ_PASSWORD: dac
-      # Mantém a configuração do Redis
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dacdb
+      SPRING_DATASOURCE_USERNAME: dac
+      SPRING_DATASOURCE_PASSWORD: dac
     depends_on:
-      - mongo # MUDADO
-      - redis
-      - rabbitmq # ADICIONADO
+      - postgres
     networks:
       - dac-network
 
@@ -179,24 +140,17 @@ services:
       - "8087:8087"
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://dac:dac@mongo:27017/db_notificacoes?authSource=admin
-      # Configuração do RabbitMQ (para ele OUVIR eventos)
       SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: dac
-      SPRING_RABBITMQ_PASSWORD: dac
     depends_on:
       - mongo
-      - rabbitmq # ADICIONADO
+      - rabbitmq
     networks:
       - dac-network
 
-# Volumes persistentes
 volumes:
-  pgdata:
-  mongodata:
-  rabbitmq_data: # NOVO VOLUME
+  postgres_data:
+  mongo_data:
 
-# Rede comum entre todos os serviços
 networks:
   dac-network:
     driver: bridge
